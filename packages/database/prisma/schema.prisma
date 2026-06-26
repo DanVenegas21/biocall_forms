@@ -1,5 +1,5 @@
-// Esquema Prisma de la Bio Call.
-// Esqueleto inicial: el modelo se ampliara cuando se definan los campos reales.
+// Esquema Prisma de la Bio Call — alineado con el formulario del frontend.
+// Para Supabase, el esquema SQL canonico vive en packages/database/sql/001_bio_call_schema.sql
 
 generator client {
   provider = "prisma-client-js"
@@ -17,12 +17,125 @@ enum BioCallStatus {
 }
 
 model BioCall {
-  id        String        @id @default(cuid())
-  status    BioCallStatus @default(draft)
-  // Datos del formulario serializados. Se normalizara en fases posteriores.
-  data      Json          @default("{}")
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id        String        @id
+  status    BioCallStatus @default(draft) @map("form_capture_status")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  personalData   BioCallPersonalData?
+  contact        BioCallContact?
+  address        BioCallAddress?
+  documents      BioCallDocuments?
+  family         BioCallFamily?
+  caseBackground BioCallCaseBackground?
 
   @@map("bio_calls")
+}
+
+model BioCallPersonalData {
+  bioCallId        String   @id @map("bio_call_id")
+  nombres          String
+  apellidoPaterno  String   @map("apellido_paterno")
+  apellidoMaterno  String?  @map("apellido_materno")
+  otrosNombres     String?  @map("otros_nombres")
+  fechaNacimiento  DateTime @map("fecha_nacimiento") @db.Date
+  lugarNacimiento  String?  @map("lugar_nacimiento")
+  sexo             String?
+  estadoCivil      String?  @map("estado_civil")
+  nacionalidad     String
+  comprendeIngles  String?  @map("comprende_ingles")
+  idiomaPreferido  String?  @map("idioma_preferido")
+  hablaOtroIdioma  String?  @map("habla_otro_idioma")
+  especificarIdioma String? @map("especificar_idioma")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_personal_data")
+}
+
+model BioCallContact {
+  bioCallId         String @id @map("bio_call_id")
+  telefono          String
+  correoElectronico String @map("correo_electronico")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_contact")
+}
+
+model BioCallAddress {
+  bioCallId        String  @id @map("bio_call_id")
+  direccionCompleta String @map("direccion_completa")
+  fechaIngreso     String? @map("fecha_ingreso")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_address")
+}
+
+model BioCallDocuments {
+  bioCallId         String    @id @map("bio_call_id")
+  tienePasaporte    String?   @map("tiene_pasaporte")
+  pasaportePendiente String?  @map("pasaporte_pendiente")
+  numeroPasaporte   String?   @map("numero_pasaporte")
+  paisEmision       String?   @map("pais_emision")
+  fechaEmision      DateTime? @map("fecha_emision") @db.Date
+  fechaExpiracion   DateTime? @map("fecha_expiracion") @db.Date
+  tieneANumber      String?   @map("tiene_a_number")
+  aNumberValue      String?   @map("a_number_value")
+  aNumberOrigen     String?   @map("a_number_origen")
+  tieneSSN          String?   @map("tiene_ssn")
+  ssnValue          String?   @map("ssn_value")
+  tieneEAD          String?   @map("tiene_ead")
+  eadValue          String?   @map("ead_value")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_documents")
+}
+
+model BioCallFamily {
+  bioCallId             String  @id @map("bio_call_id")
+  tieneConyuge          String? @map("tiene_conyuge")
+  nombresConyuge        String? @map("nombres_conyuge")
+  apellidoPaternoConyuge String? @map("apellido_paterno_conyuge")
+  apellidoMaternoConyuge String? @map("apellido_materno_conyuge")
+  tieneHijos            String? @map("tiene_hijos")
+  cantidadHijos         Int?    @map("cantidad_hijos")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_family")
+}
+
+model BioCallCaseBackground {
+  bioCallId               String  @id @map("bio_call_id")
+  fechaEntrada            String? @map("fecha_entrada")
+  formaEntrada            String? @map("forma_entrada")
+  lugarEntrada            String? @map("lugar_entrada")
+  detenidoAlIngresar      String? @map("detenido_al_ingresar")
+  detenidoInmigracion     String? @map("detenido_inmigracion")
+  cantidadDetencionesInmi Int?    @map("cantidad_detenciones_inmi")
+  detallesDetencionesInmi String? @map("detalles_detenciones_inmi")
+  inmiFotosHuellas        String? @map("inmi_fotos_huellas")
+  inmiOrdenDeportacion    String? @map("inmi_orden_deportacion")
+  inmiCitaCorte           String? @map("inmi_cita_corte")
+  inmiRegresoVoluntario   String? @map("inmi_regreso_voluntario")
+  inmiCastigoSancion      String? @map("inmi_castigo_sancion")
+  arrestadoPolicia        String? @map("arrestado_policia")
+  cantidadArrestosPoli    Int?    @map("cantidad_arrestos_poli")
+  explicacionArresto      String? @map("explicacion_arresto")
+  arrestoMotivo           String? @map("arresto_motivo")
+  arrestoFecha            String? @map("arresto_fecha")
+  arrestoLugar            String? @map("arresto_lugar")
+  arrestoPasoNocheCarcel  String? @map("arresto_paso_noche_carcel")
+  arrestoPagoFianza       String? @map("arresto_pago_fianza")
+  arrestoMontoFianza      String? @map("arresto_monto_fianza")
+  arrestoResolucion       String? @map("arresto_resolucion")
+  declaradoCiudadano      String? @map("declarado_ciudadano")
+  foiaRequerir            String? @map("foia_requerir")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_case_background")
 }
