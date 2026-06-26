@@ -1,0 +1,48 @@
+node_modules
+dist
+dist-ssr
+build
+*.local
+.vite
+
+# Next.js
+.next
+out
+next-env.d.ts
+
+# Turbo / caches
+.turbo
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Prisma
+packages/database/prisma/*.db
+packages/database/prisma/migrations/dev.db*
+
+# Python (ai-service)
+__pycache__
+*.pyc
+.venv
+venv
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / OS
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

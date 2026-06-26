@@ -1,0 +1,29 @@
+{
+  "name": "biocall-forms",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo de la Bio Call (oficina Manuel Solis): captura de datos del cliente.",
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend",
+    "packages/shared",
+    "packages/database",
+    "packages/config"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @biocall/frontend",
+    "dev:backend": "npm run dev --workspace @biocall/backend",
+    "build": "npm run build --workspace @biocall/shared && npm run build --workspace @biocall/database && npm run build --workspace @biocall/frontend && npm run build --workspace @biocall/backend",
+    "build:frontend": "npm run build --workspace @biocall/frontend",
+    "build:backend": "npm run build --workspace @biocall/backend",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=18.18"
+  }
+}

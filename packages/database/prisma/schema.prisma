@@ -1,0 +1,28 @@
+// Esquema Prisma de la Bio Call.
+// Esqueleto inicial: el modelo se ampliara cuando se definan los campos reales.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BioCallStatus {
+  draft
+  in_review
+  completed
+}
+
+model BioCall {
+  id        String        @id @default(cuid())
+  status    BioCallStatus @default(draft)
+  // Datos del formulario serializados. Se normalizara en fases posteriores.
+  data      Json          @default("{}")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("bio_calls")
+}
