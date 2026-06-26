@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   User,
   Phone,
@@ -16,6 +19,15 @@ import { SectionPanel } from "@/components/ui/SectionPanel";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { GlassButton } from "@/components/glass/GlassButton";
 import { Tooltip } from "@/components/ui/Tooltip";
+import toast from "react-hot-toast";
+
+// Importación de componentes de sección
+import { PersonalDataSection } from "./sections/PersonalDataSection";
+import { ContactSection } from "./sections/ContactSection";
+import { AddressSection } from "./sections/AddressSection";
+import { DocumentsSection } from "./sections/DocumentsSection";
+import { FamilySection } from "./sections/FamilySection";
+import { CaseSection } from "./sections/CaseSection";
 
 /** Icono asociado a cada seccion (la metadata vive en @biocall/shared). */
 const SECTION_ICONS: Record<BioCallSectionId, LucideIcon> = {
@@ -28,6 +40,167 @@ const SECTION_ICONS: Record<BioCallSectionId, LucideIcon> = {
 };
 
 export function BioCallForm() {
+  // --- Estado unificado del formulario ---
+  const [formData, setFormData] = useState({
+    personalData: {
+      nombres: "",
+      apellidoPaterno: "",
+      apellidoMaterno: "",
+      fechaNacimiento: "",
+      lugarNacimiento: "",
+      sexo: "",
+      estadoCivil: "",
+      nacionalidad: "",
+      comprendeIngles: "",
+      idiomaPreferido: "",
+      hablaOtroIdioma: "",
+      especificarIdioma: "",
+      otrosNombres: "",
+    },
+    contact: {
+      telefono: "",
+      correoElectronico: "",
+    },
+    address: {
+      direccionCompleta: "",
+      fechaIngreso: "",
+    },
+    documents: {
+      tienePasaporte: "",
+      pasaportePendiente: "",
+      numeroPasaporte: "",
+      paisEmision: "",
+      fechaEmision: "",
+      fechaExpiracion: "",
+      tieneANumber: "",
+      aNumberValue: "",
+      aNumberOrigen: "",
+      tieneSSN: "",
+      ssnValue: "",
+      tieneEAD: "",
+      eadValue: "",
+    },
+    family: {
+      tieneConyuge: "",
+      nombresConyuge: "",
+      apellidoPaternoConyuge: "",
+      apellidoMaternoConyuge: "",
+      tieneHijos: "",
+      cantidadHijos: "" as number | "",
+    },
+    caseBackground: {
+      fechaEntrada: "",
+      formaEntrada: "",
+      lugarEntrada: "",
+      detenidoAlIngresar: "",
+      detenidoInmigracion: "",
+      cantidadDetencionesInmi: "" as number | "",
+      detallesDetencionesInmi: "",
+      inmiFotosHuellas: "",
+      inmiOrdenDeportacion: "",
+      inmiCitaCorte: "",
+      inmiRegresoVoluntario: "",
+      inmiCastigoSancion: "",
+      arrestadoPolicia: "",
+      cantidadArrestosPoli: "" as number | "",
+      explicacionArresto: "",
+      arrestoMotivo: "",
+      arrestoFecha: "",
+      arrestoLugar: "",
+      arrestoPasoNocheCarcel: "",
+      arrestoPagoFianza: "",
+      arrestoMontoFianza: "",
+      arrestoResolucion: "",
+      declaradoCiudadano: "",
+      foiaRequerir: "",
+    },
+  });
+
+  // Helper para actualizar secciones del formulario de manera tipada
+  const updateSection = <K extends keyof typeof formData>(
+    section: K,
+    fields: Partial<(typeof formData)[K]>
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        ...fields,
+      },
+    }));
+  };
+
+  // Indica si el usuario ha comenzado a llenar el formulario (para habilitar el botón Guardar)
+  const isFormDirty = Object.values(formData).some((section) =>
+    Object.values(section).some((value) => {
+      if (typeof value === "string") return value.trim() !== "";
+      if (typeof value === "number") return true;
+      return false;
+    })
+  );
+
+  // Acción para guardar el formulario
+  const handleSave = () => {
+    toast.success("¡Datos guardados localmente con éxito!");
+    console.log("Datos de la Bio Call guardados:", formData);
+  };
+
+  const renderSectionContent = (sectionId: BioCallSectionId) => {
+    switch (sectionId) {
+      case "datos-personales":
+        return (
+          <PersonalDataSection
+            data={formData.personalData}
+            onChange={(fields) => updateSection("personalData", fields)}
+          />
+        );
+      case "contacto":
+        return (
+          <ContactSection
+            data={formData.contact}
+            onChange={(fields) => updateSection("contact", fields)}
+          />
+        );
+      case "domicilio":
+        return (
+          <AddressSection
+            data={formData.address}
+            onChange={(fields) => updateSection("address", fields)}
+          />
+        );
+      case "documentos":
+        return (
+          <DocumentsSection
+            data={formData.documents}
+            onChange={(fields) => updateSection("documents", fields)}
+          />
+        );
+      case "familia":
+        return (
+          <FamilySection
+            data={formData.family}
+            onChange={(fields) => updateSection("family", fields)}
+          />
+        );
+      case "caso":
+        return (
+          <CaseSection
+            data={formData.caseBackground}
+            onChange={(fields) => updateSection("caseBackground", fields)}
+          />
+        );
+      default:
+        return (
+          <EmptyState
+            compact
+            icon={<Hammer className="h-7 w-7" aria-hidden="true" />}
+            title="Sección pendiente de implementar"
+            description="Aquí se colocarán los campos de captura correspondientes para esta sección de la Bio Call."
+          />
+        );
+    }
+  };
+
   return (
     <PageContainer>
       <div className="space-y-6">
@@ -36,14 +209,13 @@ export function BioCallForm() {
           <div className="space-y-1">
             <h1 className="page-title">Bio Call del cliente</h1>
             <p className="page-subtitle">
-              Captura de informacion personal para generar el documento de la Bio
-              Call.
+              Captura de información personal para generar el documento de la Bio Call.
             </p>
           </div>
 
-          {/* Barra de acciones (deshabilitada hasta implementar el formulario) */}
+          {/* Barra de acciones */}
           <div className="dashboard-action-bar">
-            <Tooltip content="Disponible al implementar el formulario">
+            <Tooltip content="Disponible al implementar autocompletado">
               <span>
                 <GlassButton
                   variant="ai"
@@ -55,13 +227,14 @@ export function BioCallForm() {
                 </GlassButton>
               </span>
             </Tooltip>
-            <Tooltip content="Disponible al implementar el formulario">
+            <Tooltip content={isFormDirty ? "Guardar información de la Bio Call" : "Completa información para guardar"}>
               <span>
                 <GlassButton
                   variant="primary"
                   size="sm"
                   leftIcon={<Save className="h-4 w-4" aria-hidden="true" />}
-                  disabled
+                  disabled={!isFormDirty}
+                  onClick={handleSave}
                 >
                   Guardar Bio Call
                 </GlassButton>
@@ -117,12 +290,7 @@ export function BioCallForm() {
                     icon={<Icon className="h-5 w-5" aria-hidden="true" />}
                     accent={index === 0}
                   >
-                    <EmptyState
-                      compact
-                      icon={<Hammer className="h-7 w-7" aria-hidden="true" />}
-                      title="Seccion pendiente de implementar"
-                      description="Aqui se colocaran los campos de captura. El cascaron y los estilos ya estan listos."
-                    />
+                    {renderSectionContent(section.id)}
                   </SectionPanel>
                 </section>
               );
@@ -133,3 +301,5 @@ export function BioCallForm() {
     </PageContainer>
   );
 }
+
+
