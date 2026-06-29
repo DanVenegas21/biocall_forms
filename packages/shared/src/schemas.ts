@@ -1,11 +1,8 @@
 import { z } from "zod";
 
 /**
- * Esquemas Zod de la Bio Call — alineados con BioCallForm.tsx y las secciones
- * del frontend (Formulario_front).
+ * Esquemas Zod de la Bio Call.
  */
-
-const yesNoSchema = z.enum(["si", "no"]).or(z.literal(""));
 
 export const personalDataSchema = z.object({
   nombres: z.string(),
@@ -16,9 +13,9 @@ export const personalDataSchema = z.object({
   sexo: z.string(),
   estadoCivil: z.string(),
   nacionalidad: z.string(),
-  comprendeIngles: z.enum(["si", "no", "parcial", ""]),
+  comprendeIngles: z.string(),
   idiomaPreferido: z.string(),
-  hablaOtroIdioma: yesNoSchema,
+  hablaOtroIdioma: z.string(),
   especificarIdioma: z.string(),
   otrosNombres: z.string(),
 });
@@ -28,61 +25,168 @@ export const contactSchema = z.object({
   correoElectronico: z.string(),
 });
 
+export const direccionAnteriorSchema = z.object({
+  calleNumero: z.string(),
+  aptoSuite: z.string(),
+  ciudad: z.string(),
+  estado: z.string(),
+  codigoPostal: z.string(),
+  fechaDesde: z.string(),
+  fechaHasta: z.string(),
+});
+
 export const addressSchema = z.object({
-  direccionCompleta: z.string(),
+  calleNumero: z.string(),
+  aptoSuite: z.string(),
+  ciudad: z.string(),
+  estado: z.string(),
+  codigoPostal: z.string(),
   fechaIngreso: z.string(),
+  resididoOtrosLugares: z.string(),
+  direccionesAnteriores: z.array(direccionAnteriorSchema),
 });
 
 export const documentsSchema = z.object({
-  tienePasaporte: yesNoSchema,
+  tienePasaporte: z.string(),
   pasaportePendiente: z.string(),
   numeroPasaporte: z.string(),
   paisEmision: z.string(),
   fechaEmision: z.string(),
   fechaExpiracion: z.string(),
-  tieneANumber: z.enum(["si", "no", "no_sabe", ""]),
+  tieneANumber: z.string(),
   aNumberValue: z.string(),
   aNumberOrigen: z.string(),
-  tieneSSN: yesNoSchema,
+  tieneSSN: z.string(),
   ssnValue: z.string(),
-  tieneEAD: yesNoSchema,
+  tieneEAD: z.string(),
   eadValue: z.string(),
 });
 
+export const hijoSchema = z.object({
+  nombre: z.string(),
+  fechaNacimiento: z.string(),
+  lugarNacimiento: z.string(),
+  lugarResidencia: z.string(),
+});
+
+export const matrimonioPrevioSchema = z.object({
+  nombreExConyuge: z.string(),
+  fechaLugarMatrimonio: z.string(),
+  fechaLugarNacimiento: z.string(),
+  fechaLugarDivorcio: z.string(),
+});
+
 export const familySchema = z.object({
-  tieneConyuge: yesNoSchema,
+  tieneConyuge: z.string(),
   nombresConyuge: z.string(),
   apellidoPaternoConyuge: z.string(),
   apellidoMaternoConyuge: z.string(),
-  tieneHijos: yesNoSchema,
-  cantidadHijos: z.union([z.number(), z.literal("")]),
+  nombrePadre: z.string(),
+  nombreMadre: z.string(),
+  casado: z.string(),
+  previamenteCasado: z.string(),
+  matrimoniosPrevios: z.array(matrimonioPrevioSchema),
+  tieneHijos: z.string(),
+  hijos: z.array(hijoSchema),
 });
 
-export const caseBackgroundSchema = z.object({
+export const viajeSchema = z.object({
   fechaEntrada: z.string(),
   formaEntrada: z.string(),
   lugarEntrada: z.string(),
-  detenidoAlIngresar: yesNoSchema,
-  detenidoInmigracion: yesNoSchema,
-  cantidadDetencionesInmi: z.union([z.number(), z.literal("")]),
-  detallesDetencionesInmi: z.string(),
-  inmiFotosHuellas: yesNoSchema,
-  inmiOrdenDeportacion: yesNoSchema,
-  inmiCitaCorte: yesNoSchema,
-  inmiRegresoVoluntario: yesNoSchema,
-  inmiCastigoSancion: yesNoSchema,
-  arrestadoPolicia: yesNoSchema,
-  cantidadArrestosPoli: z.union([z.number(), z.literal("")]),
-  explicacionArresto: z.string(),
-  arrestoMotivo: z.string(),
-  arrestoFecha: z.string(),
-  arrestoLugar: z.string(),
-  arrestoPasoNocheCarcel: yesNoSchema,
-  arrestoPagoFianza: z.enum(["si", "no", "no_aplica", ""]),
-  arrestoMontoFianza: z.string(),
-  arrestoResolucion: z.string(),
-  declaradoCiudadano: yesNoSchema,
-  foiaRequerir: z.string(),
+  fechaSalida: z.string(),
+  fueDetenido: z.string(),
+  detallesDetencion: z.string(),
+});
+
+export const empleoAnteriorSchema = z.object({
+  empresa: z.string(),
+  puesto: z.string(),
+  direccionCalle: z.string(),
+  direccionApto: z.string(),
+  direccionCiudad: z.string(),
+  direccionEstado: z.string(),
+  direccionZip: z.string(),
+  fechaDesde: z.string(),
+  fechaHasta: z.string(),
+});
+
+export const detencionInmiSchema = z.object({
+  lugar: z.string(),
+  fecha: z.string(),
+  autoridad: z.string(),
+  ordenDeportacion: z.string(),
+  sancionCastigo: z.string(),
+  regresoVoluntario: z.string(),
+  fotosHuellas: z.string(),
+  citaCorte: z.string(),
+});
+
+export const arrestoPoliciaSchema = z.object({
+  paisCiudadEstado: z.string(),
+  fecha: z.string(),
+  motivo: z.string(),
+  autoridad: z.string(),
+  disposicion: z.string(),
+});
+
+export const foiaItemSchema = z.object({
+  solicitar: z.string(),
+  motivo: z.string(),
+});
+
+export const caseBackgroundSchema = z.object({
+  viajes: z.array(viajeSchema),
+  viajesComentarios: z.string(),
+  detenidoInmigracion: z.string(),
+  detencionesInmi: z.array(detencionInmiSchema),
+  arrestadoPolicia: z.string(),
+  arrestosPolicia: z.array(arrestoPoliciaSchema),
+  empleoNombre: z.string(),
+  empleoOcupacion: z.string(),
+  empleoDireccionCalle: z.string(),
+  empleoDireccionApto: z.string(),
+  empleoDireccionCiudad: z.string(),
+  empleoDireccionEstado: z.string(),
+  empleoDireccionZip: z.string(),
+  empleoFechaIngreso: z.string(),
+  empleoFechaSalida: z.string(),
+  empleoOtrosLugares: z.string(),
+  empleosAnteriores: z.array(empleoAnteriorSchema),
+  inadDetencionTrafico: z.string(),
+  inadCometidoDelito: z.string(),
+  inadInmunidadDiplomatica: z.string(),
+  inadProstitucionTrafico: z.string(),
+  inadAyudaIngresoIlegal: z.string(),
+  inadTerrorismo: z.string(),
+  inadFondosTerrorismo: z.string(),
+  inadAsociacionTerrorista: z.string(),
+  inadEspionaje: z.string(),
+  inadPartidoComunista: z.string(),
+  inadParticipadoPersecucion: z.string(),
+  inadProcedimientoRemocion: z.string(),
+  inadDenegadoVisa: z.string(),
+  inadVisaT: z.string(),
+  inadMyUscis: z.string(),
+  inadGrupoMilitar: z.string(),
+  inadFraudeMigratorio: z.string(),
+  inadTrastornoFisicoMental: z.string(),
+  inadEnfermedadPublica: z.string(),
+  inadAdictoDrogas: z.string(),
+  declaradoCiudadano: z.string(),
+  falsaDeclaracionLugar: z.string(),
+  falsaDeclaracionFecha: z.string(),
+  falsaDeclaracionComo: z.string(),
+  falsaDeclaracionIntencion: z.string(),
+  falsaDeclaracionDetalle: z.string(),
+  foias: z.object({
+    uscis: foiaItemSchema,
+    ice: foiaItemSchema,
+    cbp: foiaItemSchema,
+    eoir: foiaItemSchema,
+    fbi: foiaItemSchema,
+    policia: foiaItemSchema,
+  }),
 });
 
 /** Esquema raiz de la Bio Call que agrupa todas las secciones. */
@@ -102,3 +206,4 @@ export type Documents = z.infer<typeof documentsSchema>;
 export type Family = z.infer<typeof familySchema>;
 export type CaseBackground = z.infer<typeof caseBackgroundSchema>;
 export type BioCall = z.infer<typeof bioCallSchema>;
+

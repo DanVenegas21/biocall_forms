@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   User,
   Phone,
@@ -62,8 +62,22 @@ export function BioCallForm() {
       correoElectronico: "",
     },
     address: {
-      direccionCompleta: "",
+      calleNumero: "",
+      aptoSuite: "",
+      ciudad: "",
+      estado: "",
+      codigoPostal: "",
       fechaIngreso: "",
+      resididoOtrosLugares: "",
+      direccionesAnteriores: [] as Array<{
+        calleNumero: string;
+        aptoSuite: string;
+        ciudad: string;
+        estado: string;
+        codigoPostal: string;
+        fechaDesde: string;
+        fechaHasta: string;
+      }>,
     },
     documents: {
       tienePasaporte: "",
@@ -85,36 +99,147 @@ export function BioCallForm() {
       nombresConyuge: "",
       apellidoPaternoConyuge: "",
       apellidoMaternoConyuge: "",
+      nombrePadre: "",
+      nombreMadre: "",
+      casado: "",
+      previamenteCasado: "",
+      matrimoniosPrevios: [] as Array<{
+        nombreExConyuge: string;
+        fechaLugarMatrimonio: string;
+        fechaLugarNacimiento: string;
+        fechaLugarDivorcio: string;
+      }>,
       tieneHijos: "",
-      cantidadHijos: "" as number | "",
+      hijos: [] as Array<{ nombre: string; fechaNacimiento: string; lugarNacimiento: string; lugarResidencia: string }>,
     },
     caseBackground: {
-      fechaEntrada: "",
-      formaEntrada: "",
-      lugarEntrada: "",
-      detenidoAlIngresar: "",
+      viajes: [] as Array<{
+        fechaEntrada: string;
+        formaEntrada: string;
+        lugarEntrada: string;
+        fechaSalida: string;
+        fueDetenido: string;
+        detallesDetencion: string;
+      }>,
+      viajesComentarios: "",
       detenidoInmigracion: "",
-      cantidadDetencionesInmi: "" as number | "",
-      detallesDetencionesInmi: "",
-      inmiFotosHuellas: "",
-      inmiOrdenDeportacion: "",
-      inmiCitaCorte: "",
-      inmiRegresoVoluntario: "",
-      inmiCastigoSancion: "",
+      detencionesInmi: [] as Array<{
+        lugar: string;
+        fecha: string;
+        autoridad: string;
+        ordenDeportacion: string;
+        sancionCastigo: string;
+        regresoVoluntario: string;
+        fotosHuellas: string;
+        citaCorte: string;
+      }>,
       arrestadoPolicia: "",
-      cantidadArrestosPoli: "" as number | "",
-      explicacionArresto: "",
-      arrestoMotivo: "",
-      arrestoFecha: "",
-      arrestoLugar: "",
-      arrestoPasoNocheCarcel: "",
-      arrestoPagoFianza: "",
-      arrestoMontoFianza: "",
-      arrestoResolucion: "",
+      arrestosPolicia: [] as Array<{
+        paisCiudadEstado: string;
+        fecha: string;
+        motivo: string;
+        autoridad: string;
+        disposicion: string;
+      }>,
+      empleoNombre: "",
+      empleoOcupacion: "",
+      empleoDireccionCalle: "",
+      empleoDireccionApto: "",
+      empleoDireccionCiudad: "",
+      empleoDireccionEstado: "",
+      empleoDireccionZip: "",
+      empleoFechaIngreso: "",
+      empleoFechaSalida: "",
+      empleoOtrosLugares: "",
+      empleosAnteriores: [] as Array<{
+        empresa: string;
+        puesto: string;
+        direccionCalle: string;
+        direccionApto: string;
+        direccionCiudad: string;
+        direccionEstado: string;
+        direccionZip: string;
+        fechaDesde: string;
+        fechaHasta: string;
+      }>,
+      inadDetencionTrafico: "no",
+      inadCometidoDelito: "no",
+      inadInmunidadDiplomatica: "no",
+      inadProstitucionTrafico: "no",
+      inadAyudaIngresoIlegal: "no",
+      inadTerrorismo: "no",
+      inadFondosTerrorismo: "no",
+      inadAsociacionTerrorista: "no",
+      inadEspionaje: "no",
+      inadPartidoComunista: "no",
+      inadParticipadoPersecucion: "no",
+      inadProcedimientoRemocion: "no",
+      inadDenegadoVisa: "no",
+      inadVisaT: "no",
+      inadMyUscis: "no",
+      inadGrupoMilitar: "no",
+      inadFraudeMigratorio: "no",
+      inadTrastornoFisicoMental: "no",
+      inadEnfermedadPublica: "no",
+      inadAdictoDrogas: "no",
       declaradoCiudadano: "",
-      foiaRequerir: "",
+      falsaDeclaracionLugar: "",
+      falsaDeclaracionFecha: "",
+      falsaDeclaracionComo: "",
+      falsaDeclaracionIntencion: "",
+      falsaDeclaracionDetalle: "",
+      foias: {
+        uscis: { solicitar: "no", motivo: "" },
+        ice: { solicitar: "no", motivo: "" },
+        cbp: { solicitar: "no", motivo: "" },
+        eoir: { solicitar: "no", motivo: "" },
+        fbi: { solicitar: "no", motivo: "" },
+        policia: { solicitar: "no", motivo: "" },
+      },
     },
   });
+
+  // Cargar borrador desde localStorage al montar
+  useEffect(() => {
+    const saved = localStorage.getItem("biocall_draft");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setFormData((prev) => {
+          const merged = { ...prev };
+          for (const key of Object.keys(prev) as Array<keyof typeof prev>) {
+            if (parsed[key] && typeof parsed[key] === "object" && !Array.isArray(parsed[key])) {
+              merged[key] = {
+                ...prev[key],
+                ...parsed[key],
+              };
+            } else if (parsed[key] !== undefined) {
+              merged[key] = parsed[key];
+            }
+          }
+          return merged;
+        });
+        toast.success("Borrador recuperado automáticamente");
+      } catch (e) {
+        console.error("Error al cargar borrador desde localStorage:", e);
+      }
+    }
+  }, []);
+
+  // Guardar en localStorage ante cualquier cambio
+  useEffect(() => {
+    const isDirty = Object.values(formData).some((section) =>
+      Object.values(section).some((value) => {
+        if (typeof value === "string") return value.trim() !== "";
+        if (typeof value === "number") return true;
+        if (Array.isArray(value)) return value.length > 0;
+        return false;
+      })
+    );
+    if (isDirty) {
+      localStorage.setItem("biocall_draft", JSON.stringify(formData));
+    }
+  }, [formData]);
 
   // Helper para actualizar secciones del formulario de manera tipada
   const updateSection = <K extends keyof typeof formData>(
@@ -140,9 +265,34 @@ export function BioCallForm() {
   );
 
   // Acción para guardar el formulario
-  const handleSave = () => {
-    toast.success("¡Datos guardados localmente con éxito!");
-    console.log("Datos de la Bio Call guardados:", formData);
+  const handleSave = async () => {
+    const loadingToast = toast.loading("Guardando datos en el servidor...");
+    try {
+      const response = await fetch("http://localhost:4000/api/bio-calls", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const resData = await response.json();
+
+      if (response.ok) {
+        toast.dismiss(loadingToast);
+        toast.success("¡Datos guardados y validados en el servidor con éxito!");
+        console.log("Datos de la Bio Call guardados en el servidor:", resData);
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error(`Error de validación: ${resData.error || "Datos inválidos"}`);
+        console.error("Detalles de validación del servidor:", resData.details);
+      }
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      // Fallback a éxito local si el backend no está disponible
+      toast.success("¡Datos guardados localmente! (Servidor sin conexión)");
+      console.log("Datos de la Bio Call guardados localmente (fuera de línea):", formData);
+    }
   };
 
   const renderSectionContent = (sectionId: BioCallSectionId) => {
