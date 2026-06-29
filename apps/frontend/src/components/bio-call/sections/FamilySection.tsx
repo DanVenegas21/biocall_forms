@@ -27,6 +27,8 @@ interface FamilyData {
   nombresConyuge: string;
   apellidoPaternoConyuge: string;
   apellidoMaternoConyuge: string;
+  fechaLugarMatrimonioConyuge: string;
+  fechaLugarNacimientoConyuge: string;
   nombresPadre: string;
   apellidoPaternoPadre: string;
   apellidoMaternoPadre: string;
@@ -243,6 +245,8 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     nombresConyuge: "",
                     apellidoPaternoConyuge: "",
                     apellidoMaternoConyuge: "",
+                    fechaLugarMatrimonioConyuge: "",
+                    fechaLugarNacimientoConyuge: "",
                   });
                 } else {
                   onChange({ tieneConyuge: val });
@@ -348,6 +352,34 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 placeholder="Ej. Martínez"
                 value={data.apellidoMaternoConyuge}
                 onChange={(e) => handleChange("apellidoMaternoConyuge", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="fechaLugarMatrimonioConyuge" className="label-caps">
+                Fecha y lugar de matrimonio
+              </label>
+              <input
+                id="fechaLugarMatrimonioConyuge"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. 22 Enero 2020, Bolivia"
+                value={data.fechaLugarMatrimonioConyuge || ""}
+                onChange={(e) => handleChange("fechaLugarMatrimonioConyuge", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor="fechaLugarNacimientoConyuge" className="label-caps">
+                Fecha y lugar de nacimiento del cónyuge
+              </label>
+              <input
+                id="fechaLugarNacimientoConyuge"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. 22 Noviembre 1990, Bolivia"
+                value={data.fechaLugarNacimientoConyuge || ""}
+                onChange={(e) => handleChange("fechaLugarNacimientoConyuge", e.target.value)}
               />
             </div>
           </div>

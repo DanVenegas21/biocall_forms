@@ -85,6 +85,8 @@ export const familySchema = z.object({
   nombresConyuge: z.string(),
   apellidoPaternoConyuge: z.string(),
   apellidoMaternoConyuge: z.string(),
+  fechaLugarMatrimonioConyuge: z.string(),
+  fechaLugarNacimientoConyuge: z.string(),
   nombresPadre: z.string(),
   apellidoPaternoPadre: z.string(),
   apellidoMaternoPadre: z.string(),

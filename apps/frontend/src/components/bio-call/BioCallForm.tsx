@@ -99,6 +99,8 @@ export function BioCallForm() {
       nombresConyuge: "",
       apellidoPaternoConyuge: "",
       apellidoMaternoConyuge: "",
+      fechaLugarMatrimonioConyuge: "",
+      fechaLugarNacimientoConyuge: "",
       nombresPadre: "",
       apellidoPaternoPadre: "",
       apellidoMaternoPadre: "",
