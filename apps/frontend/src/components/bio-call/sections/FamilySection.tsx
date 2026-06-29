@@ -458,13 +458,13 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
 
                 <div className="flex flex-col gap-2">
                   <label htmlFor={`mat-${idx}-divorcio`} className="label-caps">
-                    Fecha y lugar de divorcio / disolución
+                    Fecha y lugar de divorcio / disolución / defunción
                   </label>
                   <input
                     id={`mat-${idx}-divorcio`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. Mayo 2023, Ohio"
+                    placeholder="Ej. Mayo 2023, Ohio o Julio 2020, TN (defunción)"
                     value={mat.fechaLugarDivorcio}
                     onChange={(e) => handleMatrimonioPrevioChange(idx, "fechaLugarDivorcio", e.target.value)}
                   />
