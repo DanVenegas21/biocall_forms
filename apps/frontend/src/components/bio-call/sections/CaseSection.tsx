@@ -1,32 +1,110 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
-interface CaseBackgroundData {
+export interface ViajeData {
   fechaEntrada: string;
   formaEntrada: string;
   lugarEntrada: string;
-  detenidoAlIngresar: string;
+  fechaSalida: string;
+  fueDetenido: string;
+  detallesDetencion: string;
+}
+
+export interface EmpleoAnteriorData {
+  empresa: string;
+  puesto: string;
+  direccionCalle: string;
+  direccionApto: string;
+  direccionCiudad: string;
+  direccionEstado: string;
+  direccionZip: string;
+  fechaDesde: string;
+  fechaHasta: string;
+}
+
+export interface DetencionInmiData {
+  lugar: string;
+  fecha: string;
+  autoridad: string;
+  ordenDeportacion: string;
+  sancionCastigo: string;
+  regresoVoluntario: string;
+  fotosHuellas: string;
+  citaCorte: string;
+}
+
+export interface ArrestoPoliciaData {
+  paisCiudadEstado: string;
+  fecha: string;
+  motivo: string;
+  autoridad: string;
+  disposicion: string;
+}
+
+export interface FoiaItemData {
+  solicitar: string;
+  motivo: string;
+}
+
+interface CaseBackgroundData {
+  viajes: ViajeData[];
+  viajesComentarios: string;
+
   detenidoInmigracion: string;
-  cantidadDetencionesInmi: number | "";
-  detallesDetencionesInmi: string;
-  inmiFotosHuellas: string;
-  inmiOrdenDeportacion: string;
-  inmiCitaCorte: string;
-  inmiRegresoVoluntario: string;
-  inmiCastigoSancion: string;
+  detencionesInmi: DetencionInmiData[];
+
   arrestadoPolicia: string;
-  cantidadArrestosPoli: number | "";
-  explicacionArresto: string;
-  arrestoMotivo: string;
-  arrestoFecha: string;
-  arrestoLugar: string;
-  arrestoPasoNocheCarcel: string;
-  arrestoPagoFianza: string;
-  arrestoMontoFianza: string;
-  arrestoResolucion: string;
+  arrestosPolicia: ArrestoPoliciaData[];
+
+  empleoNombre: string;
+  empleoOcupacion: string;
+  empleoDireccionCalle: string;
+  empleoDireccionApto: string;
+  empleoDireccionCiudad: string;
+  empleoDireccionEstado: string;
+  empleoDireccionZip: string;
+  empleoFechaIngreso: string;
+  empleoFechaSalida: string;
+  empleoOtrosLugares: string;
+  empleosAnteriores: EmpleoAnteriorData[];
+
+  inadDetencionTrafico: string;
+  inadCometidoDelito: string;
+  inadInmunidadDiplomatica: string;
+  inadProstitucionTrafico: string;
+  inadAyudaIngresoIlegal: string;
+  inadTerrorismo: string;
+  inadFondosTerrorismo: string;
+  inadAsociacionTerrorista: string;
+  inadEspionaje: string;
+  inadPartidoComunista: string;
+  inadParticipadoPersecucion: string;
+  inadProcedimientoRemocion: string;
+  inadDenegadoVisa: string;
+  inadVisaT: string;
+  inadMyUscis: string;
+  inadGrupoMilitar: string;
+  inadFraudeMigratorio: string;
+  inadTrastornoFisicoMental: string;
+  inadEnfermedadPublica: string;
+  inadAdictoDrogas: string;
+
   declaradoCiudadano: string;
-  foiaRequerir: string;
+  falsaDeclaracionLugar: string;
+  falsaDeclaracionFecha: string;
+  falsaDeclaracionComo: string;
+  falsaDeclaracionIntencion: string;
+  falsaDeclaracionDetalle: string;
+  foias: {
+    uscis: FoiaItemData;
+    ice: FoiaItemData;
+    cbp: FoiaItemData;
+    eoir: FoiaItemData;
+    fbi: FoiaItemData;
+    policia: FoiaItemData;
+  };
 }
 
 interface CaseSectionProps {
@@ -35,85 +113,354 @@ interface CaseSectionProps {
 }
 
 export function CaseSection({ data, onChange }: CaseSectionProps) {
-  const handleChange = (field: keyof CaseBackgroundData, value: string | number) => {
+  const [showInadmissibility, setShowInadmissibility] = useState(false);
+
+  const handleChange = (field: keyof CaseBackgroundData, value: any) => {
     onChange({ [field]: value });
+  };
+
+  // --- Manejo de la lista dinámica de Viajes ---
+  const addViaje = () => {
+    const currentViajes = data.viajes || [];
+    onChange({
+      viajes: [
+        ...currentViajes,
+        {
+          fechaEntrada: "",
+          formaEntrada: "",
+          lugarEntrada: "",
+          fechaSalida: "",
+          fueDetenido: "",
+          detallesDetencion: "",
+        },
+      ],
+    });
+  };
+
+  const removeViaje = (index: number) => {
+    const currentViajes = data.viajes || [];
+    onChange({
+      viajes: currentViajes.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleViajeChange = (index: number, field: keyof ViajeData, value: string) => {
+    const currentViajes = data.viajes || [];
+    const newViajes = currentViajes.map((viaje, i) => {
+      if (i === index) {
+        return { ...viaje, [field]: value };
+      }
+      return viaje;
+    });
+    onChange({ viajes: newViajes });
+  };
+
+  // --- Manejo de la lista dinámica de Empleos Anteriores ---
+  const addEmpleoAnterior = () => {
+    const current = data.empleosAnteriores || [];
+    onChange({
+      empleosAnteriores: [
+        ...current,
+        {
+          empresa: "",
+          puesto: "",
+          direccionCalle: "",
+          direccionApto: "",
+          direccionCiudad: "",
+          direccionEstado: "",
+          direccionZip: "",
+          fechaDesde: "",
+          fechaHasta: "",
+        },
+      ],
+    });
+  };
+
+  const removeEmpleoAnterior = (index: number) => {
+    const current = data.empleosAnteriores || [];
+    onChange({
+      empleosAnteriores: current.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleEmpleoAnteriorChange = (index: number, field: keyof EmpleoAnteriorData, value: string) => {
+    const current = data.empleosAnteriores || [];
+    const updated = current.map((emp, i) => {
+      if (i === index) return { ...emp, [field]: value };
+      return emp;
+    });
+    onChange({ empleosAnteriores: updated });
+  };
+
+  // --- Manejo de Detenciones por Inmigración ---
+  const addDetencionInmi = () => {
+    const current = data.detencionesInmi || [];
+    onChange({
+      detencionesInmi: [
+        ...current,
+        {
+          lugar: "",
+          fecha: "",
+          autoridad: "",
+          ordenDeportacion: "",
+          sancionCastigo: "",
+          regresoVoluntario: "",
+          fotosHuellas: "",
+          citaCorte: "",
+        },
+      ],
+    });
+  };
+
+  const removeDetencionInmi = (index: number) => {
+    const current = data.detencionesInmi || [];
+    onChange({
+      detencionesInmi: current.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleDetencionInmiChange = (index: number, field: keyof DetencionInmiData, value: string) => {
+    const current = data.detencionesInmi || [];
+    const updated = current.map((det, i) => {
+      if (i === index) return { ...det, [field]: value };
+      return det;
+    });
+    onChange({ detencionesInmi: updated });
+  };
+
+  // --- Manejo de Arrestos por la Policía ---
+  const addArrestoPolicia = () => {
+    const current = data.arrestosPolicia || [];
+    onChange({
+      arrestosPolicia: [
+        ...current,
+        {
+          paisCiudadEstado: "",
+          fecha: "",
+          motivo: "",
+          autoridad: "",
+          disposicion: "",
+        },
+      ],
+    });
+  };
+
+  const removeArrestoPolicia = (index: number) => {
+    const current = data.arrestosPolicia || [];
+    onChange({
+      arrestosPolicia: current.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleArrestoPoliciaChange = (index: number, field: keyof ArrestoPoliciaData, value: string) => {
+    const current = data.arrestosPolicia || [];
+    const updated = current.map((arr, i) => {
+      if (i === index) return { ...arr, [field]: value };
+      return arr;
+    });
+    onChange({ arrestosPolicia: updated });
+  };
+
+  // --- Manejo de FOIA ---
+  const handleFoiaChange = (agency: keyof CaseBackgroundData["foias"], field: keyof FoiaItemData, value: string) => {
+    const currentFoias = data.foias || {
+      uscis: { solicitar: "no", motivo: "" },
+      ice: { solicitar: "no", motivo: "" },
+      cbp: { solicitar: "no", motivo: "" },
+      eoir: { solicitar: "no", motivo: "" },
+      fbi: { solicitar: "no", motivo: "" },
+      policia: { solicitar: "no", motivo: "" },
+    };
+    onChange({
+      foias: {
+        ...currentFoias,
+        [agency]: {
+          ...currentFoias[agency],
+          [field]: value,
+        },
+      },
+    });
   };
 
   return (
     <div className="space-y-6">
-      {/* 1. Información de Viaje / Entrada */}
+      {/* 1. Historial de Viajes / Entradas a EE. UU. */}
       <div className="space-y-4">
-        <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
-          1.1 Información de Entrada a EE. UU.
-        </h3>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="fechaEntrada" className="label-caps">
-              Fecha de entrada (Mes y Año o exacta)
-            </label>
-            <input
-              id="fechaEntrada"
-              type="text"
-              className="input-glass"
-              placeholder="Ej. Septiembre 1995"
-              value={data.fechaEntrada}
-              onChange={(e) => handleChange("fechaEntrada", e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="formaEntrada" className="label-caps">
-              Forma de entrada
-            </label>
-            <input
-              id="formaEntrada"
-              type="text"
-              className="input-glass"
-              placeholder="Ej. Coyote/EWI o Visa de Turista"
-              value={data.formaEntrada}
-              onChange={(e) => handleChange("formaEntrada", e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="lugarEntrada" className="label-caps">
-              Lugar de entrada (Puerto o Ciudad/Estado)
-            </label>
-            <input
-              id="lugarEntrada"
-              type="text"
-              className="input-glass"
-              placeholder="Ej. Calexico, CA"
-              value={data.lugarEntrada}
-              onChange={(e) => handleChange("lugarEntrada", e.target.value)}
-            />
-          </div>
+        <div className="flex items-center justify-between border-b border-brand-100/50 pb-2">
+          <h3 className="panel-section-title text-base font-semibold">
+            1. Historial de viajes a Estados Unidos
+          </h3>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+            onClick={addViaje}
+          >
+            <Plus className="h-3 w-3" /> Agregar Entrada
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="detenidoAlIngresar" className="label-caps">
-              ¿Fue detenido(a) por inmigración al ingresar?
-            </label>
-            <select
-              id="detenidoAlIngresar"
-              className="input-glass"
-              value={data.detenidoAlIngresar}
-              onChange={(e) => handleChange("detenidoAlIngresar", e.target.value)}
-            >
-              <option value="">Seleccione...</option>
-              <option value="si">Sí</option>
-              <option value="no">No</option>
-            </select>
+        <p className="text-xs text-brand-500/80">
+          Registrar TODOS los ingresos. Si no recuerda la fecha exacta, registrar al menos mes y año.
+        </p>
+
+        {/* Lista de Viajes */}
+        {(data.viajes || []).length === 0 ? (
+          <div className="p-6 text-center border border-dashed border-brand-200 rounded-2xl text-brand-400 text-sm">
+            No se han registrado viajes. Haz clic en "Agregar Entrada" para añadir uno.
           </div>
+        ) : (
+          (data.viajes || []).map((viaje, idx) => (
+            <div
+              key={idx}
+              className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
+            >
+              <button
+                type="button"
+                className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+                aria-label={`Eliminar viaje ${idx + 1}`}
+                onClick={() => removeViaje(idx)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+
+              <h4 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
+                Viaje / Entrada #{idx + 1}
+              </h4>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`viaje-${idx}-entrada`} className="label-caps">
+                  Fecha de entrada
+                </label>
+                <input
+                  id={`viaje-${idx}-entrada`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Junio 13 2008 o 2003"
+                  value={viaje.fechaEntrada}
+                  onChange={(e) => handleViajeChange(idx, "fechaEntrada", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`viaje-${idx}-forma`} className="label-caps">
+                  Forma de entrada
+                </label>
+                <input
+                  id={`viaje-${idx}-forma`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Visa de turista, Coyote"
+                  value={viaje.formaEntrada}
+                  onChange={(e) => handleViajeChange(idx, "formaEntrada", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`viaje-${idx}-lugar`} className="label-caps">
+                  Lugar de entrada
+                </label>
+                <input
+                  id={`viaje-${idx}-lugar`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Matamoros hacia Brownsville"
+                  value={viaje.lugarEntrada}
+                  onChange={(e) => handleViajeChange(idx, "lugarEntrada", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`viaje-${idx}-salida`} className="label-caps">
+                  Fecha de salida (si aplica)
+                </label>
+                <input
+                  id={`viaje-${idx}-salida`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. 2004 o N/A"
+                  value={viaje.fechaSalida}
+                  onChange={(e) => handleViajeChange(idx, "fechaSalida", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`viaje-${idx}-detenido`} className="label-caps">
+                  ¿Fue detenido al ingresar?
+                </label>
+                <select
+                  id={`viaje-${idx}-detenido`}
+                  className="input-glass"
+                  value={viaje.fueDetenido}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val !== "si") {
+                      const updated = (data.viajes || []).map((v, i) => {
+                        if (i === idx) return { ...v, fueDetenido: val, detallesDetencion: "" };
+                        return v;
+                      });
+                      onChange({ viajes: updated });
+                    } else {
+                      handleViajeChange(idx, "fueDetenido", val);
+                    }
+                  }}
+                >
+                  <option value="">Seleccione...</option>
+                  <option value="si">Sí</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {viaje.fueDetenido === "si" && (
+                <div className="flex flex-col gap-2 md:col-span-3 animate-fade-in">
+                  <label htmlFor={`viaje-${idx}-detallesDetencion`} className="label-caps">
+                    Autoridad y detalles de la detención
+                  </label>
+                  <input
+                    id={`viaje-${idx}-detallesDetencion`}
+                    type="text"
+                    className="input-glass"
+                    placeholder="Ej. CBP me detuvo en la frontera y me regresó."
+                    value={viaje.detallesDetencion}
+                    onChange={(e) => handleViajeChange(idx, "detallesDetencion", e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
+          ))
+        )}
+
+        <div className="flex flex-col gap-2 pt-2">
+          <label htmlFor="viajesComentarios" className="label-caps">
+            Comentarios o aclaraciones sobre el historial de viajes
+          </label>
+          <textarea
+            id="viajesComentarios"
+            rows={2}
+            className="input-glass resize-none min-h-[60px]"
+            placeholder="Ej. El cliente indica que por el COVID-19 se le olvidan algunas fechas de ingresos."
+            value={data.viajesComentarios || ""}
+            onChange={(e) => handleChange("viajesComentarios", e.target.value)}
+          />
         </div>
       </div>
 
       {/* 2. Detenciones por Inmigración */}
       <div className="border-t border-brand-100/50 pt-4 space-y-4">
-        <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
-          1.2 Detenciones por Inmigración (Cualquier lugar y fecha)
-        </h3>
+        <div className="flex items-center justify-between border-b border-brand-100/50 pb-2">
+          <h3 className="panel-section-title text-base font-semibold">
+            2. Detenciones por Inmigración (Cualquier lugar y fecha)
+          </h3>
+          {data.detenidoInmigracion === "si" && (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+              onClick={addDetencionInmi}
+            >
+              <Plus className="h-3 w-3" /> Agregar Detención
+            </button>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <label htmlFor="detenidoInmigracion" className="label-caps">
@@ -128,16 +475,27 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 if (val !== "si") {
                   onChange({
                     detenidoInmigracion: val,
-                    cantidadDetencionesInmi: "",
-                    detallesDetencionesInmi: "",
-                    inmiFotosHuellas: "",
-                    inmiOrdenDeportacion: "",
-                    inmiCitaCorte: "",
-                    inmiRegresoVoluntario: "",
-                    inmiCastigoSancion: "",
+                    detencionesInmi: [],
                   });
                 } else {
                   onChange({ detenidoInmigracion: val });
+                  if ((data.detencionesInmi || []).length === 0) {
+                    onChange({
+                      detenidoInmigracion: val,
+                      detencionesInmi: [
+                        {
+                          lugar: "",
+                          fecha: "",
+                          autoridad: "",
+                          ordenDeportacion: "",
+                          sancionCastigo: "",
+                          regresoVoluntario: "",
+                          fotosHuellas: "",
+                          citaCorte: "",
+                        },
+                      ],
+                    });
+                  }
                 }
               }}
             >
@@ -146,144 +504,177 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
               <option value="no">No</option>
             </select>
           </div>
+        </div>
 
-          {data.detenidoInmigracion === "si" && (
-            <div className="flex flex-col gap-2 animate-fade-in">
-              <label htmlFor="cantidadDetencionesInmi" className="label-caps">
-                ¿Cuántas veces?
+        {data.detenidoInmigracion === "si" && (data.detencionesInmi || []).map((det, idx) => (
+          <div
+            key={idx}
+            className="relative grid grid-cols-1 gap-4 md:grid-cols-2 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
+          >
+            <button
+              type="button"
+              className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+              aria-label={`Eliminar detención ${idx + 1}`}
+              onClick={() => removeDetencionInmi(idx)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+
+            <h4 className="label-caps md:col-span-2 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
+              Detención #{idx + 1}
+            </h4>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`det-${idx}-lugar`} className="label-caps">
+                Lugar (ciudad y estado)
               </label>
               <input
-                id="cantidadDetencionesInmi"
-                type="number"
-                min="1"
+                id={`det-${idx}-lugar`}
+                type="text"
                 className="input-glass"
-                placeholder="Ej. 2"
-                value={data.cantidadDetencionesInmi}
-                onChange={(e) =>
-                  handleChange(
-                    "cantidadDetencionesInmi",
-                    e.target.value === "" ? "" : Number(e.target.value)
-                  )
-                }
+                placeholder="Ej. Laredo, TX"
+                value={det.lugar}
+                onChange={(e) => handleDetencionInmiChange(idx, "lugar", e.target.value)}
               />
             </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`det-${idx}-fecha`} className="label-caps">
+                Fecha
+              </label>
+              <input
+                id={`det-${idx}-fecha`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Junio 2008"
+                value={det.fecha}
+                onChange={(e) => handleDetencionInmiChange(idx, "fecha", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`det-${idx}-autoridad`} className="label-caps">
+                Autoridad que lo detuvo (ICE / CBP / Border Patrol / otra)
+              </label>
+              <input
+                id={`det-${idx}-autoridad`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Border Patrol"
+                value={det.autoridad}
+                onChange={(e) => handleDetencionInmiChange(idx, "autoridad", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`det-${idx}-ordenDeportacion`} className="label-caps">
+                ¿Orden de deportación o remoción?
+              </label>
+              <select
+                id={`det-${idx}-ordenDeportacion`}
+                className="input-glass"
+                value={det.ordenDeportacion}
+                onChange={(e) => handleDetencionInmiChange(idx, "ordenDeportacion", e.target.value)}
+              >
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+                <option value="no_sabe">No sabe</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`det-${idx}-sancionCastigo`} className="label-caps">
+                ¿Sanción o castigo migratorio?
+              </label>
+              <select
+                id={`det-${idx}-sancionCastigo`}
+                className="input-glass"
+                value={det.sancionCastigo}
+                onChange={(e) => handleDetencionInmiChange(idx, "sancionCastigo", e.target.value)}
+              >
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+                <option value="no_sabe">No sabe</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`det-${idx}-regresoVoluntario`} className="label-caps">
+                ¿Salida o regreso voluntarios?
+              </label>
+              <select
+                id={`det-${idx}-regresoVoluntario`}
+                className="input-glass"
+                value={det.regresoVoluntario}
+                onChange={(e) => handleDetencionInmiChange(idx, "regresoVoluntario", e.target.value)}
+              >
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+                <option value="no_sabe">No sabe</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`det-${idx}-fotosHuellas`} className="label-caps">
+                ¿Huellas y fotografías?
+              </label>
+              <select
+                id={`det-${idx}-fotosHuellas`}
+                className="input-glass"
+                value={det.fotosHuellas}
+                onChange={(e) => handleDetencionInmiChange(idx, "fotosHuellas", e.target.value)}
+              >
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+                <option value="no_sabe">No sabe</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`det-${idx}-citaCorte`} className="label-caps">
+                ¿Cita en corte con juez de inmigración?
+              </label>
+              <select
+                id={`det-${idx}-citaCorte`}
+                className="input-glass"
+                value={det.citaCorte}
+                onChange={(e) => handleDetencionInmiChange(idx, "citaCorte", e.target.value)}
+              >
+                <option value="">Seleccione...</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+                <option value="no_sabe">No sabe</option>
+              </select>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 3. Arrestos por la Policía */}
+      <div className="border-t border-brand-100/50 pt-4 space-y-4">
+        <div className="flex items-center justify-between border-b border-brand-100/50 pb-2">
+          <h3 className="panel-section-title text-base font-semibold">
+            3. Arrestos o Detenciones por Policía
+          </h3>
+          {data.arrestadoPolicia === "si" && (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+              onClick={addArrestoPolicia}
+            >
+              <Plus className="h-3 w-3" /> Agregar Arresto
+            </button>
           )}
         </div>
 
-        {data.detenidoInmigracion === "si" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in space-y-2 md:space-y-0">
-            <h4 className="label-caps md:col-span-2 border-b border-brand-100/30 pb-1 mb-2">
-              Detalles Legales de la Detención
-            </h4>
-            
-            <div className="flex flex-col gap-2">
-              <label htmlFor="inmiFotosHuellas" className="label-caps !text-[11px]">
-                ¿Le tomaron fotos y huellas?
-              </label>
-              <select
-                id="inmiFotosHuellas"
-                className="input-glass"
-                value={data.inmiFotosHuellas}
-                onChange={(e) => handleChange("inmiFotosHuellas", e.target.value)}
-              >
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="inmiOrdenDeportacion" className="label-caps !text-[11px]">
-                ¿Le dieron orden de deportación?
-              </label>
-              <select
-                id="inmiOrdenDeportacion"
-                className="input-glass"
-                value={data.inmiOrdenDeportacion}
-                onChange={(e) => handleChange("inmiOrdenDeportacion", e.target.value)}
-              >
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="inmiCitaCorte" className="label-caps !text-[11px]">
-                ¿Le dieron cita en corte con juez de inmigración?
-              </label>
-              <select
-                id="inmiCitaCorte"
-                className="input-glass"
-                value={data.inmiCitaCorte}
-                onChange={(e) => handleChange("inmiCitaCorte", e.target.value)}
-              >
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="inmiRegresoVoluntario" className="label-caps !text-[11px]">
-                ¿Lo regresaron voluntariamente (salida voluntaria)?
-              </label>
-              <select
-                id="inmiRegresoVoluntario"
-                className="input-glass"
-                value={data.inmiRegresoVoluntario}
-                onChange={(e) => handleChange("inmiRegresoVoluntario", e.target.value)}
-              >
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor="inmiCastigoSancion" className="label-caps !text-[11px]">
-                ¿Le dieron algún castigo o sanción migratoria?
-              </label>
-              <select
-                id="inmiCastigoSancion"
-                className="input-glass"
-                value={data.inmiCastigoSancion}
-                onChange={(e) => handleChange("inmiCastigoSancion", e.target.value)}
-              >
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-          </div>
-        )}
-
-        {data.detenidoInmigracion === "si" && (
-          <div className="flex flex-col gap-2 animate-fade-in">
-            <label htmlFor="detallesDetencionesInmi" className="label-caps">
-              Comentarios o detalles adicionales de la detención
-            </label>
-            <textarea
-              id="detallesDetencionesInmi"
-              rows={4}
-              className="input-glass resize-none min-h-[100px]"
-              placeholder="Ej. Intento 1: Noviembre 2022, al cruzar la frontera en Texas, me tomaron huellas y fotos, me dieron cita de corte..."
-              value={data.detallesDetencionesInmi}
-              onChange={(e) => handleChange("detallesDetencionesInmi", e.target.value)}
-            />
-          </div>
-        )}
-      </div>
-
-      {/* 3. Detenciones por la Policía */}
-      <div className="border-t border-brand-100/50 pt-4 space-y-4">
-        <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
-          1.3 Arrestos o Detenciones por Policía
-        </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <label htmlFor="arrestadoPolicia" className="label-caps text-xs">
-              ¿Ha sido arrestado por la policía en EE. UU. o en otro país? (Incluya tickets de tráfico)
+              ¿Alguna vez ha sido arrestado(a) por la policía? (EE. UU. u otro país, incluyendo arrestos por tickets de tráfico)
             </label>
             <select
               id="arrestadoPolicia"
@@ -294,18 +685,299 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 if (val !== "si") {
                   onChange({
                     arrestadoPolicia: val,
-                    cantidadArrestosPoli: "",
-                    explicacionArresto: "",
-                    arrestoMotivo: "",
-                    arrestoFecha: "",
-                    arrestoLugar: "",
-                    arrestoPasoNocheCarcel: "",
-                    arrestoPagoFianza: "",
-                    arrestoMontoFianza: "",
-                    arrestoResolucion: "",
+                    arrestosPolicia: [],
                   });
                 } else {
                   onChange({ arrestadoPolicia: val });
+                  if ((data.arrestosPolicia || []).length === 0) {
+                    onChange({
+                      arrestadoPolicia: val,
+                      arrestosPolicia: [
+                        {
+                          paisCiudadEstado: "",
+                          fecha: "",
+                          motivo: "",
+                          autoridad: "",
+                          disposicion: "",
+                        },
+                      ],
+                    });
+                  }
+                }
+              }}
+            >
+              <option value="">Seleccione...</option>
+              <option value="si">Sí</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
+
+        {data.arrestadoPolicia === "si" && (data.arrestosPolicia || []).map((arr, idx) => (
+          <div
+            key={idx}
+            className="relative grid grid-cols-1 gap-4 md:grid-cols-2 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
+          >
+            <button
+              type="button"
+              className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+              aria-label={`Eliminar arresto ${idx + 1}`}
+              onClick={() => removeArrestoPolicia(idx)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+
+            <h4 className="label-caps md:col-span-2 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
+              Arresto #{idx + 1}
+            </h4>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`arr-${idx}-paisCiudadEstado`} className="label-caps">
+                País, ciudad y estado
+              </label>
+              <input
+                id={`arr-${idx}-paisCiudadEstado`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Pineville, OH, EE. UU."
+                value={arr.paisCiudadEstado}
+                onChange={(e) => handleArrestoPoliciaChange(idx, "paisCiudadEstado", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`arr-${idx}-fecha`} className="label-caps">
+                Fecha (mes y año)
+              </label>
+              <input
+                id={`arr-${idx}-fecha`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. 2019"
+                value={arr.fecha}
+                onChange={(e) => handleArrestoPoliciaChange(idx, "fecha", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`arr-${idx}-motivo`} className="label-caps">
+                Motivo del arresto / Detalle
+              </label>
+              <input
+                id={`arr-${idx}-motivo`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Manejar sin estampillas y no licencia"
+                value={arr.motivo}
+                onChange={(e) => handleArrestoPoliciaChange(idx, "motivo", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`arr-${idx}-autoridad`} className="label-caps">
+                Autoridad que realizó el arresto / Policía local
+              </label>
+              <input
+                id={`arr-${idx}-autoridad`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Policía de Pineville"
+                value={arr.autoridad}
+                onChange={(e) => handleArrestoPoliciaChange(idx, "autoridad", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor={`arr-${idx}-disposicion`} className="label-caps">
+                Disposición o resultado (Ej. se pagó fianza, se resolvió con ticket, etc. Especifique brevemente motivo, fecha, lugar, si pasó la noche en la cárcel, fianza, etc.)
+              </label>
+              <textarea
+                id={`arr-${idx}-disposicion`}
+                rows={2}
+                className="input-glass resize-none"
+                placeholder="Ej. Pasó la noche en la cárcel, pagó fianza de $350, caso cerrado en corte"
+                value={arr.disposicion}
+                onChange={(e) => handleArrestoPoliciaChange(idx, "disposicion", e.target.value)}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 4. Historial Laboral */}
+      <div className="border-t border-brand-100/50 pt-4 space-y-4">
+        <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
+          4. Historial Laboral del Cliente
+        </h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex flex-col gap-2 md:col-span-2">
+            <label htmlFor="empleoNombre" className="label-caps">
+              Nombre del empleador / Compañía actual
+            </label>
+            <input
+              id="empleoNombre"
+              type="text"
+              className="input-glass"
+              placeholder="Ej. Independiente - Horses Utility LLC"
+              value={data.empleoNombre || ""}
+              onChange={(e) => handleChange("empleoNombre", e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="empleoOcupacion" className="label-caps">
+              Ocupación / Puesto
+            </label>
+            <input
+              id="empleoOcupacion"
+              type="text"
+              className="input-glass"
+              placeholder="Ej. Dueño / Contratista"
+              value={data.empleoOcupacion || ""}
+              onChange={(e) => handleChange("empleoOcupacion", e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:col-span-2 border-t border-brand-100/30 pt-3">
+            <h4 className="label-caps text-xs text-brand-600 md:col-span-3 font-semibold">
+              Dirección del trabajo / Empleador (EE. UU.)
+            </h4>
+
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor="empleoDireccionCalle" className="label-caps">
+                Calle y Número del trabajo
+              </label>
+              <input
+                id="empleoDireccionCalle"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. 2834 Express Blvd"
+                value={data.empleoDireccionCalle || ""}
+                onChange={(e) => handleChange("empleoDireccionCalle", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="empleoDireccionApto" className="label-caps">
+                Apto / Suite / Unidad
+              </label>
+              <input
+                id="empleoDireccionApto"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Apt 10 (Opcional)"
+                value={data.empleoDireccionApto || ""}
+                onChange={(e) => handleChange("empleoDireccionApto", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:col-span-2 pb-3 border-b border-brand-100/30">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="empleoDireccionCiudad" className="label-caps">
+                Ciudad del trabajo
+              </label>
+              <input
+                id="empleoDireccionCiudad"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Houma"
+                value={data.empleoDireccionCiudad || ""}
+                onChange={(e) => handleChange("empleoDireccionCiudad", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="empleoDireccionEstado" className="label-caps">
+                Estado del trabajo
+              </label>
+              <input
+                id="empleoDireccionEstado"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. LA o Louisiana"
+                value={data.empleoDireccionEstado || ""}
+                onChange={(e) => handleChange("empleoDireccionEstado", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="empleoDireccionZip" className="label-caps">
+                Código Postal (ZIP) del trabajo
+              </label>
+              <input
+                id="empleoDireccionZip"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. 70363"
+                value={data.empleoDireccionZip || ""}
+                onChange={(e) => handleChange("empleoDireccionZip", e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="empleoFechaIngreso" className="label-caps">
+              Fecha de ingreso
+            </label>
+            <input
+              id="empleoFechaIngreso"
+              type="text"
+              className="input-glass"
+              placeholder="Ej. Febrero 2020 con otro nombre"
+              value={data.empleoFechaIngreso || ""}
+              onChange={(e) => handleChange("empleoFechaIngreso", e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="empleoFechaSalida" className="label-caps">
+              Fecha de salida / término
+            </label>
+            <input
+              id="empleoFechaSalida"
+              type="text"
+              className="input-glass"
+              placeholder="Ej. Actualmente laborando"
+              value={data.empleoFechaSalida || ""}
+              onChange={(e) => handleChange("empleoFechaSalida", e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-end justify-between border-t border-brand-100/30 pt-4">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="empleoOtrosLugares" className="label-caps font-semibold">
+              ¿Ha laborado en algún otro lugar en los últimos 5 años?
+            </label>
+            <select
+              id="empleoOtrosLugares"
+              className="input-glass max-w-xs"
+              value={data.empleoOtrosLugares || ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val !== "si") {
+                  onChange({ empleoOtrosLugares: val, empleosAnteriores: [] });
+                } else {
+                  onChange({ empleoOtrosLugares: val });
+                  if ((data.empleosAnteriores || []).length === 0) {
+                    onChange({
+                      empleoOtrosLugares: val,
+                      empleosAnteriores: [
+                        {
+                          empresa: "",
+                          puesto: "",
+                          direccionCalle: "",
+                          direccionApto: "",
+                          direccionCiudad: "",
+                          direccionEstado: "",
+                          direccionZip: "",
+                          fechaDesde: "",
+                          fechaHasta: "",
+                        },
+                      ],
+                    });
+                  }
                 }
               }}
             >
@@ -315,170 +987,533 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             </select>
           </div>
 
-          {data.arrestadoPolicia === "si" && (
-            <div className="flex flex-col gap-2 animate-fade-in">
-              <label htmlFor="cantidadArrestosPoli" className="label-caps">
-                ¿Cuántas veces?
-              </label>
-              <input
-                id="cantidadArrestosPoli"
-                type="number"
-                min="1"
-                className="input-glass"
-                placeholder="Ej. 1"
-                value={data.cantidadArrestosPoli}
-                onChange={(e) =>
-                  handleChange(
-                    "cantidadArrestosPoli",
-                    e.target.value === "" ? "" : Number(e.target.value)
-                  )
-                }
-              />
-            </div>
+          {data.empleoOtrosLugares === "si" && (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+              onClick={addEmpleoAnterior}
+            >
+              <Plus className="h-3 w-3" /> Agregar Empleo Anterior
+            </button>
           )}
         </div>
 
-        {data.arrestadoPolicia === "si" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in space-y-2 md:space-y-0">
-            <h4 className="label-caps md:col-span-2 border-b border-brand-100/30 pb-1 mb-2">
-              Detalles Estructurados del Arresto
+        {data.empleoOtrosLugares === "si" && (data.empleosAnteriores || []).map((emp, idx) => (
+          <div
+            key={idx}
+            className="relative grid grid-cols-1 gap-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
+          >
+            <button
+              type="button"
+              className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+              aria-label={`Eliminar empleo anterior ${idx + 1}`}
+              onClick={() => removeEmpleoAnterior(idx)}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+
+            <h4 className="label-caps text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
+              Empleo Anterior #{idx + 1}
             </h4>
 
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor="arrestoMotivo" className="label-caps">
-                Motivo o Cargo del Arresto
-              </label>
-              <input
-                id="arrestoMotivo"
-                type="text"
-                className="input-glass"
-                placeholder="Ej. Manejar sin licencia, Ticket de tráfico"
-                value={data.arrestoMotivo}
-                onChange={(e) => handleChange("arrestoMotivo", e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="arrestoFecha" className="label-caps">
-                Fecha del arresto
-              </label>
-              <input
-                id="arrestoFecha"
-                type="text"
-                className="input-glass"
-                placeholder="Ej. Octubre 2021 o 10/15/2021"
-                value={data.arrestoFecha}
-                onChange={(e) => handleChange("arrestoFecha", e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="arrestoLugar" className="label-caps">
-                Lugar (Ciudad, Estado)
-              </label>
-              <input
-                id="arrestoLugar"
-                type="text"
-                className="input-glass"
-                placeholder="Ej. Astoria, Queens, NY"
-                value={data.arrestoLugar}
-                onChange={(e) => handleChange("arrestoLugar", e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="arrestoPasoNocheCarcel" className="label-caps !text-[11px]">
-                ¿Pasó la noche en la cárcel / bajo custodia?
-              </label>
-              <select
-                id="arrestoPasoNocheCarcel"
-                className="input-glass"
-                value={data.arrestoPasoNocheCarcel}
-                onChange={(e) => handleChange("arrestoPasoNocheCarcel", e.target.value)}
-              >
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="arrestoPagoFianza" className="label-caps !text-[11px]">
-                ¿Pagó fianza (Bail)?
-              </label>
-              <select
-                id="arrestoPagoFianza"
-                className="input-glass"
-                value={data.arrestoPagoFianza}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val !== "si") {
-                    onChange({ arrestoPagoFianza: val, arrestoMontoFianza: "" });
-                  } else {
-                    onChange({ arrestoPagoFianza: val });
-                  }
-                }}
-              >
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-                <option value="no_aplica">No aplica</option>
-              </select>
-            </div>
-
-            {data.arrestoPagoFianza === "si" && (
-              <div className="flex flex-col gap-2 md:col-span-2 animate-fade-in">
-                <label htmlFor="arrestoMontoFianza" className="label-caps">
-                  Monto de la fianza
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-empresa`} className="label-caps">
+                  Nombre del Empleador / Compañía
                 </label>
                 <input
-                  id="arrestoMontoFianza"
+                  id={`emp-${idx}-empresa`}
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. $500 USD"
-                  value={data.arrestoMontoFianza}
-                  onChange={(e) => handleChange("arrestoMontoFianza", e.target.value)}
+                  placeholder="Ej. Empresa ABC"
+                  value={emp.empresa}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "empresa", e.target.value)}
                 />
               </div>
-            )}
 
-            <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor="arrestoResolucion" className="label-caps">
-                Resultado / Resolución del caso (si se conoce)
-              </label>
-              <input
-                id="arrestoResolucion"
-                type="text"
-                className="input-glass"
-                placeholder="Ej. Caso cerrado, multa pagada, desestimado"
-                value={data.arrestoResolucion}
-                onChange={(e) => handleChange("arrestoResolucion", e.target.value)}
-              />
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-puesto`} className="label-caps">
+                  Ocupación / Puesto
+                </label>
+                <input
+                  id={`emp-${idx}-puesto`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Pintor"
+                  value={emp.puesto}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "puesto", e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Dirección del empleo anterior */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 border-t border-brand-100/20 pt-3">
+              <h5 className="label-caps text-[10px] text-brand-500 font-bold md:col-span-3">
+                Dirección del Empleo Anterior (EE. UU.)
+              </h5>
+
+              <div className="flex flex-col gap-2 md:col-span-2">
+                <label htmlFor={`emp-${idx}-direccionCalle`} className="label-caps">
+                  Calle y Número
+                </label>
+                <input
+                  id={`emp-${idx}-direccionCalle`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. 123 Main St"
+                  value={emp.direccionCalle}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionCalle", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-direccionApto`} className="label-caps">
+                  Apto / Suite / Unidad
+                </label>
+                <input
+                  id={`emp-${idx}-direccionApto`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Apt 4B (Opcional)"
+                  value={emp.direccionApto}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionApto", e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-direccionCiudad`} className="label-caps">
+                  Ciudad
+                </label>
+                <input
+                  id={`emp-${idx}-direccionCiudad`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Woodside"
+                  value={emp.direccionCiudad}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionCiudad", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-direccionEstado`} className="label-caps">
+                  Estado
+                </label>
+                <input
+                  id={`emp-${idx}-direccionEstado`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. NY"
+                  value={emp.direccionEstado}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionEstado", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-direccionZip`} className="label-caps">
+                  Código Postal (ZIP)
+                </label>
+                <input
+                  id={`emp-${idx}-direccionZip`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. 11377"
+                  value={emp.direccionZip}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionZip", e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 border-t border-brand-100/20 pt-3">
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-fechaDesde`} className="label-caps">
+                  Fecha de Inicio (Desde)
+                </label>
+                <input
+                  id={`emp-${idx}-fechaDesde`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Marzo 2018"
+                  value={emp.fechaDesde}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "fechaDesde", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-fechaHasta`} className="label-caps">
+                  Fecha de Finalización (Hasta)
+                </label>
+                <input
+                  id={`emp-${idx}-fechaHasta`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Enero 2020"
+                  value={emp.fechaHasta}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "fechaHasta", e.target.value)}
+                />
+              </div>
             </div>
           </div>
-        )}
+        ))}
+      </div>
 
-        {data.arrestadoPolicia === "si" && (
-          <div className="flex flex-col gap-2 animate-fade-in">
-            <label htmlFor="explicacionArresto" className="label-caps">
-              Comentarios o aclaraciones adicionales del arresto
-            </label>
-            <textarea
-              id="explicacionArresto"
-              rows={3}
-              className="input-glass resize-none min-h-[80px]"
-              placeholder="Ej. Corregí información del intake. Fui a la corte y pagué la multa."
-              value={data.explicacionArresto}
-              onChange={(e) => handleChange("explicacionArresto", e.target.value)}
-            />
+      {/* 5. Cuestionario de Seguridad e Inadmisibilidad */}
+      <div className="border-t border-brand-100/50 pt-4 space-y-4">
+        <button
+          type="button"
+          className="flex items-center justify-between w-full p-3 rounded-xl bg-brand-50/50 border border-brand-100 hover:bg-brand-50 transition-colors"
+          onClick={() => setShowInadmissibility(!showInadmissibility)}
+        >
+          <span className="panel-section-title text-base font-semibold">
+            5. Cuestionario de Seguridad e Inadmisibilidad (Preguntas Sí/No)
+          </span>
+          {showInadmissibility ? (
+            <ChevronUp className="h-5 w-5 text-brand-600" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-brand-600" />
+          )}
+        </button>
+
+        {showInadmissibility && (
+          <div className="space-y-4 p-4 rounded-xl border border-brand-100/80 bg-white/50 animate-fade-in">
+            <p className="text-xs text-brand-500 italic pb-2">
+              Nota: Todas estas preguntas legales se asumen como "No" por defecto, pero es obligatorio validarlas con el cliente.
+            </p>
+
+            <div className="space-y-4 divide-y divide-brand-100/30">
+              {/* Pregunta 1 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3 first:pt-0">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  1. ¿Tiene historial de detenciones de tráfico que hayan requerido ir a corte (tickets de exceso de velocidad, DUI/manejar ebrio, etc.)?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadDetencionTrafico || ""}
+                  onChange={(e) => handleChange("inadDetencionTrafico", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 2 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  2. ¿Ha cometido algún delito, sido arrestado, acusado, condenado, recibido sentencia suspendida, estado en prisión, o recibido algún perdón o amnistía?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadCometidoDelito || ""}
+                  onChange={(e) => handleChange("inadCometidoDelito", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 3 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  3. ¿Ha ejercido inmunidad diplomática para evitar ser procesado en los Estados Unidos?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadInmunidadDiplomatica || ""}
+                  onChange={(e) => handleChange("inadInmunidadDiplomatica", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 4 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  4. ¿Ha estado involucrado en prostitución, actividades comerciales ilegales, o tráfico de sustancias controladas?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadProstitucionTrafico || ""}
+                  onChange={(e) => handleChange("inadProstitucionTrafico", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 5 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  5. ¿Ha ayudado a alguna persona a ingresar ilegalmente a los Estados Unidos?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadAyudaIngresoIlegal || ""}
+                  onChange={(e) => handleChange("inadAyudaIngresoIlegal", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 6 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  6. ¿Alguna vez ha cometido, planeado, participado o conspirado en actividades ilegales o de carácter terrorista?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadTerrorismo || ""}
+                  onChange={(e) => handleChange("inadTerrorismo", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 7 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  7. ¿Ha recolectado información o fondos para actividades como secuestro, sabotaje, asesinato o uso de armas peligrosas?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadFondosTerrorismo || ""}
+                  onChange={(e) => handleChange("inadFondosTerrorismo", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 8 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  8. ¿Ha sido miembro, solicitado apoyo o estado asociado con una organización terrorista o grupo armado violento?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadAsociacionTerrorista || ""}
+                  onChange={(e) => handleChange("inadAsociacionTerrorista", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 9 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  9. ¿Tiene la intención de participar en actividades como espionaje o actividades ilegales contra el gobierno de EE. UU.?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadEspionaje || ""}
+                  onChange={(e) => handleChange("inadEspionaje", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 10 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  10. ¿Ha sido miembro del partido comunista o de algún partido totalitario en su país o el extranjero?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadPartidoComunista || ""}
+                  onChange={(e) => handleChange("inadPartidoComunista", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 11 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  11. ¿Ha participado en la persecución, tortura, asesinato, desplazamiento forzoso o coerción sexual de personas en asociación con el régimen nazi o similares?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadParticipadoPersecucion || ""}
+                  onChange={(e) => handleChange("inadParticipadoPersecucion", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 12 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  12. ¿Ha tenido procedimientos de remoción, exclusión, rescisión o deportación iniciados o pendientes en su contra en EE. UU.?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadProcedimientoRemocion || ""}
+                  onChange={(e) => handleChange("inadProcedimientoRemocion", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 13 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  13. ¿Le ha sido denegada alguna vez una visa o admisión a los Estados Unidos?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadDenegadoVisa || ""}
+                  onChange={(e) => handleChange("inadDenegadoVisa", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 14 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  14. ¿Alguna vez ha solicitado o le han otorgado una Visa T?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadVisaT || ""}
+                  onChange={(e) => handleChange("inadVisaT", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 15 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  15. ¿Tiene cuenta de myUSCIS? En caso afirmativo, proporcione correo electrónico, contraseña, preguntas de seguridad y código de recuperación.
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadMyUscis === "no" || data.inadMyUscis === "" ? "no" : "si"}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === "no") {
+                      handleChange("inadMyUscis", "no");
+                    } else {
+                      handleChange("inadMyUscis", "si");
+                    }
+                  }}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Credenciales de myUSCIS (Condicional) */}
+              {data.inadMyUscis !== "no" && data.inadMyUscis !== "" && (
+                <div className="grid grid-cols-1 gap-2 md:col-span-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in">
+                  <label htmlFor="inadMyUscisDetails" className="label-caps font-semibold text-brand-700">
+                    Detalles de myUSCIS (Correo, contraseña, preguntas de seguridad, código de recuperación)
+                  </label>
+                  <textarea
+                    id="inadMyUscisDetails"
+                    rows={3}
+                    className="input-glass"
+                    placeholder="Ej. Correo: juan@example.com&#10;Contraseña: CLAVE123&#10;Preguntas: 1. Mascota: Firulais...&#10;Código de recuperación: ABC-DEF-GHI"
+                    value={data.inadMyUscis === "si" ? "" : data.inadMyUscis}
+                    onChange={(e) => handleChange("inadMyUscis", e.target.value || "si")}
+                  />
+                </div>
+              )}
+
+              {/* Pregunta 16 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  16. ¿Ha participado en actos de violencia, coerción religiosa o ha sido parte de algún grupo militar, paramilitar o grupo de detención?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadGrupoMilitar || ""}
+                  onChange={(e) => handleChange("inadGrupoMilitar", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 17 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  17. ¿Ha participado en actividades ilegales de armas, fraude migratorio, evitación del servicio militar o retención ilegal de un niño con ciudadanía estadounidense?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadFraudeMigratorio || ""}
+                  onChange={(e) => handleChange("inadFraudeMigratorio", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 18 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  18. ¿Ha tenido o tiene algún trastorno físico o mental que pueda representar un riesgo para su seguridad o la de la propiedad?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadTrastornoFisicoMental || ""}
+                  onChange={(e) => handleChange("inadTrastornoFisicoMental", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 19 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  19. ¿Tiene alguna enfermedad transmisible de importancia para la salud pública?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadEnfermedadPublica || ""}
+                  onChange={(e) => handleChange("inadEnfermedadPublica", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+
+              {/* Pregunta 20 */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3">
+                <span className="text-sm font-medium text-brand-700 md:col-span-3">
+                  20. ¿Ha sido en algún momento abusador o adicto a las drogas?
+                </span>
+                <select
+                  className="input-glass"
+                  value={data.inadAdictoDrogas || ""}
+                  onChange={(e) => handleChange("inadAdictoDrogas", e.target.value)}
+                >
+                  <option value="no">No</option>
+                  <option value="si">Sí</option>
+                </select>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* 4. Declaración de Ciudadanía y FOIA */}
+      {/* 6. Declaración de Ciudadanía y FOIA */}
       <div className="border-t border-brand-100/50 pt-4 space-y-4">
         <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
-          1.4 Declaración de Ciudadanía y Solicitudes Legales
+          6. Declaración de Ciudadanía y Solicitudes Legales
         </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
@@ -489,26 +1524,166 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
               id="declaradoCiudadano"
               className="input-glass"
               value={data.declaradoCiudadano}
-              onChange={(e) => handleChange("declaradoCiudadano", e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val !== "si") {
+                  onChange({
+                    declaradoCiudadano: val,
+                    falsaDeclaracionLugar: "",
+                    falsaDeclaracionFecha: "",
+                    falsaDeclaracionComo: "",
+                    falsaDeclaracionIntencion: "",
+                    falsaDeclaracionDetalle: "",
+                  });
+                } else {
+                  onChange({ declaradoCiudadano: val });
+                }
+              }}
             >
               <option value="">Seleccione...</option>
               <option value="si">Sí</option>
               <option value="no">No</option>
             </select>
           </div>
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <label htmlFor="foiaRequerir" className="label-caps">
-              FOIA(s) a requerir (si aplica)
-            </label>
-            <input
-              id="foiaRequerir"
-              type="text"
-              className="input-glass"
-              placeholder="Ej. CBP / OBIM / USCIS"
-              value={data.foiaRequerir}
-              onChange={(e) => handleChange("foiaRequerir", e.target.value)}
-            />
+        {/* Detalles de Declaración Falsa (Condicional) */}
+        {data.declaradoCiudadano === "si" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in">
+            <h4 className="label-caps md:col-span-2 border-b border-brand-100/30 pb-1 mb-2 text-brand-600 font-semibold">
+              Detalles de la Declaración Falsa de Ciudadanía
+            </h4>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="falsaDeclaracionLugar" className="label-caps">
+                Lugar donde se declaró ciudadano
+              </label>
+              <input
+                id="falsaDeclaracionLugar"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Frontera Laredo o Aplicación de Trabajo"
+                value={data.falsaDeclaracionLugar || ""}
+                onChange={(e) => handleChange("falsaDeclaracionLugar", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="falsaDeclaracionFecha" className="label-caps">
+                Fecha de la declaración
+              </label>
+              <input
+                id="falsaDeclaracionFecha"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Octubre 2015"
+                value={data.falsaDeclaracionFecha || ""}
+                onChange={(e) => handleChange("falsaDeclaracionFecha", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="falsaDeclaracionComo" className="label-caps">
+                ¿Cómo o en qué documento se declaró ciudadano?
+              </label>
+              <input
+                id="falsaDeclaracionComo"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Formulario I-9, verbalmente, acta de nacimiento falsa"
+                value={data.falsaDeclaracionComo || ""}
+                onChange={(e) => handleChange("falsaDeclaracionComo", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="falsaDeclaracionIntencion" className="label-caps">
+                ¿Cuál era la intención de declararse ciudadano?
+              </label>
+              <input
+                id="falsaDeclaracionIntencion"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Obtener empleo o ingresar al país"
+                value={data.falsaDeclaracionIntencion || ""}
+                onChange={(e) => handleChange("falsaDeclaracionIntencion", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor="falsaDeclaracionDetalle" className="label-caps">
+                Detalles / Explicación adicional
+              </label>
+              <textarea
+                id="falsaDeclaracionDetalle"
+                rows={2}
+                className="input-glass resize-none"
+                placeholder="Ej. El cliente indica que un empleador le dijo que pusiera que era ciudadano..."
+                value={data.falsaDeclaracionDetalle || ""}
+                onChange={(e) => handleChange("falsaDeclaracionDetalle", e.target.value)}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Tabla / Checklist de FOIA */}
+        <div className="border-t border-brand-100/30 pt-4 space-y-3">
+          <h4 className="label-caps text-xs text-brand-600 font-bold">
+            FOIA(s) a requerir (Chequeo de agencias)
+          </h4>
+          <p className="text-xs text-brand-500/80 pb-1">
+            Seleccione las agencias a las que se les solicitará FOIA y especifique el motivo correspondiente.
+          </p>
+
+          <div className="overflow-x-auto rounded-xl border border-brand-100 bg-white/50">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-brand-50/70 border-b border-brand-100">
+                  <th className="p-3 text-xs font-semibold uppercase tracking-wider text-brand-600 w-1/4">Agencia</th>
+                  <th className="p-3 text-xs font-semibold uppercase tracking-wider text-brand-600 w-1/4">¿Solicitar?</th>
+                  <th className="p-3 text-xs font-semibold uppercase tracking-wider text-brand-600 w-2/4">Motivo / Detalle</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-brand-100/50 text-sm">
+                {(["uscis", "ice", "cbp", "eoir", "fbi", "policia"] as const).map((agency) => {
+                  const labelMap = {
+                    uscis: "USCIS",
+                    ice: "ICE",
+                    cbp: "CBP",
+                    eoir: "EOIR (Corte)",
+                    fbi: "FBI",
+                    policia: "Policía (Local/Estado)",
+                  };
+                  const agencyData = data.foias?.[agency] || { solicitar: "no", motivo: "" };
+
+                  return (
+                    <tr key={agency} className="hover:bg-brand-50/20 transition-colors">
+                      <td className="p-3 font-medium text-brand-900">{labelMap[agency]}</td>
+                      <td className="p-3">
+                        <select
+                          className="input-glass !py-1 !px-2 text-xs"
+                          value={agencyData.solicitar || "no"}
+                          onChange={(e) => handleFoiaChange(agency, "solicitar", e.target.value)}
+                        >
+                          <option value="no">No</option>
+                          <option value="si">Sí</option>
+                        </select>
+                      </td>
+                      <td className="p-3">
+                        <input
+                          type="text"
+                          className="input-glass !py-1 !px-2 text-xs w-full"
+                          placeholder={`Ej. Historial completo con ${labelMap[agency]}`}
+                          disabled={agencyData.solicitar !== "si"}
+                          value={agencyData.motivo || ""}
+                          onChange={(e) => handleFoiaChange(agency, "motivo", e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
