@@ -273,6 +273,9 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
               <option value="si">Sí</option>
               <option value="no">No</option>
             </select>
+            <p className="text-[11px] text-brand-500/80 italic">
+              Nota: Si está separado(a) de hecho pero no divorciado(a) legalmente, seleccione "Sí".
+            </p>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -304,6 +307,9 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
               <option value="si">Sí</option>
               <option value="no">No</option>
             </select>
+            <p className="text-[11px] text-brand-500/80 italic">
+              Nota: Incluye matrimonios finalizados por divorcio, anulación o fallecimiento.
+            </p>
           </div>
         </div>
 

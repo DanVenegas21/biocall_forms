@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { HelpCircle } from "lucide-react";
+import { Tooltip } from "@/components/ui/Tooltip";
 
 interface DocumentsData {
   tienePasaporte: string;
@@ -161,9 +163,16 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
       <div className="border-t border-brand-100/50 pt-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="tieneANumber" className="label-caps">
-              ¿Cuenta con Alien Registration Number (A-Number)?
-            </label>
+            <div className="flex items-center gap-1.5">
+              <label htmlFor="tieneANumber" className="label-caps">
+                ¿Cuenta con Alien Registration Number (A-Number)?
+              </label>
+              <Tooltip content="Número único de 9 dígitos asignado por Inmigración (USCIS/ICE) que inicia con la letra A. Aparece en permisos de trabajo, notificaciones u órdenes de corte.">
+                <span className="inline-flex items-center text-brand-500 hover:text-brand-700 cursor-help">
+                  <HelpCircle className="h-3.5 w-3.5" />
+                </span>
+              </Tooltip>
+            </div>
             <select
               id="tieneANumber"
               className="input-glass"
@@ -222,9 +231,16 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
       <div className="border-t border-brand-100/50 pt-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="tieneSSN" className="label-caps">
-              ¿Cuenta con Seguro Social (SSN)?
-            </label>
+            <div className="flex items-center gap-1.5">
+              <label htmlFor="tieneSSN" className="label-caps">
+                ¿Cuenta con Seguro Social (SSN)?
+              </label>
+              <Tooltip content="Número de 9 dígitos emitido por la Administración del Seguro Social de EE. UU. (Social Security Administration).">
+                <span className="inline-flex items-center text-brand-500 hover:text-brand-700 cursor-help">
+                  <HelpCircle className="h-3.5 w-3.5" />
+                </span>
+              </Tooltip>
+            </div>
             <select
               id="tieneSSN"
               className="input-glass"
@@ -266,9 +282,16 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
       <div className="border-t border-brand-100/50 pt-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="tieneEAD" className="label-caps">
-              ¿Cuenta con Permiso de Trabajo (EAD)?
-            </label>
+            <div className="flex items-center gap-1.5">
+              <label htmlFor="tieneEAD" className="label-caps">
+                ¿Cuenta con Permiso de Trabajo (EAD)?
+              </label>
+              <Tooltip content="Documento de Autorización de Empleo (Employment Authorization Document), comúnmente conocido como tarjeta de permiso de trabajo de USCIS.">
+                <span className="inline-flex items-center text-brand-500 hover:text-brand-700 cursor-help">
+                  <HelpCircle className="h-3.5 w-3.5" />
+                </span>
+              </Tooltip>
+            </div>
             <select
               id="tieneEAD"
               className="input-glass"

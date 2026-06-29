@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
 
 export interface ViajeData {
   fechaEntrada: string;
@@ -116,6 +116,15 @@ interface CaseSectionProps {
 
 export function CaseSection({ data, onChange }: CaseSectionProps) {
   const [showInadmissibility, setShowInadmissibility] = useState(false);
+
+  const inadKeys: Array<keyof CaseBackgroundData> = [
+    "inadDetencionTrafico", "inadCometidoDelito", "inadInmunidadDiplomatica", "inadProstitucionTrafico",
+    "inadAyudaIngresoIlegal", "inadTerrorismo", "inadFondosTerrorismo", "inadAsociacionTerrorista",
+    "inadEspionaje", "inadPartidoComunista", "inadParticipadoPersecucion", "inadProcedimientoRemocion",
+    "inadDenegadoVisa", "inadVisaT", "inadGrupoMilitar", "inadFraudeMigratorio",
+    "inadTrastornoFisicoMental", "inadEnfermedadPublica", "inadAdictoDrogas"
+  ];
+  const hasAffirmativeSecurityAnswers = inadKeys.some(key => data[key] === "si") || (data.inadMyUscis !== "no" && data.inadMyUscis !== "");
 
   const handleChange = (field: keyof CaseBackgroundData, value: any) => {
     onChange({ [field]: value });
@@ -1187,6 +1196,20 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 “Ahora le haré una serie de preguntas que deben responderse únicamente con Sí, No o No sabe. Algunas pueden ser delicadas, pero es importante responder con honestidad. Si alguna respuesta es Sí, solo la anotaremos y el abogado la revisará más adelante.”
               </p>
             </div>
+
+            {hasAffirmativeSecurityAnswers && (
+              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5 shadow-sm animate-fade-in mb-3">
+                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-amber-800">
+                    ⚠️ Atención: Se ha registrado respuesta "Sí" en una o más preguntas legales.
+                  </p>
+                  <p className="text-amber-700 mt-0.5">
+                    Estas respuestas serán destacadas automáticamente para evaluación prioritaria durante la consulta legal con el abogado.
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="space-y-4 divide-y divide-brand-100/30">
               {/* Pregunta 1 */}
