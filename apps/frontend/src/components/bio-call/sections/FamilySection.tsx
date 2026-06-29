@@ -115,11 +115,16 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
 
   return (
     <div className="space-y-6">
-      {/* 1. Padres */}
+      {/* 1. Padres del Cliente */}
       <div className="space-y-4">
-        <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
-          1. Información de los Padres
-        </h3>
+        <div className="border-b border-brand-100/50 pb-2">
+          <h3 className="panel-section-title text-base font-semibold">
+            1. Información de los Padres del Cliente
+          </h3>
+          <p className="text-xs text-brand-500/80 italic pt-0.5">
+            Ingrese los datos completos de los padres biológicos o legales del cliente (solicitante principal).
+          </p>
+        </div>
         <div className="space-y-4">
           {/* Padre */}
           <div className="p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 space-y-3">
