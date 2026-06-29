@@ -1,0 +1,157 @@
+{
+  "personalData": {
+    "nombres": "Natalia Hilda",
+    "apellidoPaterno": "Reyes",
+    "apellidoMaterno": "Gonzalez",
+    "fechaNacimiento": "1985-03-14",
+    "lugarNacimiento": "Tamaulipas, Mexico",
+    "sexo": "Femenino",
+    "estadoCivil": "Casado(a)",
+    "nacionalidad": "Mexicana",
+    "comprendeIngles": "no",
+    "idiomaPreferido": "Espanol",
+    "hablaOtroIdioma": "no",
+    "especificarIdioma": "NO",
+    "otrosNombres": "NATALIA REYES"
+  },
+  "contact": {
+    "telefono": "423-353-0235",
+    "correoElectronico": "natalia.reyes@ejemplo.com"
+  },
+  "address": {
+    "calleNumero": "2058 Autumn Lane",
+    "aptoSuite": "",
+    "ciudad": "Morristown",
+    "estado": "Tennessee",
+    "codigoPostal": "37814",
+    "fechaIngreso": "Mayo 2023",
+    "resididoOtrosLugares": "si",
+    "direccionesAnteriores": [
+      {
+        "calleNumero": "1200 Main St",
+        "aptoSuite": "Apt 2",
+        "ciudad": "Knoxville",
+        "estado": "TN",
+        "codigoPostal": "37902",
+        "fechaDesde": "2018",
+        "fechaHasta": "Mayo 2023"
+      }
+    ]
+  },
+  "documents": {
+    "tienePasaporte": "si",
+    "pasaportePendiente": "no",
+    "numeroPasaporte": "G27123695",
+    "paisEmision": "Mexico",
+    "fechaEmision": "2019-06-01",
+    "fechaExpiracion": "2029-06-01",
+    "tieneANumber": "si",
+    "aNumberValue": "123456789",
+    "aNumberOrigen": "Notificacion de USCIS",
+    "tieneSSN": "no",
+    "ssnValue": "",
+    "tieneEAD": "si",
+    "eadValue": "SRC1234567890"
+  },
+  "family": {
+    "tieneConyuge": "si",
+    "nombresConyuge": "Juan Carlos",
+    "apellidoPaternoConyuge": "Reyes",
+    "apellidoMaternoConyuge": "Lopez",
+    "nombrePadre": "Pedro Reyes",
+    "nombreMadre": "Maria Gonzalez",
+    "casado": "si",
+    "previamenteCasado": "no",
+    "matrimoniosPrevios": [],
+    "tieneHijos": "si",
+    "hijos": [
+      {
+        "nombre": "Sofia Reyes Lopez",
+        "fechaNacimiento": "2010-05-20",
+        "lugarNacimiento": "Morristown, TN",
+        "lugarResidencia": "Morristown, TN"
+      }
+    ]
+  },
+  "caseBackground": {
+    "viajes": [
+      {
+        "fechaEntrada": "Septiembre 1995",
+        "formaEntrada": "Coyote / EWI",
+        "lugarEntrada": "Calexico, CA",
+        "fechaSalida": "",
+        "fueDetenido": "no",
+        "detallesDetencion": ""
+      }
+    ],
+    "viajesComentarios": "Primera entrada en 1995; reingreso en 2020.",
+    "detenidoInmigracion": "si",
+    "detencionesInmi": [
+      {
+        "lugar": "Texas",
+        "fecha": "Noviembre 2022",
+        "autoridad": "CBP",
+        "ordenDeportacion": "no",
+        "sancionCastigo": "no",
+        "regresoVoluntario": "no",
+        "fotosHuellas": "si",
+        "citaCorte": "si"
+      }
+    ],
+    "arrestadoPolicia": "si",
+    "arrestosPolicia": [
+      {
+        "paisCiudadEstado": "Morristown, TN",
+        "fecha": "Octubre 2021",
+        "motivo": "Manejar sin licencia",
+        "autoridad": "Morristown PD",
+        "disposicion": "Multa pagada"
+      }
+    ],
+    "empleoNombre": "Morristown Manufacturing",
+    "empleoOcupacion": "Operadora de linea",
+    "empleoDireccionCalle": "500 Industrial Blvd",
+    "empleoDireccionApto": "",
+    "empleoDireccionCiudad": "Morristown",
+    "empleoDireccionEstado": "TN",
+    "empleoDireccionZip": "37814",
+    "empleoFechaIngreso": "Junio 2021",
+    "empleoFechaSalida": "",
+    "empleoOtrosLugares": "no",
+    "empleosAnteriores": [],
+    "inadDetencionTrafico": "no",
+    "inadCometidoDelito": "no",
+    "inadInmunidadDiplomatica": "no",
+    "inadProstitucionTrafico": "no",
+    "inadAyudaIngresoIlegal": "no",
+    "inadTerrorismo": "no",
+    "inadFondosTerrorismo": "no",
+    "inadAsociacionTerrorista": "no",
+    "inadEspionaje": "no",
+    "inadPartidoComunista": "no",
+    "inadParticipadoPersecucion": "no",
+    "inadProcedimientoRemocion": "si",
+    "inadDenegadoVisa": "no",
+    "inadVisaT": "no",
+    "inadMyUscis": "no",
+    "inadGrupoMilitar": "no",
+    "inadFraudeMigratorio": "no",
+    "inadTrastornoFisicoMental": "no",
+    "inadEnfermedadPublica": "no",
+    "inadAdictoDrogas": "no",
+    "declaradoCiudadano": "no",
+    "falsaDeclaracionLugar": "",
+    "falsaDeclaracionFecha": "",
+    "falsaDeclaracionComo": "",
+    "falsaDeclaracionIntencion": "",
+    "falsaDeclaracionDetalle": "",
+    "foias": {
+      "uscis": { "solicitar": "no", "motivo": "" },
+      "ice": { "solicitar": "no", "motivo": "" },
+      "cbp": { "solicitar": "si", "motivo": "Verificar entradas previas" },
+      "eoir": { "solicitar": "no", "motivo": "" },
+      "fbi": { "solicitar": "no", "motivo": "" },
+      "policia": { "solicitar": "no", "motivo": "" }
+    }
+  }
+}

@@ -1,4 +1,14 @@
+import { config } from "dotenv";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { PrismaClient } from "@prisma/client";
+
+const pkgSrcDir = dirname(fileURLToPath(import.meta.url));
+const dbPkgRoot = join(pkgSrcDir, "..");
+const monorepoRoot = join(dbPkgRoot, "..", "..");
+
+config({ path: join(dbPkgRoot, ".env") });
+config({ path: join(monorepoRoot, "apps", "backend", ".env"), override: true });
 
 /**
  * Cliente Prisma como singleton para evitar multiples conexiones en desarrollo

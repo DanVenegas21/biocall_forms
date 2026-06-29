@@ -2,7 +2,7 @@
 
 Capa de datos de la Bio Call: **Prisma**, cliente PostgreSQL y documentacion del esquema.
 
-El esquema esta alineado con el formulario del frontend (`BioCallForm.tsx` y las secciones en `apps/frontend/src/components/bio-call/sections/`).
+El esquema esta alineado con el formulario del frontend (`BioCallForm.tsx`) y los esquemas Zod en `packages/shared/src/schemas.ts`.
 
 ## Estructura del paquete
 
@@ -14,11 +14,8 @@ packages/database/
 ├── src/
 │   ├── client.ts             ← singleton PrismaClient
 │   └── index.ts
-└── sql/                      ← scripts locales (NO se versionan; ver .gitignore)
-    └── *.sql                 ← solo para ejecutar manualmente en Supabase
+└── sql/                      ← scripts para Supabase (000 reset, 001 schema, 002 seed)
 ```
-
-Los tipos de validacion del formulario viven en `packages/shared/src/schemas.ts` (Zod).
 
 ## Configuracion
 
@@ -30,129 +27,82 @@ Los tipos de validacion del formulario viven en `packages/shared/src/schemas.ts`
 npm run db:generate --workspace @biocall/database
 ```
 
-Comandos utiles:
-
-| Comando | Descripcion |
-|---------|-------------|
-| `db:generate` | Genera `@prisma/client` desde `schema.prisma` |
-| `db:push` | Sincroniza el esquema con la BD (desarrollo) |
-| `db:migrate` | Crea y aplica migraciones Prisma |
-| `db:studio` | Abre Prisma Studio |
-
-## Modelo de datos (7 tablas)
-
-Cada Bio Call tiene una fila raiz y hasta seis tablas hijas **1:1** (una por seccion del formulario).
+## Modelo de datos (14 tablas)
 
 | Tabla | Seccion UI | Relacion |
 |-------|------------|----------|
-| `bio_calls` | — | Raiz (`form_capture_status`: `draft` \| `in_review` \| `completed`) |
+| `bio_calls` | — | Raiz |
 | `bio_call_personal_data` | `personalData` | 1:1 |
 | `bio_call_contact` | `contact` | 1:1 |
 | `bio_call_address` | `address` | 1:1 |
+| `bio_call_previous_addresses` | `address.direccionesAnteriores[]` | 1:N |
 | `bio_call_documents` | `documents` | 1:1 |
-| `bio_call_family` | `family` | 1:1 |
-| `bio_call_case_background` | `caseBackground` | 1:1 |
-
-## Mapeo formulario → columnas
+| `bio_call_family` | `family` (campos escalares) | 1:1 |
+| `bio_call_children` | `family.hijos[]` | 1:N |
+| `bio_call_previous_marriages` | `family.matrimoniosPrevios[]` | 1:N |
+| `bio_call_case_background` | `caseBackground` (campos escalares) | 1:1 |
+| `bio_call_trips` | `caseBackground.viajes[]` | 1:N |
+| `bio_call_immigration_detentions` | `caseBackground.detencionesInmi[]` | 1:N |
+| `bio_call_police_arrests` | `caseBackground.arrestosPolicia[]` | 1:N |
+| `bio_call_previous_employments` | `caseBackground.empleosAnteriores[]` | 1:N |
+| `bio_call_generated_pdfs` | Metadatos del PDF (archivo en Storage) | 1:N |
 
 Convencion: **camelCase** en React → **snake_case** en PostgreSQL.
 
+## PDFs generados
+
+- Archivo binario: **Supabase Storage** bucket `bio-call-pdfs` (o carpeta local `apps/backend/.data/pdfs` en dev sin Supabase).
+- Metadatos: tabla `bio_call_generated_pdfs` (`storage_path`, `template_version`, `is_current`).
+
+## Mapeo por seccion
+
 ### `personalData` → `bio_call_personal_data`
 
-| Formulario | Columna |
-|------------|---------|
-| `nombres` | `nombres` |
-| `apellidoPaterno` | `apellido_paterno` |
-| `apellidoMaterno` | `apellido_materno` |
-| `otrosNombres` | `otros_nombres` |
-| `fechaNacimiento` | `fecha_nacimiento` |
-| `lugarNacimiento` | `lugar_nacimiento` |
-| `sexo` | `sexo` |
-| `estadoCivil` | `estado_civil` |
-| `nacionalidad` | `nacionalidad` |
-| `comprendeIngles` | `comprende_ingles` |
-| `idiomaPreferido` | `idioma_preferido` |
-| `hablaOtroIdioma` | `habla_otro_idioma` |
-| `especificarIdioma` | `especificar_idioma` |
+Todos los campos del formulario tienen columna homonima en snake_case (`nombres`, `apellido_paterno`, `fecha_nacimiento`, `comprende_ingles`, etc.).
 
 ### `contact` → `bio_call_contact`
 
-| Formulario | Columna |
-|------------|---------|
-| `telefono` | `telefono` |
-| `correoElectronico` | `correo_electronico` |
+`telefono`, `correo_electronico`.
 
-### `address` → `bio_call_address`
+### `address` → `bio_call_address` + `bio_call_previous_addresses`
 
-| Formulario | Columna |
+| Formulario | Destino |
 |------------|---------|
-| `direccionCompleta` | `direccion_completa` |
-| `fechaIngreso` | `fecha_ingreso` |
+| `calleNumero`, `aptoSuite`, `ciudad`, `estado`, `codigoPostal`, `fechaIngreso`, `resididoOtrosLugares` | `bio_call_address` |
+| `direccionesAnteriores[]` | `bio_call_previous_addresses` (una fila por elemento, `sort_order`) |
 
 ### `documents` → `bio_call_documents`
 
-| Formulario | Columna |
+Todos los campos escalares del formulario (`tiene_pasaporte`, `numero_pasaporte`, `a_number_value`, `ead_value`, etc.).
+
+### `family` → `bio_call_family` + hijos + matrimonios
+
+| Formulario | Destino |
 |------------|---------|
-| `tienePasaporte` | `tiene_pasaporte` |
-| `pasaportePendiente` | `pasaporte_pendiente` |
-| `numeroPasaporte` | `numero_pasaporte` |
-| `paisEmision` | `pais_emision` |
-| `fechaEmision` | `fecha_emision` |
-| `fechaExpiracion` | `fecha_expiracion` |
-| `tieneANumber` | `tiene_a_number` |
-| `aNumberValue` | `a_number_value` |
-| `aNumberOrigen` | `a_number_origen` |
-| `tieneSSN` | `tiene_ssn` |
-| `ssnValue` | `ssn_value` |
-| `tieneEAD` | `tiene_ead` |
-| `eadValue` | `ead_value` |
+| Conyuge, padres, banderas (`tieneConyuge`, `nombrePadre`, `casado`, …) | `bio_call_family` |
+| `hijos[]` | `bio_call_children` |
+| `matrimoniosPrevios[]` | `bio_call_previous_marriages` |
 
-### `family` → `bio_call_family`
+### `caseBackground` → `bio_call_case_background` + tablas hijas
 
-| Formulario | Columna |
+| Formulario | Destino |
 |------------|---------|
-| `tieneConyuge` | `tiene_conyuge` |
-| `nombresConyuge` | `nombres_conyuge` |
-| `apellidoPaternoConyuge` | `apellido_paterno_conyuge` |
-| `apellidoMaternoConyuge` | `apellido_materno_conyuge` |
-| `tieneHijos` | `tiene_hijos` |
-| `cantidadHijos` | `cantidad_hijos` |
+| Empleo actual, inadmisibilidad (`inad*`), falsa declaracion, FOIA | `bio_call_case_background` |
+| `viajes[]` | `bio_call_trips` |
+| `detencionesInmi[]` | `bio_call_immigration_detentions` |
+| `arrestosPolicia[]` | `bio_call_police_arrests` |
+| `empleosAnteriores[]` | `bio_call_previous_employments` |
 
-### `caseBackground` → `bio_call_case_background`
-
-| Formulario | Columna |
-|------------|---------|
-| `fechaEntrada` | `fecha_entrada` |
-| `formaEntrada` | `forma_entrada` |
-| `lugarEntrada` | `lugar_entrada` |
-| `detenidoAlIngresar` | `detenido_al_ingresar` |
-| `detenidoInmigracion` | `detenido_inmigracion` |
-| `cantidadDetencionesInmi` | `cantidad_detenciones_inmi` |
-| `detallesDetencionesInmi` | `detalles_detenciones_inmi` |
-| `inmiFotosHuellas` | `inmi_fotos_huellas` |
-| `inmiOrdenDeportacion` | `inmi_orden_deportacion` |
-| `inmiCitaCorte` | `inmi_cita_corte` |
-| `inmiRegresoVoluntario` | `inmi_regreso_voluntario` |
-| `inmiCastigoSancion` | `inmi_castigo_sancion` |
-| `arrestadoPolicia` | `arrestado_policia` |
-| `cantidadArrestosPoli` | `cantidad_arrestos_poli` |
-| `explicacionArresto` | `explicacion_arresto` |
-| `arrestoMotivo` | `arresto_motivo` |
-| `arrestoFecha` | `arresto_fecha` |
-| `arrestoLugar` | `arresto_lugar` |
-| `arrestoPasoNocheCarcel` | `arresto_paso_noche_carcel` |
-| `arrestoPagoFianza` | `arresto_pago_fianza` |
-| `arrestoMontoFianza` | `arresto_monto_fianza` |
-| `arrestoResolucion` | `arresto_resolucion` |
-| `declaradoCiudadano` | `declarado_ciudadano` |
-| `foiaRequerir` | `foia_requerir` |
+FOIA: `foias.uscis.solicitar` → `foia_uscis_solicitar`, `foias.uscis.motivo` → `foia_uscis_motivo` (y lo mismo para `ice`, `cbp`, `eoir`, `fbi`, `policia`).
 
 ## Valores si / no
 
-La mayoria de selects del formulario envian `si`, `no`, y en algunos casos `parcial`, `no_sabe` o `no_aplica`. Se persisten como `TEXT` sin transformacion.
+La mayoria de selects envian `si`, `no`, y en algunos casos `parcial`, `no_sabe` o `no_aplica`. Se persisten como `TEXT`.
 
-## Scripts SQL (solo local)
+## Scripts SQL (Supabase)
 
-La carpeta `sql/` puede contener scripts para cargar el esquema en Supabase manualmente (`000` reset, `001` schema, `002` seed). **Esos archivos `.sql` no se suben al repositorio** (estan en `.gitignore`).
+Flujo en el SQL Editor:
 
-Para crear la BD en Supabase sin Prisma, usa tus copias locales de esos scripts en el SQL Editor.
+1. `000_bio_call_reset.sql` — borra tablas (solo pruebas)
+2. `001_bio_call_schema.sql` — crea las 14 tablas
+3. `002_bio_call_seed_example.sql` — 5 registros de ejemplo
