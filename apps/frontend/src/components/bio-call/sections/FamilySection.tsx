@@ -5,14 +5,18 @@ import React from "react";
 import { Plus, Trash2 } from "lucide-react";
 
 export interface HijoData {
-  nombre: string;
+  nombres: string;
+  apellidoPaterno: string;
+  apellidoMaterno: string;
   fechaNacimiento: string;
   lugarNacimiento: string;
   lugarResidencia: string;
 }
 
 export interface MatrimonioPrevioData {
-  nombreExConyuge: string;
+  nombresExConyuge: string;
+  apellidoPaternoExConyuge: string;
+  apellidoMaternoExConyuge: string;
   fechaLugarMatrimonio: string;
   fechaLugarNacimiento: string;
   fechaLugarDivorcio: string;
@@ -23,8 +27,12 @@ interface FamilyData {
   nombresConyuge: string;
   apellidoPaternoConyuge: string;
   apellidoMaternoConyuge: string;
-  nombrePadre: string;
-  nombreMadre: string;
+  nombresPadre: string;
+  apellidoPaternoPadre: string;
+  apellidoMaternoPadre: string;
+  nombresMadre: string;
+  apellidoPaternoMadre: string;
+  apellidoMaternoMadre: string;
   casado: string;
   previamenteCasado: string;
   matrimoniosPrevios: MatrimonioPrevioData[];
@@ -48,7 +56,9 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
       matrimoniosPrevios: [
         ...current,
         {
-          nombreExConyuge: "",
+          nombresExConyuge: "",
+          apellidoPaternoExConyuge: "",
+          apellidoMaternoExConyuge: "",
           fechaLugarMatrimonio: "",
           fechaLugarNacimiento: "",
           fechaLugarDivorcio: "",
@@ -78,7 +88,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
     onChange({
       hijos: [
         ...currentHijos,
-        { nombre: "", fechaNacimiento: "", lugarNacimiento: "", lugarResidencia: "" },
+        { nombres: "", apellidoPaterno: "", apellidoMaterno: "", fechaNacimiento: "", lugarNacimiento: "", lugarResidencia: "" },
       ],
     });
   };
@@ -108,33 +118,105 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
         <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
           1. Información de los Padres
         </h3>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="nombrePadre" className="label-caps">
-              Nombre completo del padre
-            </label>
-            <input
-              id="nombrePadre"
-              type="text"
-              className="input-glass"
-              placeholder="Ej. Cendri Omar Aguilar Raudales"
-              value={data.nombrePadre || ""}
-              onChange={(e) => handleChange("nombrePadre", e.target.value)}
-            />
+        <div className="space-y-4">
+          {/* Padre */}
+          <div className="p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 space-y-3">
+            <h4 className="label-caps text-brand-600 font-bold border-b border-brand-100/30 pb-1">
+              Datos del Padre
+            </h4>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="nombresPadre" className="label-caps">
+                  Nombre(s) del Padre
+                </label>
+                <input
+                  id="nombresPadre"
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Cendri Omar"
+                  value={data.nombresPadre || ""}
+                  onChange={(e) => handleChange("nombresPadre", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="apellidoPaternoPadre" className="label-caps">
+                  Apellido Paterno
+                </label>
+                <input
+                  id="apellidoPaternoPadre"
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Aguilar"
+                  value={data.apellidoPaternoPadre || ""}
+                  onChange={(e) => handleChange("apellidoPaternoPadre", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="apellidoMaternoPadre" className="label-caps">
+                  Apellido Materno
+                </label>
+                <input
+                  id="apellidoMaternoPadre"
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Raudales"
+                  value={data.apellidoMaternoPadre || ""}
+                  onChange={(e) => handleChange("apellidoMaternoPadre", e.target.value)}
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label htmlFor="nombreMadre" className="label-caps">
-              Nombre completo de la madre
-            </label>
-            <input
-              id="nombreMadre"
-              type="text"
-              className="input-glass"
-              placeholder="Ej. Nelin Xiomara Gonzales Elvir"
-              value={data.nombreMadre || ""}
-              onChange={(e) => handleChange("nombreMadre", e.target.value)}
-            />
+          {/* Madre */}
+          <div className="p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 space-y-3">
+            <h4 className="label-caps text-brand-600 font-bold border-b border-brand-100/30 pb-1">
+              Datos de la Madre
+            </h4>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="nombresMadre" className="label-caps">
+                  Nombre(s) de la Madre
+                </label>
+                <input
+                  id="nombresMadre"
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Nelin Xiomara"
+                  value={data.nombresMadre || ""}
+                  onChange={(e) => handleChange("nombresMadre", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="apellidoPaternoMadre" className="label-caps">
+                  Apellido Paterno
+                </label>
+                <input
+                  id="apellidoPaternoMadre"
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Gonzales"
+                  value={data.apellidoPaternoMadre || ""}
+                  onChange={(e) => handleChange("apellidoPaternoMadre", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="apellidoMaternoMadre" className="label-caps">
+                  Apellido Materno
+                </label>
+                <input
+                  id="apellidoMaternoMadre"
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Elvir"
+                  value={data.apellidoMaternoMadre || ""}
+                  onChange={(e) => handleChange("apellidoMaternoMadre", e.target.value)}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -207,7 +289,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     onChange({
                       previamenteCasado: val,
                       matrimoniosPrevios: [
-                        { nombreExConyuge: "", fechaLugarMatrimonio: "", fechaLugarNacimiento: "", fechaLugarDivorcio: "" }
+                        { nombresExConyuge: "", apellidoPaternoExConyuge: "", apellidoMaternoExConyuge: "", fechaLugarMatrimonio: "", fechaLugarNacimiento: "", fechaLugarDivorcio: "" }
                       ]
                     });
                   }
@@ -243,7 +325,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
 
             <div className="flex flex-col gap-2">
               <label htmlFor="apellidoPaternoConyuge" className="label-caps">
-                Apellido Paternal
+                Apellido Paterno
               </label>
               <input
                 id="apellidoPaternoConyuge"
@@ -257,7 +339,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
 
             <div className="flex flex-col gap-2">
               <label htmlFor="apellidoMaternoConyuge" className="label-caps">
-                Apellido Maternal
+                Apellido Materno
               </label>
               <input
                 id="apellidoMaternoConyuge"
@@ -289,7 +371,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
             {(data.matrimoniosPrevios || []).map((mat, idx) => (
               <div
                 key={idx}
-                className="relative grid grid-cols-1 gap-4 md:grid-cols-2 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
+                className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
               >
                 <button
                   type="button"
@@ -300,21 +382,49 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                   <Trash2 className="h-4 w-4" />
                 </button>
 
-                <h5 className="label-caps md:col-span-2 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
+                <h5 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
                   Matrimonio Previo #{idx + 1}
                 </h5>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor={`mat-${idx}-nombre`} className="label-caps">
-                    Nombre completo del ex-cónyuge
+                  <label htmlFor={`mat-${idx}-nombres`} className="label-caps">
+                    Nombre(s) del ex-cónyuge
                   </label>
                   <input
-                    id={`mat-${idx}-nombre`}
+                    id={`mat-${idx}-nombres`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. Guadalupe Elizabeth Escobar Bonilla"
-                    value={mat.nombreExConyuge}
-                    onChange={(e) => handleMatrimonioPrevioChange(idx, "nombreExConyuge", e.target.value)}
+                    placeholder="Ej. Guadalupe Elizabeth"
+                    value={mat.nombresExConyuge}
+                    onChange={(e) => handleMatrimonioPrevioChange(idx, "nombresExConyuge", e.target.value)}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label htmlFor={`mat-${idx}-paterno`} className="label-caps">
+                    Apellido Paterno
+                  </label>
+                  <input
+                    id={`mat-${idx}-paterno`}
+                    type="text"
+                    className="input-glass"
+                    placeholder="Ej. Escobar"
+                    value={mat.apellidoPaternoExConyuge}
+                    onChange={(e) => handleMatrimonioPrevioChange(idx, "apellidoPaternoExConyuge", e.target.value)}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label htmlFor={`mat-${idx}-materno`} className="label-caps">
+                    Apellido Materno
+                  </label>
+                  <input
+                    id={`mat-${idx}-materno`}
+                    type="text"
+                    className="input-glass"
+                    placeholder="Ej. Bonilla"
+                    value={mat.apellidoMaternoExConyuge}
+                    onChange={(e) => handleMatrimonioPrevioChange(idx, "apellidoMaternoExConyuge", e.target.value)}
                   />
                 </div>
 
@@ -399,7 +509,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     onChange({
                       tieneHijos: val,
                       hijos: [
-                        { nombre: "", fechaNacimiento: "", lugarNacimiento: "", lugarResidencia: "" },
+                        { nombres: "", apellidoPaterno: "", apellidoMaterno: "", fechaNacimiento: "", lugarNacimiento: "", lugarResidencia: "" },
                       ],
                     });
                   }
@@ -416,7 +526,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
         {data.tieneHijos === "si" && (data.hijos || []).map((hijo, idx) => (
           <div
             key={idx}
-            className="relative grid grid-cols-1 gap-4 md:grid-cols-2 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
+            className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
           >
             <button
               type="button"
@@ -427,21 +537,49 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
               <Trash2 className="h-4 w-4" />
             </button>
 
-            <h4 className="label-caps md:col-span-2 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
+            <h4 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
               Hijo #{idx + 1}
             </h4>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`hijo-${idx}-nombre`} className="label-caps">
-                Nombre completo
+              <label htmlFor={`hijo-${idx}-nombres`} className="label-caps">
+                Nombre(s)
               </label>
               <input
-                id={`hijo-${idx}-nombre`}
+                id={`hijo-${idx}-nombres`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Jeremi Stiven Aguilar Sierra"
-                value={hijo.nombre}
-                onChange={(e) => handleHijoChange(idx, "nombre", e.target.value)}
+                placeholder="Ej. Jeremi Stiven"
+                value={hijo.nombres}
+                onChange={(e) => handleHijoChange(idx, "nombres", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`hijo-${idx}-paterno`} className="label-caps">
+                Apellido Paterno
+              </label>
+              <input
+                id={`hijo-${idx}-paterno`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Aguilar"
+                value={hijo.apellidoPaterno}
+                onChange={(e) => handleHijoChange(idx, "apellidoPaterno", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`hijo-${idx}-materno`} className="label-caps">
+                Apellido Materno
+              </label>
+              <input
+                id={`hijo-${idx}-materno`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Sierra"
+                value={hijo.apellidoMaterno}
+                onChange={(e) => handleHijoChange(idx, "apellidoMaterno", e.target.value)}
               />
             </div>
 

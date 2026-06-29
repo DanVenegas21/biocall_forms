@@ -63,14 +63,18 @@ export const documentsSchema = z.object({
 });
 
 export const hijoSchema = z.object({
-  nombre: z.string(),
+  nombres: z.string(),
+  apellidoPaterno: z.string(),
+  apellidoMaterno: z.string(),
   fechaNacimiento: z.string(),
   lugarNacimiento: z.string(),
   lugarResidencia: z.string(),
 });
 
 export const matrimonioPrevioSchema = z.object({
-  nombreExConyuge: z.string(),
+  nombresExConyuge: z.string(),
+  apellidoPaternoExConyuge: z.string(),
+  apellidoMaternoExConyuge: z.string(),
   fechaLugarMatrimonio: z.string(),
   fechaLugarNacimiento: z.string(),
   fechaLugarDivorcio: z.string(),
@@ -81,8 +85,12 @@ export const familySchema = z.object({
   nombresConyuge: z.string(),
   apellidoPaternoConyuge: z.string(),
   apellidoMaternoConyuge: z.string(),
-  nombrePadre: z.string(),
-  nombreMadre: z.string(),
+  nombresPadre: z.string(),
+  apellidoPaternoPadre: z.string(),
+  apellidoMaternoPadre: z.string(),
+  nombresMadre: z.string(),
+  apellidoPaternoMadre: z.string(),
+  apellidoMaternoMadre: z.string(),
   casado: z.string(),
   previamenteCasado: z.string(),
   matrimoniosPrevios: z.array(matrimonioPrevioSchema),
