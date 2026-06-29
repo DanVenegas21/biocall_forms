@@ -187,6 +187,8 @@ export const caseBackgroundSchema = z.object({
     fbi: foiaItemSchema,
     policia: foiaItemSchema,
   }),
+  documentosPendientes: z.string(),
+  correosPendientes: z.string(),
 });
 
 /** Esquema raiz de la Bio Call que agrupa todas las secciones. */

@@ -105,6 +105,8 @@ interface CaseBackgroundData {
     fbi: FoiaItemData;
     policia: FoiaItemData;
   };
+  documentosPendientes: string;
+  correosPendientes: string;
 }
 
 interface CaseSectionProps {
@@ -1684,6 +1686,42 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      {/* 7. Documentos y Correos Pendientes */}
+      <div className="border-t border-brand-100/50 pt-4 space-y-4">
+        <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
+          7. Documentos y Correos Pendientes de Seguimiento
+        </h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="documentosPendientes" className="label-caps font-semibold text-brand-700">
+              Documentos Pendientes por Recabar / Entregar
+            </label>
+            <textarea
+              id="documentosPendientes"
+              rows={4}
+              className="input-glass resize-y"
+              placeholder="Ej. BC del hijo, Taxes 2024 y 2025, 4 fotos tamaño pasaporte, certificado de divorcio..."
+              value={data.documentosPendientes || ""}
+              onChange={(e) => handleChange("documentosPendientes", e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="correosPendientes" className="label-caps font-semibold text-brand-700">
+              Correos / Trámites Pendientes por Enviar
+            </label>
+            <textarea
+              id="correosPendientes"
+              rows={4}
+              className="input-glass resize-y"
+              placeholder="Ej. Enviar formulario para subir documentos, correo con registro de FBI, formulario G-28 para ROI..."
+              value={data.correosPendientes || ""}
+              onChange={(e) => handleChange("correosPendientes", e.target.value)}
+            />
           </div>
         </div>
       </div>

@@ -196,6 +196,8 @@ export function BioCallForm() {
         fbi: { solicitar: "no", motivo: "" },
         policia: { solicitar: "no", motivo: "" },
       },
+      documentosPendientes: "",
+      correosPendientes: "",
     },
   });
 
