@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
 
 export interface ViajeData {
   fechaEntrada: string;
@@ -105,6 +105,8 @@ interface CaseBackgroundData {
     fbi: FoiaItemData;
     policia: FoiaItemData;
   };
+  documentosPendientes: string;
+  correosPendientes: string;
 }
 
 interface CaseSectionProps {
@@ -114,6 +116,15 @@ interface CaseSectionProps {
 
 export function CaseSection({ data, onChange }: CaseSectionProps) {
   const [showInadmissibility, setShowInadmissibility] = useState(false);
+
+  const inadKeys: Array<keyof CaseBackgroundData> = [
+    "inadDetencionTrafico", "inadCometidoDelito", "inadInmunidadDiplomatica", "inadProstitucionTrafico",
+    "inadAyudaIngresoIlegal", "inadTerrorismo", "inadFondosTerrorismo", "inadAsociacionTerrorista",
+    "inadEspionaje", "inadPartidoComunista", "inadParticipadoPersecucion", "inadProcedimientoRemocion",
+    "inadDenegadoVisa", "inadVisaT", "inadGrupoMilitar", "inadFraudeMigratorio",
+    "inadTrastornoFisicoMental", "inadEnfermedadPublica", "inadAdictoDrogas"
+  ];
+  const hasAffirmativeSecurityAnswers = inadKeys.some(key => data[key] === "si") || (data.inadMyUscis !== "no" && data.inadMyUscis !== "");
 
   const handleChange = (field: keyof CaseBackgroundData, value: any) => {
     onChange({ [field]: value });
@@ -1177,9 +1188,28 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
 
         {showInadmissibility && (
           <div className="space-y-4 p-4 rounded-xl border border-brand-100/80 bg-white/50 animate-fade-in">
-            <p className="text-xs text-brand-500 italic pb-2">
-              Nota: Todas estas preguntas legales se asumen como "No" por defecto, pero es obligatorio validarlas con el cliente.
-            </p>
+            <div className="p-3 rounded-lg bg-brand-50 border border-brand-200 text-xs text-brand-800 space-y-1 mb-2">
+              <p className="font-semibold uppercase tracking-wider text-brand-700">
+                Guión de Introducción Sugerido para el Especialista de Integración / CM:
+              </p>
+              <p className="italic">
+                “Ahora le haré una serie de preguntas que deben responderse únicamente con Sí, No o No sabe. Algunas pueden ser delicadas, pero es importante responder con honestidad. Si alguna respuesta es Sí, solo la anotaremos y el abogado la revisará más adelante.”
+              </p>
+            </div>
+
+            {hasAffirmativeSecurityAnswers && (
+              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5 shadow-sm animate-fade-in mb-3">
+                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-semibold text-amber-800">
+                    ⚠️ Atención: Se ha registrado respuesta "Sí" en una o más preguntas legales.
+                  </p>
+                  <p className="text-amber-700 mt-0.5">
+                    Estas respuestas serán destacadas automáticamente para evaluación prioritaria durante la consulta legal con el abogado.
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="space-y-4 divide-y divide-brand-100/30">
               {/* Pregunta 1 */}
@@ -1194,6 +1224,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1209,6 +1240,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1224,6 +1256,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1239,6 +1272,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1254,6 +1288,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1269,6 +1304,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1284,6 +1320,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1299,6 +1336,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1314,6 +1352,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1329,6 +1368,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1344,6 +1384,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1359,6 +1400,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1374,6 +1416,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1389,6 +1432,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1411,6 +1455,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1443,6 +1488,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1458,6 +1504,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1473,6 +1520,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1488,6 +1536,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
 
@@ -1503,6 +1552,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 >
                   <option value="no">No</option>
                   <option value="si">Sí</option>
+                  <option value="no_sabe">No sabe</option>
                 </select>
               </div>
             </div>
@@ -1684,6 +1734,42 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      {/* 7. Documentos y Correos Pendientes */}
+      <div className="border-t border-brand-100/50 pt-4 space-y-4">
+        <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
+          7. Documentos y Correos Pendientes de Seguimiento
+        </h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="documentosPendientes" className="label-caps font-semibold text-brand-700">
+              Documentos Pendientes por Recabar / Entregar
+            </label>
+            <textarea
+              id="documentosPendientes"
+              rows={4}
+              className="input-glass resize-y"
+              placeholder="Ej. BC del hijo, Taxes 2024 y 2025, 4 fotos tamaño pasaporte, certificado de divorcio..."
+              value={data.documentosPendientes || ""}
+              onChange={(e) => handleChange("documentosPendientes", e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="correosPendientes" className="label-caps font-semibold text-brand-700">
+              Correos / Trámites Pendientes por Enviar
+            </label>
+            <textarea
+              id="correosPendientes"
+              rows={4}
+              className="input-glass resize-y"
+              placeholder="Ej. Enviar formulario para subir documentos, correo con registro de FBI, formulario G-28 para ROI..."
+              value={data.correosPendientes || ""}
+              onChange={(e) => handleChange("correosPendientes", e.target.value)}
+            />
           </div>
         </div>
       </div>

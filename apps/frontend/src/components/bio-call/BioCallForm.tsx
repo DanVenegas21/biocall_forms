@@ -103,18 +103,33 @@ export function BioCallForm() {
       nombresConyuge: "",
       apellidoPaternoConyuge: "",
       apellidoMaternoConyuge: "",
-      nombrePadre: "",
-      nombreMadre: "",
+      fechaLugarMatrimonioConyuge: "",
+      fechaLugarNacimientoConyuge: "",
+      nombresPadre: "",
+      apellidoPaternoPadre: "",
+      apellidoMaternoPadre: "",
+      nombresMadre: "",
+      apellidoPaternoMadre: "",
+      apellidoMaternoMadre: "",
       casado: "",
       previamenteCasado: "",
       matrimoniosPrevios: [] as Array<{
-        nombreExConyuge: string;
+        nombresExConyuge: string;
+        apellidoPaternoExConyuge: string;
+        apellidoMaternoExConyuge: string;
         fechaLugarMatrimonio: string;
         fechaLugarNacimiento: string;
         fechaLugarDivorcio: string;
       }>,
       tieneHijos: "",
-      hijos: [] as Array<{ nombre: string; fechaNacimiento: string; lugarNacimiento: string; lugarResidencia: string }>,
+      hijos: [] as Array<{
+        nombres: string;
+        apellidoPaterno: string;
+        apellidoMaterno: string;
+        fechaNacimiento: string;
+        lugarNacimiento: string;
+        lugarResidencia: string;
+      }>,
     },
     caseBackground: {
       viajes: [] as Array<{
@@ -200,6 +215,8 @@ export function BioCallForm() {
         fbi: { solicitar: "no", motivo: "" },
         policia: { solicitar: "no", motivo: "" },
       },
+      documentosPendientes: "",
+      correosPendientes: "",
     },
   });
 
