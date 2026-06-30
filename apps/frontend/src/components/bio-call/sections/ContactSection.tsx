@@ -1,6 +1,10 @@
 "use client";
 
 import React from "react";
+import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
+import { getFieldError } from "@/lib/formErrors";
+
+const PREFIX = "contact";
 
 interface ContactData {
   telefono: string;
@@ -9,10 +13,13 @@ interface ContactData {
 
 interface ContactSectionProps {
   data: ContactData;
+  errors?: Record<string, string>;
   onChange: (fields: Partial<ContactData>) => void;
 }
 
-export function ContactSection({ data, onChange }: ContactSectionProps) {
+export function ContactSection({ data, errors, onChange }: ContactSectionProps) {
+  const err = (field: keyof ContactData) => getFieldError(errors, `${PREFIX}.${field}`);
+
   const handleChange = (field: keyof ContactData, value: string) => {
     onChange({ [field]: value });
   };
@@ -26,11 +33,14 @@ export function ContactSection({ data, onChange }: ContactSectionProps) {
         <input
           id="telefono"
           type="tel"
-          className="input-glass"
-          placeholder="Ej. 555-123-4567"
+          className={fieldInputClass(!!err("telefono"))}
+          aria-invalid={!!err("telefono")}
+          maxLength={20}
+          placeholder="Ej. 423-353-0235 o 3474051108"
           value={data.telefono}
           onChange={(e) => handleChange("telefono", e.target.value)}
         />
+        <FieldError message={err("telefono")} />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -40,11 +50,13 @@ export function ContactSection({ data, onChange }: ContactSectionProps) {
         <input
           id="correoElectronico"
           type="email"
-          className="input-glass"
-          placeholder="Ej. correo@ejemplo.com"
+          className={fieldInputClass(!!err("correoElectronico"))}
+          aria-invalid={!!err("correoElectronico")}
+          placeholder="Ej. cliente@gmail.com"
           value={data.correoElectronico}
           onChange={(e) => handleChange("correoElectronico", e.target.value)}
         />
+        <FieldError message={err("correoElectronico")} />
       </div>
     </div>
   );

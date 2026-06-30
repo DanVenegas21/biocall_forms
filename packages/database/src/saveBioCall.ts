@@ -15,7 +15,11 @@ function parseOptionalDate(value: string): Date | null {
 }
 
 function parseRequiredDate(value: string): Date {
-  return parseOptionalDate(value) ?? new Date("1900-01-01");
+  const parsed = parseOptionalDate(value);
+  if (!parsed) {
+    throw new Error(`Fecha invalida: ${value}`);
+  }
+  return parsed;
 }
 
 function childId(bioCallId: string, prefix: string, index: number): string {

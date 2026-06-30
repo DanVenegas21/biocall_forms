@@ -2,6 +2,12 @@
 
 import React from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { GlassButton } from "@/components/glass/GlassButton";
+import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
+import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
+import { getFieldError } from "@/lib/formErrors";
+
+const PREFIX = "address";
 
 export interface DireccionAnteriorData {
   calleNumero: string;
@@ -28,10 +34,14 @@ interface AddressData {
 
 interface AddressSectionProps {
   data: AddressData;
+  errors?: Record<string, string>;
   onChange: (fields: Partial<AddressData>) => void;
 }
 
-export function AddressSection({ data, onChange }: AddressSectionProps) {
+export function AddressSection({ data, errors, onChange }: AddressSectionProps) {
+  const err = (field: keyof AddressData) => getFieldError(errors, `${PREFIX}.${field}`);
+  const errDir = (index: number, field: keyof DireccionAnteriorData) =>
+    getFieldError(errors, `${PREFIX}.direccionesAnteriores.${index}.${field}`);
   const handleChange = (field: keyof AddressData, value: string) => {
     onChange({ [field]: value });
   };
@@ -73,6 +83,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
 
   return (
     <div className="space-y-6">
+      <SectionErrorBanner errors={errors} prefix={PREFIX} />
       {/* Dirección actual */}
       <div className="space-y-4">
         <h3 className="panel-section-title text-base font-semibold border-b border-brand-100/50 pb-2">
@@ -145,11 +156,14 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
             <input
               id="codigoPostal"
               type="text"
-              className="input-glass"
-              placeholder="Ej. 01000"
+              maxLength={15}
+              className={fieldInputClass(!!err("codigoPostal"))}
+              aria-invalid={!!err("codigoPostal")}
+              placeholder="Ej. 70363"
               value={data.codigoPostal || ""}
               onChange={(e) => handleChange("codigoPostal", e.target.value)}
             />
+            <FieldError message={err("codigoPostal")} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -191,13 +205,16 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
             ¿Ha residido en algún otro domicilio en los últimos 5 años?
           </h3>
           {data.resididoOtrosLugares === "si" && (
-            <button
+            <GlassButton
               type="button"
-              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+              variant="ghost"
+              size="xs"
+              className="uppercase tracking-wider"
+              leftIcon={<Plus className="h-3 w-3" aria-hidden="true" />}
               onClick={addDireccion}
             >
-              <Plus className="h-3 w-3" /> Agregar Dirección Anterior
-            </button>
+              Agregar Dirección Anterior
+            </GlassButton>
           )}
         </div>
 
@@ -245,14 +262,16 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
             key={idx}
             className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
           >
-            <button
+            <GlassButton
               type="button"
-              className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+              variant="danger"
+              size="xs"
+              iconOnly
+              className="absolute top-3 right-3"
+              leftIcon={<Trash2 className="h-4 w-4" aria-hidden="true" />}
               aria-label={`Eliminar dirección anterior ${idx + 1}`}
               onClick={() => removeDireccion(idx)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+            />
 
             <h4 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
               Dirección Anterior #{idx + 1}
@@ -321,11 +340,14 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
               <input
                 id={`dir-${idx}-codigoPostal`}
                 type="text"
-                className="input-glass"
-                placeholder="Ej. 44100"
+                maxLength={15}
+                className={fieldInputClass(!!errDir(idx, "codigoPostal"))}
+                aria-invalid={!!errDir(idx, "codigoPostal")}
+                placeholder="Ej. 11377"
                 value={dir.codigoPostal}
                 onChange={(e) => handleDireccionChange(idx, "codigoPostal", e.target.value)}
               />
+              <FieldError message={errDir(idx, "codigoPostal")} />
             </div>
 
             <div className="flex flex-col gap-2">

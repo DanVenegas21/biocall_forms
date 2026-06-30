@@ -3,6 +3,11 @@
 import React from "react";
 import { HelpCircle } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
+import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
+import { getFieldError } from "@/lib/formErrors";
+
+const PREFIX = "documents";
 
 interface DocumentsData {
   tienePasaporte: string;
@@ -22,16 +27,19 @@ interface DocumentsData {
 
 interface DocumentsSectionProps {
   data: DocumentsData;
+  errors?: Record<string, string>;
   onChange: (fields: Partial<DocumentsData>) => void;
 }
 
-export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
+export function DocumentsSection({ data, errors, onChange }: DocumentsSectionProps) {
+  const err = (field: keyof DocumentsData) => getFieldError(errors, `${PREFIX}.${field}`);
   const handleChange = (field: keyof DocumentsData, value: string) => {
     onChange({ [field]: value });
   };
 
   return (
     <div className="space-y-6">
+      <SectionErrorBanner errors={errors} prefix={PREFIX} />
       {/* 1. Pasaporte */}
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -109,11 +117,13 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
               <input
                 id="numeroPasaporte"
                 type="text"
-                className="input-glass"
-                placeholder="Ej. ABC123456"
+                className={fieldInputClass(!!err("numeroPasaporte"))}
+                aria-invalid={!!err("numeroPasaporte")}
+                placeholder="Ej. G27123695"
                 value={data.numeroPasaporte}
                 onChange={(e) => handleChange("numeroPasaporte", e.target.value)}
               />
+              <FieldError message={err("numeroPasaporte")} />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -203,11 +213,13 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
               <input
                 id="aNumberValue"
                 type="text"
-                className="input-glass"
-                placeholder="Ej. A123456789"
+                className={fieldInputClass(!!err("aNumberValue"))}
+                aria-invalid={!!err("aNumberValue")}
+                placeholder="Ej. 123-456-789"
                 value={data.aNumberValue}
                 onChange={(e) => handleChange("aNumberValue", e.target.value)}
               />
+              <FieldError message={err("aNumberValue")} />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -268,11 +280,13 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
               <input
                 id="ssnValue"
                 type="text"
-                className="input-glass"
+                className={fieldInputClass(!!err("ssnValue"))}
+                aria-invalid={!!err("ssnValue")}
                 placeholder="Ej. 000-00-0000"
                 value={data.ssnValue}
                 onChange={(e) => handleChange("ssnValue", e.target.value)}
               />
+              <FieldError message={err("ssnValue")} />
             </div>
           )}
         </div>
@@ -319,11 +333,13 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
               <input
                 id="eadValue"
                 type="text"
-                className="input-glass"
-                placeholder="Ej. IOE1234567890"
+                className={fieldInputClass(!!err("eadValue"))}
+                aria-invalid={!!err("eadValue")}
+                placeholder="Ej. SRC1234567890"
                 value={data.eadValue}
                 onChange={(e) => handleChange("eadValue", e.target.value)}
               />
+              <FieldError message={err("eadValue")} />
             </div>
           )}
         </div>

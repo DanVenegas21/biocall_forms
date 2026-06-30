@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { BIO_CALL_SECTIONS, bioCallSchema } from "@biocall/shared";
+import {
+  BIO_CALL_SECTIONS,
+  bioCallSchema,
+  formatBioCallErrors,
+  fieldErrorsToMap,
+} from "@biocall/shared";
 import { saveBioCall, getCurrentPdfRecord } from "@biocall/database";
 import { generateAndStoreBioCallPdf } from "../services/bioCallPdf";
 import { downloadPdf, getPdfSignedUrl } from "../services/storage";
@@ -23,10 +28,12 @@ bioCallsRouter.post("/", async (req, res) => {
 
   const result = bioCallSchema.safeParse(req.body);
   if (!result.success) {
+    const fieldErrors = formatBioCallErrors(result.error);
     return res.status(400).json({
       ok: false,
-      error: "Datos del formulario inválidos",
-      details: result.error.format(),
+      error: "Revisa los campos marcados antes de guardar.",
+      fieldErrors,
+      errorMap: fieldErrorsToMap(fieldErrors),
     });
   }
 
@@ -51,7 +58,8 @@ bioCallsRouter.post("/", async (req, res) => {
     console.error("[backend] Error al guardar Bio Call:", error);
     return res.status(500).json({
       ok: false,
-      error: error instanceof Error ? error.message : "Error interno al guardar",
+      error:
+        "No se pudo guardar la Bio Call. Verifica los datos e intenta de nuevo.",
     });
   }
 });
@@ -83,7 +91,7 @@ bioCallsRouter.get("/:id/pdf", async (req, res) => {
     console.error("[backend] Error al obtener PDF:", error);
     return res.status(500).json({
       ok: false,
-      error: error instanceof Error ? error.message : "Error al obtener PDF",
+      error: "No se pudo obtener el PDF. Intenta de nuevo.",
     });
   }
 });

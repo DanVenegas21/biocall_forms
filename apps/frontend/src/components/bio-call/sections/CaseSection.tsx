@@ -2,6 +2,10 @@
 
 import React, { useState } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
+import { GlassButton } from "@/components/glass/GlassButton";
+import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
+
+const PREFIX = "caseBackground";
 
 export interface ViajeData {
   fechaEntrada: string;
@@ -113,10 +117,11 @@ interface CaseBackgroundData {
 
 interface CaseSectionProps {
   data: CaseBackgroundData;
+  errors?: Record<string, string>;
   onChange: (fields: Partial<CaseBackgroundData>) => void;
 }
 
-export function CaseSection({ data, onChange }: CaseSectionProps) {
+export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
   const [showInadmissibility, setShowInadmissibility] = useState(false);
 
   const inadKeys: Array<keyof CaseBackgroundData> = [
@@ -298,19 +303,23 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
 
   return (
     <div className="space-y-6">
+      <SectionErrorBanner errors={errors} prefix={PREFIX} />
       {/* 1. Historial de Viajes / Entradas a EE. UU. */}
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-brand-100/50 pb-2">
           <h3 className="panel-section-title text-base font-semibold">
             1. Historial de viajes a Estados Unidos
           </h3>
-          <button
+          <GlassButton
             type="button"
-            className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+            variant="ghost"
+            size="xs"
+            className="uppercase tracking-wider"
+            leftIcon={<Plus className="h-3 w-3" aria-hidden="true" />}
             onClick={addViaje}
           >
-            <Plus className="h-3 w-3" /> Agregar Entrada
-          </button>
+            Agregar Entrada
+          </GlassButton>
         </div>
 
         <p className="text-xs text-brand-500/80">
@@ -328,14 +337,16 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
               key={idx}
               className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
             >
-              <button
+              <GlassButton
                 type="button"
-                className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+                variant="danger"
+                size="xs"
+                iconOnly
+                className="absolute top-3 right-3"
+                leftIcon={<Trash2 className="h-4 w-4" aria-hidden="true" />}
                 aria-label={`Eliminar viaje ${idx + 1}`}
                 onClick={() => removeViaje(idx)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
+              />
 
               <h4 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
                 Viaje / Entrada #{idx + 1}
@@ -465,13 +476,16 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             2. Detenciones por Inmigración (Cualquier lugar y fecha)
           </h3>
           {data.detenidoInmigracion === "si" && (
-            <button
+            <GlassButton
               type="button"
-              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+              variant="ghost"
+              size="xs"
+              className="uppercase tracking-wider"
+              leftIcon={<Plus className="h-3 w-3" aria-hidden="true" />}
               onClick={addDetencionInmi}
             >
-              <Plus className="h-3 w-3" /> Agregar Detención
-            </button>
+              Agregar Detención
+            </GlassButton>
           )}
         </div>
 
@@ -525,14 +539,16 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             key={idx}
             className="relative grid grid-cols-1 gap-4 md:grid-cols-2 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
           >
-            <button
+            <GlassButton
               type="button"
-              className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+              variant="danger"
+              size="xs"
+              iconOnly
+              className="absolute top-3 right-3"
+              leftIcon={<Trash2 className="h-4 w-4" aria-hidden="true" />}
               aria-label={`Eliminar detención ${idx + 1}`}
               onClick={() => removeDetencionInmi(idx)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+            />
 
             <h4 className="label-caps md:col-span-2 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
               Detención #{idx + 1}
@@ -675,13 +691,16 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             3. Arrestos o Detenciones por Policía
           </h3>
           {data.arrestadoPolicia === "si" && (
-            <button
+            <GlassButton
               type="button"
-              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+              variant="ghost"
+              size="xs"
+              className="uppercase tracking-wider"
+              leftIcon={<Plus className="h-3 w-3" aria-hidden="true" />}
               onClick={addArrestoPolicia}
             >
-              <Plus className="h-3 w-3" /> Agregar Arresto
-            </button>
+              Agregar Arresto
+            </GlassButton>
           )}
         </div>
 
@@ -732,14 +751,16 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             key={idx}
             className="relative grid grid-cols-1 gap-4 md:grid-cols-2 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
           >
-            <button
+            <GlassButton
               type="button"
-              className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+              variant="danger"
+              size="xs"
+              iconOnly
+              className="absolute top-3 right-3"
+              leftIcon={<Trash2 className="h-4 w-4" aria-hidden="true" />}
               aria-label={`Eliminar arresto ${idx + 1}`}
               onClick={() => removeArrestoPolicia(idx)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+            />
 
             <h4 className="label-caps md:col-span-2 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
               Arresto #{idx + 1}
@@ -1017,13 +1038,16 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
           </div>
 
           {data.empleoOtrosLugares === "si" && (
-            <button
+            <GlassButton
               type="button"
-              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+              variant="ghost"
+              size="xs"
+              className="uppercase tracking-wider"
+              leftIcon={<Plus className="h-3 w-3" aria-hidden="true" />}
               onClick={addEmpleoAnterior}
             >
-              <Plus className="h-3 w-3" /> Agregar Empleo Anterior
-            </button>
+              Agregar Empleo Anterior
+            </GlassButton>
           )}
         </div>
 
@@ -1032,14 +1056,16 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             key={idx}
             className="relative grid grid-cols-1 gap-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
           >
-            <button
+            <GlassButton
               type="button"
-              className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+              variant="danger"
+              size="xs"
+              iconOnly
+              className="absolute top-3 right-3"
+              leftIcon={<Trash2 className="h-4 w-4" aria-hidden="true" />}
               aria-label={`Eliminar empleo anterior ${idx + 1}`}
               onClick={() => removeEmpleoAnterior(idx)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+            />
 
             <h4 className="label-caps text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
               Empleo Anterior #{idx + 1}
@@ -1230,13 +1256,13 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             </div>
 
             {hasAffirmativeSecurityAnswers && (
-              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-2.5 shadow-sm animate-fade-in mb-3">
-                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-accent-50 border border-accent-200 text-accent-900 text-xs flex items-start gap-2.5 shadow-sm animate-fade-in mb-3">
+                <AlertTriangle className="h-4 w-4 text-accent-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-amber-800">
-                    ⚠️ Atención: Se ha registrado respuesta "Sí" en una o más preguntas legales.
+                  <p className="font-semibold text-accent-800">
+                    Atención: Se ha registrado respuesta «Sí» en una o más preguntas legales.
                   </p>
-                  <p className="text-amber-700 mt-0.5">
+                  <p className="text-accent-700 mt-0.5">
                     Estas respuestas serán destacadas automáticamente para evaluación prioritaria durante la consulta legal con el abogado.
                   </p>
                 </div>
