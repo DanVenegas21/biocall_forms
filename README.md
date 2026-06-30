@@ -84,7 +84,9 @@ Copy-Item packages\database\.env.example packages\database\.env
 | `NEXT_PUBLIC_API_URL` | opcional en `apps/frontend/.env.local` | URL del backend si no es `http://localhost:4000` |
 | `AI_SERVICE_PORT` | `apps/ai-service/.env` | Puerto del servicio de IA (por defecto `8000`) |
 
-Configura `DATABASE_URL` y `DIRECT_URL` con las cadenas del **Connection Pooler** de Supabase (ver seccion de solucion de problemas mas abajo). Usa la misma contraseña de Database (Project Settings → Database).
+Configura `DATABASE_URL` y `DIRECT_URL` con las cadenas del **Connection Pooler** de Supabase (ver seccion de solucion de problemas mas abajo). Usa la misma contraseña de Database (Project Settings → Database) para todo el equipo; compartela por un gestor de contraseñas, no por chat. Si la contraseña tiene caracteres especiales (`@`, `#`, `%`, etc.), codificalos en URL (ej. `@` → `%40`).
+
+No uses la conexion directa (`db....supabase.co`): en muchas redes solo resuelve por IPv6 y provoca el error Prisma P1001 (*Can't reach database server*).
 
 ### 2. Cliente Prisma y esquema de base de datos
 

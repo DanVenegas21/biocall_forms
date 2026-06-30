@@ -22,6 +22,10 @@ function childId(bioCallId: string, prefix: string, index: number): string {
   return `${bioCallId}_${prefix}_${index}`;
 }
 
+function fullName(...parts: (string | undefined | null)[]): string {
+  return parts.map((part) => part?.trim() ?? "").filter(Boolean).join(" ");
+}
+
 function mapCaseBackground(
   cb: BioCall["caseBackground"]
 ): Omit<Prisma.BioCallCaseBackgroundUncheckedCreateWithoutBioCallInput, "bioCallId"> {
@@ -163,8 +167,12 @@ function mapBioCallToCreateInput(
         nombresConyuge: emptyToNull(fam.nombresConyuge),
         apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
         apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
-        nombrePadre: emptyToNull(fam.nombrePadre),
-        nombreMadre: emptyToNull(fam.nombreMadre),
+        nombrePadre: emptyToNull(
+          fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
+        ),
+        nombreMadre: emptyToNull(
+          fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
+        ),
         casado: emptyToNull(fam.casado),
         previamenteCasado: emptyToNull(fam.previamenteCasado),
         tieneHijos: emptyToNull(fam.tieneHijos),
@@ -174,7 +182,9 @@ function mapBioCallToCreateInput(
       create: fam.hijos.map((item, index) => ({
         id: childId(bioCallId, "child", index),
         sortOrder: index,
-        nombre: emptyToNull(item.nombre),
+        nombre: emptyToNull(
+          fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
+        ),
         fechaNacimiento: emptyToNull(item.fechaNacimiento),
         lugarNacimiento: emptyToNull(item.lugarNacimiento),
         lugarResidencia: emptyToNull(item.lugarResidencia),
@@ -184,7 +194,13 @@ function mapBioCallToCreateInput(
       create: fam.matrimoniosPrevios.map((item, index) => ({
         id: childId(bioCallId, "marr", index),
         sortOrder: index,
-        nombreExConyuge: emptyToNull(item.nombreExConyuge),
+        nombreExConyuge: emptyToNull(
+          fullName(
+            item.nombresExConyuge,
+            item.apellidoPaternoExConyuge,
+            item.apellidoMaternoExConyuge
+          )
+        ),
         fechaLugarMatrimonio: emptyToNull(item.fechaLugarMatrimonio),
         fechaLugarNacimiento: emptyToNull(item.fechaLugarNacimiento),
         fechaLugarDivorcio: emptyToNull(item.fechaLugarDivorcio),
@@ -286,7 +302,9 @@ async function replaceListChildren(bioCallId: string, data: BioCall): Promise<vo
         id: childId(bioCallId, "child", index),
         bioCallId,
         sortOrder: index,
-        nombre: emptyToNull(item.nombre),
+        nombre: emptyToNull(
+          fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
+        ),
         fechaNacimiento: emptyToNull(item.fechaNacimiento),
         lugarNacimiento: emptyToNull(item.lugarNacimiento),
         lugarResidencia: emptyToNull(item.lugarResidencia),
@@ -300,7 +318,13 @@ async function replaceListChildren(bioCallId: string, data: BioCall): Promise<vo
         id: childId(bioCallId, "marr", index),
         bioCallId,
         sortOrder: index,
-        nombreExConyuge: emptyToNull(item.nombreExConyuge),
+        nombreExConyuge: emptyToNull(
+          fullName(
+            item.nombresExConyuge,
+            item.apellidoPaternoExConyuge,
+            item.apellidoMaternoExConyuge
+          )
+        ),
         fechaLugarMatrimonio: emptyToNull(item.fechaLugarMatrimonio),
         fechaLugarNacimiento: emptyToNull(item.fechaLugarNacimiento),
         fechaLugarDivorcio: emptyToNull(item.fechaLugarDivorcio),
@@ -504,8 +528,12 @@ export async function saveBioCall(
           nombresConyuge: emptyToNull(fam.nombresConyuge),
           apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
           apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
-          nombrePadre: emptyToNull(fam.nombrePadre),
-          nombreMadre: emptyToNull(fam.nombreMadre),
+          nombrePadre: emptyToNull(
+            fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
+          ),
+          nombreMadre: emptyToNull(
+            fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
+          ),
           casado: emptyToNull(fam.casado),
           previamenteCasado: emptyToNull(fam.previamenteCasado),
           tieneHijos: emptyToNull(fam.tieneHijos),
@@ -515,8 +543,12 @@ export async function saveBioCall(
           nombresConyuge: emptyToNull(fam.nombresConyuge),
           apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
           apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
-          nombrePadre: emptyToNull(fam.nombrePadre),
-          nombreMadre: emptyToNull(fam.nombreMadre),
+          nombrePadre: emptyToNull(
+            fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
+          ),
+          nombreMadre: emptyToNull(
+            fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
+          ),
           casado: emptyToNull(fam.casado),
           previamenteCasado: emptyToNull(fam.previamenteCasado),
           tieneHijos: emptyToNull(fam.tieneHijos),

@@ -17,6 +17,10 @@ function display(value: string | undefined | null): string {
   return trimmed ? trimmed : "—";
 }
 
+function fullName(...parts: (string | undefined | null)[]): string {
+  return parts.map((part) => part?.trim() ?? "").filter(Boolean).join(" ");
+}
+
 function sectionTitle(doc: PdfDoc, title: string): void {
   doc.moveDown(0.5);
   doc.font("Helvetica-Bold").fontSize(12).fillColor("#1e3a5f").text(title);
@@ -133,8 +137,16 @@ export function generateBioCallPdf(
     ensureSpace(doc, 120);
     sectionTitle(doc, BIO_CALL_SECTIONS[4].title);
     const fam = data.family;
-    fieldLine(doc, "Nombre del padre", fam.nombrePadre);
-    fieldLine(doc, "Nombre de la madre", fam.nombreMadre);
+    fieldLine(
+      doc,
+      "Nombre del padre",
+      fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
+    );
+    fieldLine(
+      doc,
+      "Nombre de la madre",
+      fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
+    );
     fieldLine(doc, "Tiene conyuge", fam.tieneConyuge);
     fieldLine(doc, "Nombres conyuge", fam.nombresConyuge);
     fieldLine(doc, "Apellido paterno conyuge", fam.apellidoPaternoConyuge);
@@ -146,7 +158,15 @@ export function generateBioCallPdf(
       ensureSpace(doc);
       doc.font("Helvetica-Bold").text(`Matrimonio previo ${index + 1}`);
       doc.font("Helvetica");
-      fieldLine(doc, "  Ex-conyuge", item.nombreExConyuge);
+      fieldLine(
+        doc,
+        "  Ex-conyuge",
+        fullName(
+          item.nombresExConyuge,
+          item.apellidoPaternoExConyuge,
+          item.apellidoMaternoExConyuge
+        )
+      );
       fieldLine(doc, "  Matrimonio", item.fechaLugarMatrimonio);
       fieldLine(doc, "  Divorcio", item.fechaLugarDivorcio);
     });
@@ -154,7 +174,11 @@ export function generateBioCallPdf(
       ensureSpace(doc);
       doc.font("Helvetica-Bold").text(`Hijo ${index + 1}`);
       doc.font("Helvetica");
-      fieldLine(doc, "  Nombre", item.nombre);
+      fieldLine(
+        doc,
+        "  Nombre",
+        fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
+      );
       fieldLine(doc, "  Fecha nacimiento", item.fechaNacimiento);
       fieldLine(doc, "  Lugar residencia", item.lugarResidencia);
     });

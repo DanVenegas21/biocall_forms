@@ -40,12 +40,8 @@ const SECTION_ICONS: Record<BioCallSectionId, LucideIcon> = {
   caso: Scale,
 };
 
-export function BioCallForm() {
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
-  const [savedBioCallId, setSavedBioCallId] = useState<string | null>(null);
-
-  // --- Estado unificado del formulario ---
-  const [formData, setFormData] = useState({
+function createEmptyFormData() {
+  return {
     personalData: {
       nombres: "",
       apellidoPaterno: "",
@@ -218,57 +214,101 @@ export function BioCallForm() {
       documentosPendientes: "",
       correosPendientes: "",
     },
-  });
+  };
+}
 
-  // Cargar borrador e id guardado desde localStorage al montar
+const EMPTY_FORM_DATA = createEmptyFormData();
+
+type FormData = ReturnType<typeof createEmptyFormData>;
+
+function mergeDraftIntoForm(parsed: Record<string, unknown>): FormData {
+  const base = createEmptyFormData();
+  const merged = { ...base };
+
+  for (const key of Object.keys(base) as Array<keyof FormData>) {
+    const section = parsed[key as string];
+    if (section && typeof section === "object" && !Array.isArray(section)) {
+      merged[key] = {
+        ...base[key],
+        ...(section as Record<string, unknown>),
+      } as FormData[typeof key];
+    } else if (section !== undefined) {
+      merged[key] = section as FormData[typeof key];
+    }
+  }
+
+  return merged;
+}
+
+/** Serializa el formulario para comparar si hay cambios reales del usuario. */
+function stableStringify(value: unknown): string {
+  if (value === null || value === undefined) {
+    return '""';
+  }
+  if (typeof value === "string") {
+    return JSON.stringify(value.trim());
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map(stableStringify).join(",")}]`;
+  }
+  if (typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    const keys = Object.keys(obj).sort();
+    return `{${keys.map((key) => `${JSON.stringify(key)}:${stableStringify(obj[key])}`).join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function hasUserInput(current: FormData, baseline: FormData = EMPTY_FORM_DATA): boolean {
+  return stableStringify(current) !== stableStringify(baseline);
+}
+
+export function BioCallForm() {
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+  const [savedBioCallId, setSavedBioCallId] = useState<string | null>(null);
+  /** Snapshot del formulario al ultimo guardado exitoso (para habilitar PDF solo si no hubo cambios). */
+  const [lastSavedSnapshot, setLastSavedSnapshot] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<FormData>(createEmptyFormData);
   useEffect(() => {
-    const lastId = localStorage.getItem("biocall_last_id");
-    if (lastId) setSavedBioCallId(lastId);
-
     const saved = localStorage.getItem("biocall_draft");
     if (saved) {
       try {
-        const parsed = JSON.parse(saved);
-        setFormData((prev) => {
-          const merged = { ...prev };
-          for (const key of Object.keys(prev) as Array<keyof typeof prev>) {
-            if (parsed[key] && typeof parsed[key] === "object" && !Array.isArray(parsed[key])) {
-              merged[key] = {
-                ...prev[key],
-                ...parsed[key],
-              };
-            } else if (parsed[key] !== undefined) {
-              merged[key] = parsed[key];
-            }
-          }
-          return merged;
-        });
-        toast.success("Borrador recuperado automáticamente");
+        const parsed = JSON.parse(saved) as Record<string, unknown>;
+        const merged = mergeDraftIntoForm(parsed);
+
+        if (hasUserInput(merged)) {
+          setFormData(merged);
+          toast.success("Borrador recuperado automáticamente");
+        } else {
+          localStorage.removeItem("biocall_draft");
+        }
       } catch (e) {
         console.error("Error al cargar borrador desde localStorage:", e);
+        localStorage.removeItem("biocall_draft");
       }
     }
   }, []);
 
-  // Guardar en localStorage ante cualquier cambio
+  // Guardar en localStorage ante cualquier cambio con datos reales del usuario
   useEffect(() => {
-    const isDirty = Object.values(formData).some((section) =>
-      Object.values(section).some((value) => {
-        if (typeof value === "string") return value.trim() !== "";
-        if (typeof value === "number") return true;
-        if (Array.isArray(value)) return value.length > 0;
-        return false;
-      })
-    );
-    if (isDirty) {
+    if (hasUserInput(formData)) {
       localStorage.setItem("biocall_draft", JSON.stringify(formData));
+    } else {
+      localStorage.removeItem("biocall_draft");
+      setSavedBioCallId(null);
+      setLastSavedSnapshot(null);
     }
   }, [formData]);
 
-  // Helper para actualizar secciones del formulario de manera tipada
-  const updateSection = <K extends keyof typeof formData>(
+  const formSnapshot = stableStringify(formData);
+  const canSave = hasUserInput(formData);
+  const canDownloadPdf =
+    savedBioCallId !== null && lastSavedSnapshot === formSnapshot;
+
+  const updateSection = <K extends keyof FormData>(
     section: K,
-    fields: Partial<(typeof formData)[K]>
+    fields: Partial<FormData[K]>
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -279,17 +319,13 @@ export function BioCallForm() {
     }));
   };
 
-  // Indica si el usuario ha comenzado a llenar el formulario (para habilitar el botón Guardar)
-  const isFormDirty = Object.values(formData).some((section) =>
-    Object.values(section).some((value) => {
-      if (typeof value === "string") return value.trim() !== "";
-      if (typeof value === "number") return true;
-      return false;
-    })
-  );
-
   // Acción para guardar el formulario
   const handleSave = async () => {
+    if (!canSave) {
+      toast.error("Completa al menos un campo antes de guardar.");
+      return;
+    }
+
     const loadingToast = toast.loading("Guardando datos en el servidor...");
     try {
       const response = await fetch(`${API_BASE}/api/bio-calls`, {
@@ -310,7 +346,7 @@ export function BioCallForm() {
         const newId = resData?.data?.id as string | undefined;
         if (newId) {
           setSavedBioCallId(newId);
-          localStorage.setItem("biocall_last_id", newId);
+          setLastSavedSnapshot(formSnapshot);
         }
         toast.success("Bio Call guardada y PDF generado en el servidor");
         console.log("Bio Call guardada:", resData);
@@ -330,7 +366,10 @@ export function BioCallForm() {
   };
 
   const handleDownloadPdf = () => {
-    if (!savedBioCallId) return;
+    if (!canDownloadPdf || !savedBioCallId) {
+      toast.error("Guarda la Bio Call primero para generar el PDF.");
+      return;
+    }
     window.open(`${API_BASE}/api/bio-calls/${savedBioCallId}/pdf`, "_blank", "noopener,noreferrer");
   };
 
@@ -416,26 +455,34 @@ export function BioCallForm() {
                 </GlassButton>
               </span>
             </Tooltip>
-            <Tooltip content={savedBioCallId ? "Descargar PDF de la Bio Call" : "Guarda primero para generar el PDF"}>
+            <Tooltip
+              content={
+                canDownloadPdf
+                  ? "Descargar PDF de la Bio Call"
+                  : savedBioCallId
+                    ? "Guarda de nuevo tras editar el formulario"
+                    : "Guarda primero para generar el PDF"
+              }
+            >
               <span>
                 <GlassButton
                   variant="secondary"
                   size="sm"
                   leftIcon={<FileDown className="h-4 w-4" aria-hidden="true" />}
-                  disabled={!savedBioCallId}
+                  disabled={!canDownloadPdf}
                   onClick={handleDownloadPdf}
                 >
                   Descargar PDF
                 </GlassButton>
               </span>
             </Tooltip>
-            <Tooltip content={isFormDirty ? "Guardar información de la Bio Call" : "Completa información para guardar"}>
+            <Tooltip content={canSave ? "Guardar información de la Bio Call" : "Completa al menos un campo para guardar"}>
               <span>
                 <GlassButton
                   variant="primary"
                   size="sm"
                   leftIcon={<Save className="h-4 w-4" aria-hidden="true" />}
-                  disabled={!isFormDirty}
+                  disabled={!canSave}
                   onClick={handleSave}
                 >
                   Guardar Bio Call
