@@ -4,7 +4,9 @@ import React from "react";
 
 import { Plus, Trash2 } from "lucide-react";
 import { GlassButton } from "@/components/glass/GlassButton";
+import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
+import { getFieldError } from "@/lib/formErrors";
 
 const PREFIX = "family";
 
@@ -53,6 +55,8 @@ interface FamilySectionProps {
 }
 
 export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
+  const err = (field: keyof FamilyData) => getFieldError(errors, `${PREFIX}.${field}`);
+
   const handleChange = (field: keyof FamilyData, value: string) => {
     onChange({ [field]: value });
   };
@@ -337,11 +341,13 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               <input
                 id="nombresConyuge"
                 type="text"
-                className="input-glass"
+                className={fieldInputClass(!!err("nombresConyuge"))}
+                aria-invalid={!!err("nombresConyuge")}
                 placeholder="Ej. Ana"
                 value={data.nombresConyuge}
                 onChange={(e) => handleChange("nombresConyuge", e.target.value)}
               />
+              <FieldError message={err("nombresConyuge")} />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -351,11 +357,13 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               <input
                 id="apellidoPaternoConyuge"
                 type="text"
-                className="input-glass"
+                className={fieldInputClass(!!err("apellidoPaternoConyuge"))}
+                aria-invalid={!!err("apellidoPaternoConyuge")}
                 placeholder="Ej. López"
                 value={data.apellidoPaternoConyuge}
                 onChange={(e) => handleChange("apellidoPaternoConyuge", e.target.value)}
               />
+              <FieldError message={err("apellidoPaternoConyuge")} />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -365,11 +373,13 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               <input
                 id="apellidoMaternoConyuge"
                 type="text"
-                className="input-glass"
+                className={fieldInputClass(!!err("apellidoMaternoConyuge"))}
+                aria-invalid={!!err("apellidoMaternoConyuge")}
                 placeholder="Ej. Martínez"
                 value={data.apellidoMaternoConyuge}
                 onChange={(e) => handleChange("apellidoMaternoConyuge", e.target.value)}
               />
+              <FieldError message={err("apellidoMaternoConyuge")} />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -379,11 +389,13 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               <input
                 id="fechaLugarMatrimonioConyuge"
                 type="text"
-                className="input-glass"
+                className={fieldInputClass(!!err("fechaLugarMatrimonioConyuge"))}
+                aria-invalid={!!err("fechaLugarMatrimonioConyuge")}
                 placeholder="Ej. 15 marzo 2020, Ciudad de México"
                 value={data.fechaLugarMatrimonioConyuge || ""}
                 onChange={(e) => handleChange("fechaLugarMatrimonioConyuge", e.target.value)}
               />
+              <FieldError message={err("fechaLugarMatrimonioConyuge")} />
             </div>
 
             <div className="flex flex-col gap-2 md:col-span-2">
@@ -393,11 +405,13 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               <input
                 id="fechaLugarNacimientoConyuge"
                 type="text"
-                className="input-glass"
+                className={fieldInputClass(!!err("fechaLugarNacimientoConyuge"))}
+                aria-invalid={!!err("fechaLugarNacimientoConyuge")}
                 placeholder="Ej. 10 junio 1990, Guadalajara"
                 value={data.fechaLugarNacimientoConyuge || ""}
                 onChange={(e) => handleChange("fechaLugarNacimientoConyuge", e.target.value)}
               />
+              <FieldError message={err("fechaLugarNacimientoConyuge")} />
             </div>
           </div>
         )}

@@ -3,7 +3,9 @@
 import React, { useState } from "react";
 import { Plus, Trash2, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
 import { GlassButton } from "@/components/glass/GlassButton";
+import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
+import { getFieldError } from "@/lib/formErrors";
 
 const PREFIX = "caseBackground";
 
@@ -123,6 +125,8 @@ interface CaseSectionProps {
 
 export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
   const [showInadmissibility, setShowInadmissibility] = useState(false);
+  const err = (field: keyof CaseBackgroundData) =>
+    getFieldError(errors, `${PREFIX}.${field}`);
 
   const inadKeys: Array<keyof CaseBackgroundData> = [
     "inadDetencionTrafico", "inadCometidoDelito", "inadInmunidadDiplomatica", "inadProstitucionTrafico",
@@ -1809,11 +1813,13 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             <textarea
               id="documentosPendientes"
               rows={4}
-              className="input-glass resize-y"
+              className={fieldInputClass(!!err("documentosPendientes"), "resize-y")}
+              aria-invalid={!!err("documentosPendientes")}
               placeholder="Ej. Acta de nacimiento, identificación, comprobante de domicilio..."
               value={data.documentosPendientes || ""}
               onChange={(e) => handleChange("documentosPendientes", e.target.value)}
             />
+            <FieldError message={err("documentosPendientes")} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -1823,11 +1829,13 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             <textarea
               id="correosPendientes"
               rows={4}
-              className="input-glass resize-y"
+              className={fieldInputClass(!!err("correosPendientes"), "resize-y")}
+              aria-invalid={!!err("correosPendientes")}
               placeholder="Ej. Enviar formulario para subir documentos, correo con instrucciones..."
               value={data.correosPendientes || ""}
               onChange={(e) => handleChange("correosPendientes", e.target.value)}
             />
+            <FieldError message={err("correosPendientes")} />
           </div>
         </div>
       </div>

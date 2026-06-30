@@ -3,7 +3,7 @@ import type { BioCall } from "@biocall/shared";
 import { BIO_CALL_SECTIONS } from "@biocall/shared";
 import { existsSync } from "node:fs";
 
-export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1";
+export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1.1";
 
 export interface GenerateBioCallPdfOptions {
   logoPath?: string;
@@ -116,7 +116,8 @@ export function generateBioCallPdf(
       fieldLine(doc, "  Ciudad", item.ciudad);
       fieldLine(doc, "  Estado", item.estado);
       fieldLine(doc, "  Pais", item.pais);
-      fieldLine(doc, "  Desde / Hasta", `${display(item.fechaDesde)} — ${display(item.fechaHasta)}`);
+      fieldLine(doc, "  Desde", item.fechaDesde);
+      fieldLine(doc, "  Hasta", item.fechaHasta);
     });
 
     // Documentos
@@ -155,6 +156,8 @@ export function generateBioCallPdf(
     fieldLine(doc, "Nombres conyuge", fam.nombresConyuge);
     fieldLine(doc, "Apellido paterno conyuge", fam.apellidoPaternoConyuge);
     fieldLine(doc, "Apellido materno conyuge", fam.apellidoMaternoConyuge);
+    fieldLine(doc, "Fecha y lugar de matrimonio", fam.fechaLugarMatrimonioConyuge);
+    fieldLine(doc, "Fecha y lugar de nacimiento del conyuge", fam.fechaLugarNacimientoConyuge);
     fieldLine(doc, "Casado", fam.casado);
     fieldLine(doc, "Previamente casado", fam.previamenteCasado);
     fieldLine(doc, "Tiene hijos", fam.tieneHijos);
@@ -172,6 +175,7 @@ export function generateBioCallPdf(
         )
       );
       fieldLine(doc, "  Matrimonio", item.fechaLugarMatrimonio);
+      fieldLine(doc, "  Nacimiento ex-conyuge", item.fechaLugarNacimiento);
       fieldLine(doc, "  Divorcio", item.fechaLugarDivorcio);
     });
     fam.hijos.forEach((item, index) => {
@@ -184,6 +188,7 @@ export function generateBioCallPdf(
         fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
       );
       fieldLine(doc, "  Fecha nacimiento", item.fechaNacimiento);
+      fieldLine(doc, "  Lugar nacimiento", item.lugarNacimiento);
       fieldLine(doc, "  Lugar residencia", item.lugarResidencia);
     });
 
@@ -277,6 +282,11 @@ export function generateBioCallPdf(
     foiaAgencies.forEach(([name, item]) => {
       fieldLine(doc, name, `${display(item.solicitar)}${item.motivo?.trim() ? ` — ${item.motivo}` : ""}`);
     });
+
+    ensureSpace(doc, 80);
+    sectionTitle(doc, "Documentos y correos pendientes");
+    fieldLine(doc, "Documentos pendientes", cb.documentosPendientes);
+    fieldLine(doc, "Correos pendientes", cb.correosPendientes);
 
     doc.end();
   });
