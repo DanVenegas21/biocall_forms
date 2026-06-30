@@ -197,4 +197,35 @@ describe("validateBioCall", () => {
     });
     expect(result.ok).toBe(true);
   });
+
+  it("rechaza documentos pendientes que exceden el maximo", () => {
+    const result = validateBioCall({
+      ...basePayload,
+      caseBackground: {
+        ...emptyCaseBackground,
+        documentosPendientes: "x".repeat(2001),
+      },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errorMap["caseBackground.documentosPendientes"]).toBeTruthy();
+    }
+  });
+
+  it("rechaza fecha de matrimonio del conyuge demasiado larga", () => {
+    const result = validateBioCall({
+      ...basePayload,
+      family: {
+        ...basePayload.family,
+        tieneConyuge: "si",
+        nombresConyuge: "Ana",
+        apellidoPaternoConyuge: "Lopez",
+        fechaLugarMatrimonioConyuge: "x".repeat(101),
+      },
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.errorMap["family.fechaLugarMatrimonioConyuge"]).toBeTruthy();
+    }
+  });
 });

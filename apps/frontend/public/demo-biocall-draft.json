@@ -1,0 +1,252 @@
+{
+  "personalData": {
+    "nombres": "Roberto Antonio",
+    "apellidoPaterno": "Vega",
+    "apellidoMaterno": "Morales",
+    "fechaNacimiento": "1978-11-03",
+    "ciudadNacimiento": "Monterrey",
+    "estadoNacimiento": "Nuevo Leon",
+    "paisNacimiento": "Mexico",
+    "sexo": "Masculino",
+    "estadoCivil": "Casado(a)",
+    "nacionalidad": "Mexicana",
+    "comprendeIngles": "parcial",
+    "idiomaPreferido": "Espanol",
+    "hablaOtroIdioma": "si",
+    "especificarIdioma": "Nahuatl basico",
+    "otrosNombres": "ROBERTO VEGA MORALES"
+  },
+  "contact": {
+    "telefono": "615-555-0198",
+    "correoElectronico": "roberto.vega.demo@ejemplo.com"
+  },
+  "address": {
+    "calleNumero": "1842 Oak Street",
+    "aptoSuite": "Apt 3B",
+    "ciudad": "Nashville",
+    "estado": "Tennessee",
+    "codigoPostal": "37203",
+    "fechaIngreso": "Marzo 2019",
+    "resididoOtrosLugares": "si",
+    "direccionesAnteriores": [
+      {
+        "calleNumero": "905 Elm Avenue",
+        "aptoSuite": "",
+        "ciudad": "Memphis",
+        "estado": "Tennessee",
+        "codigoPostal": "38104",
+        "fechaDesde": "Enero 2016",
+        "fechaHasta": "Febrero 2019"
+      },
+      {
+        "calleNumero": "Calle Hidalgo 220",
+        "aptoSuite": "Int 4",
+        "ciudad": "Monterrey",
+        "estado": "Nuevo Leon",
+        "codigoPostal": "64000",
+        "fechaDesde": "1990",
+        "fechaHasta": "Diciembre 2015"
+      }
+    ]
+  },
+  "documents": {
+    "tienePasaporte": "si",
+    "pasaportePendiente": "no",
+    "numeroPasaporte": "G71234567",
+    "paisEmision": "Mexico",
+    "fechaEmision": "2018-04-12",
+    "fechaExpiracion": "2028-04-12",
+    "tieneANumber": "si",
+    "aNumberValue": "204567891",
+    "aNumberOrigen": "Notificacion en procedimiento de remocion",
+    "tieneSSN": "si",
+    "ssnValue": "123-45-6789",
+    "tieneEAD": "si",
+    "eadValue": "SRC2098765432"
+  },
+  "family": {
+    "tieneConyuge": "si",
+    "nombresConyuge": "Laura Isabel",
+    "apellidoPaternoConyuge": "Hernandez",
+    "apellidoMaternoConyuge": "Ruiz",
+    "fechaLugarMatrimonioConyuge": "14 de febrero 2004, Monterrey, Nuevo Leon",
+    "fechaLugarNacimientoConyuge": "22 de julio 1980, Guadalajara, Jalisco",
+    "nombresPadre": "Francisco",
+    "apellidoPaternoPadre": "Vega",
+    "apellidoMaternoPadre": "Luna",
+    "nombresMadre": "Consuelo",
+    "apellidoPaternoMadre": "Morales",
+    "apellidoMaternoMadre": "Diaz",
+    "casado": "si",
+    "previamenteCasado": "si",
+    "matrimoniosPrevios": [
+      {
+        "nombresExConyuge": "Patricia",
+        "apellidoPaternoExConyuge": "Solis",
+        "apellidoMaternoExConyuge": "Nunez",
+        "fechaLugarMatrimonio": "Junio 1998, Monterrey",
+        "fechaLugarNacimiento": "Monterrey 1975",
+        "fechaLugarDivorcio": "Octubre 2002, Monterrey"
+      }
+    ],
+    "tieneHijos": "si",
+    "hijos": [
+      {
+        "nombres": "Diego Francisco",
+        "apellidoPaterno": "Vega",
+        "apellidoMaterno": "Hernandez",
+        "fechaNacimiento": "2006-08-19",
+        "lugarNacimiento": "Monterrey, Nuevo Leon, Mexico",
+        "lugarResidencia": "Nashville, Tennessee, EE.UU."
+      },
+      {
+        "nombres": "Valentina",
+        "apellidoPaterno": "Vega",
+        "apellidoMaterno": "Hernandez",
+        "fechaNacimiento": "2009-03-02",
+        "lugarNacimiento": "Monterrey, Nuevo Leon, Mexico",
+        "lugarResidencia": "Nashville, Tennessee, EE.UU."
+      },
+      {
+        "nombres": "Mateo",
+        "apellidoPaterno": "Vega",
+        "apellidoMaterno": "Hernandez",
+        "fechaNacimiento": "2014-11-27",
+        "lugarNacimiento": "Memphis, Tennessee, EE.UU.",
+        "lugarResidencia": "Nashville, Tennessee, EE.UU."
+      }
+    ]
+  },
+  "caseBackground": {
+    "viajes": [
+      {
+        "fechaEntrada": "Agosto 1995",
+        "formaEntrada": "Visa de turista B-2",
+        "lugarEntrada": "Laredo, Texas",
+        "fechaSalida": "Enero 1996",
+        "fueDetenido": "no",
+        "detallesDetencion": ""
+      },
+      {
+        "fechaEntrada": "Marzo 2019",
+        "formaEntrada": "Reingreso sin inspeccion",
+        "lugarEntrada": "Zona rural, Arizona",
+        "fechaSalida": "",
+        "fueDetenido": "si",
+        "detallesDetencion": "Detencion breve por Border Patrol; liberado con cita pendiente"
+      }
+    ],
+    "viajesComentarios": "Primera estadia corta en 1995. Regreso permanente desde 2019. Familia reside en Nashville.",
+    "detenidoInmigracion": "si",
+    "detencionesInmi": [
+      {
+        "lugar": "Centro de detencion, Louisiana",
+        "fecha": "Noviembre 2022",
+        "autoridad": "ICE",
+        "ordenDeportacion": "si",
+        "sancionCastigo": "no",
+        "regresoVoluntario": "no",
+        "fotosHuellas": "si",
+        "citaCorte": "si"
+      }
+    ],
+    "arrestadoPolicia": "si",
+    "arrestosPolicia": [
+      {
+        "paisCiudadEstado": "Memphis, Tennessee, EE.UU.",
+        "fecha": "Mayo 2018",
+        "motivo": "Infraccion de transito - manejo sin licencia",
+        "autoridad": "Memphis Police Department",
+        "disposicion": "Multa pagada, caso cerrado"
+      }
+    ],
+    "empleoNombre": "Southern Kitchen LLC",
+    "empleoOcupacion": "Cocinero de linea",
+    "empleoDireccionCalle": "450 Broadway Ave",
+    "empleoDireccionApto": "",
+    "empleoDireccionCiudad": "Nashville",
+    "empleoDireccionEstado": "Tennessee",
+    "empleoDireccionZip": "37201",
+    "empleoFechaIngreso": "Abril 2020",
+    "empleoFechaSalida": "",
+    "empleoOtrosLugares": "si",
+    "empleosAnteriores": [
+      {
+        "empresa": "La Parilla Restaurant",
+        "puesto": "Mesero y ayudante de cocina",
+        "direccionCalle": "1200 Union Ave",
+        "direccionApto": "",
+        "direccionCiudad": "Memphis",
+        "direccionEstado": "Tennessee",
+        "direccionZip": "38104",
+        "fechaDesde": "2016",
+        "fechaHasta": "Marzo 2020"
+      },
+      {
+        "empresa": "Taller Mecanico El Norte",
+        "puesto": "Ayudante general",
+        "direccionCalle": "Av. Constitucion 890",
+        "direccionApto": "",
+        "direccionCiudad": "Monterrey",
+        "direccionEstado": "Nuevo Leon",
+        "direccionZip": "64000",
+        "fechaDesde": "2003",
+        "fechaHasta": "2015"
+      }
+    ],
+    "inadDetencionTrafico": "no",
+    "inadCometidoDelito": "no",
+    "inadInmunidadDiplomatica": "no",
+    "inadProstitucionTrafico": "no",
+    "inadAyudaIngresoIlegal": "no",
+    "inadTerrorismo": "no",
+    "inadFondosTerrorismo": "no",
+    "inadAsociacionTerrorista": "no",
+    "inadEspionaje": "no",
+    "inadPartidoComunista": "no",
+    "inadParticipadoPersecucion": "no",
+    "inadProcedimientoRemocion": "si",
+    "inadDenegadoVisa": "no",
+    "inadVisaT": "no",
+    "inadMyUscis": "no",
+    "inadGrupoMilitar": "no",
+    "inadFraudeMigratorio": "no",
+    "inadTrastornoFisicoMental": "no",
+    "inadEnfermedadPublica": "no",
+    "inadAdictoDrogas": "no",
+    "declaradoCiudadano": "no",
+    "falsaDeclaracionLugar": "",
+    "falsaDeclaracionFecha": "",
+    "falsaDeclaracionComo": "",
+    "falsaDeclaracionIntencion": "",
+    "falsaDeclaracionDetalle": "",
+    "foias": {
+      "uscis": {
+        "solicitar": "si",
+        "motivo": "Historial completo de peticiones y notices"
+      },
+      "ice": {
+        "solicitar": "si",
+        "motivo": "Registro de detencion 2022"
+      },
+      "cbp": {
+        "solicitar": "si",
+        "motivo": "Registros I-94 y entradas"
+      },
+      "eoir": {
+        "solicitar": "si",
+        "motivo": "Expediente de corte de inmigracion"
+      },
+      "fbi": {
+        "solicitar": "no",
+        "motivo": ""
+      },
+      "policia": {
+        "solicitar": "si",
+        "motivo": "Reporte arresto Memphis 2018"
+      }
+    },
+    "documentosPendientes": "Acta de matrimonio apostillada, taxes 2023 y 2024, 4 fotos tamano pasaporte, BC de hijo Mateo, comprobante domicilio reciente.",
+    "correosPendientes": "Enviar link del portal para subir documentos, recordatorio cita master calendar EOIR, carta del empleador Southern Kitchen."
+  }
+}

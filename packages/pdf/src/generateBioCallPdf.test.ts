@@ -23,5 +23,10 @@ describe("generateBioCallPdf", () => {
     expect(text).toContain("Datos personales");
     expect(text).toContain("Empresa Ejemplo S.A.");
     expect(text).toContain("Patrulla fronteriza");
+    expect(text).toContain("Junio 2008, Ciudad de Mexico");
+    expect(text).toContain("Enero 1982, Guadalajara, Mexico");
+    expect(text).toContain("Documentos y correos pendientes");
+    expect(text).toContain("Acta de nacimiento, taxes 2024");
+    expect(text).toContain("Enviar link del portal");
   });
 });

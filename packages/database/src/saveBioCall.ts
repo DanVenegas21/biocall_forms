@@ -86,6 +86,8 @@ function mapCaseBackground(
     foiaFbiMotivo: emptyToNull(foias.fbi.motivo),
     foiaPoliciaSolicitar: foias.policia.solicitar || "no",
     foiaPoliciaMotivo: emptyToNull(foias.policia.motivo),
+    documentosPendientes: emptyToNull(cb.documentosPendientes),
+    correosPendientes: emptyToNull(cb.correosPendientes),
   };
 }
 
@@ -173,6 +175,8 @@ function mapBioCallToCreateInput(
         nombresConyuge: emptyToNull(fam.nombresConyuge),
         apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
         apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
+        fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
+        fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
         nombrePadre: emptyToNull(
           fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
         ),
@@ -538,6 +542,8 @@ export async function saveBioCall(
           nombresConyuge: emptyToNull(fam.nombresConyuge),
           apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
           apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
+          fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
+          fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
           nombrePadre: emptyToNull(
             fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
           ),
@@ -553,6 +559,8 @@ export async function saveBioCall(
           nombresConyuge: emptyToNull(fam.nombresConyuge),
           apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
           apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
+          fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
+          fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
           nombrePadre: emptyToNull(
             fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
           ),

@@ -150,8 +150,10 @@ model BioCallFamily {
   tieneConyuge           String? @map("tiene_conyuge")
   nombresConyuge         String? @map("nombres_conyuge")
   apellidoPaternoConyuge String? @map("apellido_paterno_conyuge")
-  apellidoMaternoConyuge String? @map("apellido_materno_conyuge")
-  nombrePadre            String? @map("nombre_padre")
+  apellidoMaternoConyuge          String? @map("apellido_materno_conyuge")
+  fechaLugarMatrimonioConyuge     String? @map("fecha_lugar_matrimonio_conyuge")
+  fechaLugarNacimientoConyuge     String? @map("fecha_lugar_nacimiento_conyuge")
+  nombrePadre                     String? @map("nombre_padre")
   nombreMadre            String? @map("nombre_madre")
   casado                 String?
   previamenteCasado      String? @map("previamente_casado")
@@ -245,6 +247,8 @@ model BioCallCaseBackground {
   foiaFbiMotivo              String? @map("foia_fbi_motivo")
   foiaPoliciaSolicitar       String? @default("no") @map("foia_policia_solicitar")
   foiaPoliciaMotivo          String? @map("foia_policia_motivo")
+  documentosPendientes       String? @map("documentos_pendientes")
+  correosPendientes          String? @map("correos_pendientes")
 
   bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
 
