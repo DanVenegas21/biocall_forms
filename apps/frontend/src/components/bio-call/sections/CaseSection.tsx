@@ -20,6 +20,7 @@ export interface EmpleoAnteriorData {
   direccionCiudad: string;
   direccionEstado: string;
   direccionZip: string;
+  direccionPais: string;
   fechaDesde: string;
   fechaHasta: string;
 }
@@ -65,6 +66,7 @@ interface CaseBackgroundData {
   empleoDireccionCiudad: string;
   empleoDireccionEstado: string;
   empleoDireccionZip: string;
+  empleoDireccionPais: string;
   empleoFechaIngreso: string;
   empleoFechaSalida: string;
   empleoOtrosLugares: string;
@@ -180,6 +182,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
           direccionCiudad: "",
           direccionEstado: "",
           direccionZip: "",
+          direccionPais: "",
           fechaDesde: "",
           fechaHasta: "",
         },
@@ -851,7 +854,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:col-span-2 border-t border-brand-100/30 pt-3">
             <h4 className="label-caps text-xs text-brand-600 md:col-span-3 font-semibold">
-              Dirección del trabajo / Empleador (EE. UU.)
+              Dirección del trabajo / Empleador
             </h4>
 
             <div className="flex flex-col gap-2 md:col-span-2">
@@ -883,7 +886,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:col-span-2 pb-3 border-b border-brand-100/30">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:col-span-2 pb-3 border-b border-brand-100/30">
             <div className="flex flex-col gap-2">
               <label htmlFor="empleoDireccionCiudad" className="label-caps">
                 Ciudad del trabajo
@@ -906,7 +909,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id="empleoDireccionEstado"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. CDMX o Ciudad de México"
+                placeholder="Ej. CDMX"
                 value={data.empleoDireccionEstado || ""}
                 onChange={(e) => handleChange("empleoDireccionEstado", e.target.value)}
               />
@@ -923,6 +926,20 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 placeholder="Ej. 01000"
                 value={data.empleoDireccionZip || ""}
                 onChange={(e) => handleChange("empleoDireccionZip", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="empleoDireccionPais" className="label-caps">
+                País del trabajo
+              </label>
+              <input
+                id="empleoDireccionPais"
+                type="text"
+                className="input-glass"
+                placeholder="Ej. México"
+                value={data.empleoDireccionPais || ""}
+                onChange={(e) => handleChange("empleoDireccionPais", e.target.value)}
               />
             </div>
           </div>
@@ -983,6 +1000,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                           direccionCiudad: "",
                           direccionEstado: "",
                           direccionZip: "",
+                          direccionPais: "",
                           fechaDesde: "",
                           fechaHasta: "",
                         },
@@ -1060,7 +1078,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             {/* Dirección del empleo anterior */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3 border-t border-brand-100/20 pt-3">
               <h5 className="label-caps text-[10px] text-brand-500 font-bold md:col-span-3">
-                Dirección del Empleo Anterior (EE. UU.)
+                Dirección del Empleo Anterior
               </h5>
 
               <div className="flex flex-col gap-2 md:col-span-2">
@@ -1092,7 +1110,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="flex flex-col gap-2">
                 <label htmlFor={`emp-${idx}-direccionCiudad`} className="label-caps">
                   Ciudad
@@ -1132,6 +1150,20 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                   placeholder="Ej. 44100"
                   value={emp.direccionZip}
                   onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionZip", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor={`emp-${idx}-direccionPais`} className="label-caps">
+                  País
+                </label>
+                <input
+                  id={`emp-${idx}-direccionPais`}
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. México"
+                  value={emp.direccionPais}
+                  onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionPais", e.target.value)}
                 />
               </div>
             </div>

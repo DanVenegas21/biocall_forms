@@ -98,6 +98,7 @@ model BioCallAddress {
   ciudad               String
   estado               String
   codigoPostal         String  @map("codigo_postal")
+  pais                 String?
   fechaIngreso         String? @map("fecha_ingreso")
   resididoOtrosLugares String? @map("residido_otros_lugares")
 
@@ -115,6 +116,7 @@ model BioCallPreviousAddress {
   ciudad       String?
   estado       String?
   codigoPostal String? @map("codigo_postal")
+  pais         String?
   fechaDesde   String? @map("fecha_desde")
   fechaHasta   String? @map("fecha_hasta")
 
@@ -204,6 +206,7 @@ model BioCallCaseBackground {
   empleoDireccionCiudad      String? @map("empleo_direccion_ciudad")
   empleoDireccionEstado      String? @map("empleo_direccion_estado")
   empleoDireccionZip         String? @map("empleo_direccion_zip")
+  empleoDireccionPais       String? @map("empleo_direccion_pais")
   empleoFechaIngreso         String? @map("empleo_fecha_ingreso")
   empleoFechaSalida          String? @map("empleo_fecha_salida")
   empleoOtrosLugares         String? @map("empleo_otros_lugares")
@@ -314,6 +317,7 @@ model BioCallPreviousEmployment {
   direccionCiudad String? @map("direccion_ciudad")
   direccionEstado String? @map("direccion_estado")
   direccionZip    String? @map("direccion_zip")
+  direccionPais   String? @map("direccion_pais")
   fechaDesde      String? @map("fecha_desde")
   fechaHasta      String? @map("fecha_hasta")
 

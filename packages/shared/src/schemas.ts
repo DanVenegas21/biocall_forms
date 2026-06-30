@@ -33,6 +33,7 @@ export const direccionAnteriorSchema = z.object({
   ciudad: z.string(),
   estado: z.string(),
   codigoPostal: z.string(),
+  pais: z.string(),
   fechaDesde: z.string(),
   fechaHasta: z.string(),
 });
@@ -43,6 +44,7 @@ export const addressSchema = z.object({
   ciudad: z.string(),
   estado: z.string(),
   codigoPostal: z.string(),
+  pais: z.string(),
   fechaIngreso: z.string(),
   resididoOtrosLugares: z.string(),
   direccionesAnteriores: z.array(direccionAnteriorSchema),
@@ -119,6 +121,7 @@ export const empleoAnteriorSchema = z.object({
   direccionCiudad: z.string(),
   direccionEstado: z.string(),
   direccionZip: z.string(),
+  direccionPais: z.string(),
   fechaDesde: z.string(),
   fechaHasta: z.string(),
 });
@@ -161,6 +164,7 @@ export const caseBackgroundSchema = z.object({
   empleoDireccionCiudad: z.string(),
   empleoDireccionEstado: z.string(),
   empleoDireccionZip: z.string(),
+  empleoDireccionPais: z.string(),
   empleoFechaIngreso: z.string(),
   empleoFechaSalida: z.string(),
   empleoOtrosLugares: z.string(),
