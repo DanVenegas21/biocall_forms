@@ -4,6 +4,7 @@ dist-ssr
 build
 *.local
 .vite
+**/*.tsbuildinfo
 
 # Next.js
 .next
@@ -22,6 +23,12 @@ next-env.d.ts
 packages/database/prisma/*.db
 packages/database/prisma/migrations/dev.db*
 
+# Scripts SQL de Supabase (solo local; la documentacion vive en packages/database/README.md)
+packages/database/sql/*.sql
+
+# PDFs generados o de prueba local (no versionar)
+bio-call-*.pdf
+
 # Python (ai-service)
 __pycache__
 *.pyc
@@ -31,6 +38,7 @@ venv
 # Logs
 logs
 *.log
+apps/backend/.data/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

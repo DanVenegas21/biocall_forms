@@ -8,14 +8,16 @@
     "apps/backend",
     "packages/shared",
     "packages/database",
+    "packages/pdf",
     "packages/config"
   ],
   "scripts": {
     "dev": "npm run dev --workspace @biocall/frontend",
     "dev:backend": "npm run dev --workspace @biocall/backend",
-    "build": "npm run build --workspace @biocall/shared && npm run build --workspace @biocall/database && npm run build --workspace @biocall/frontend && npm run build --workspace @biocall/backend",
+    "build": "npm run build --workspace @biocall/shared && npm run build --workspace @biocall/database && npm run build --workspace @biocall/pdf && npm run build --workspace @biocall/frontend && npm run build --workspace @biocall/backend",
     "build:frontend": "npm run build --workspace @biocall/frontend",
     "build:backend": "npm run build --workspace @biocall/backend",
+    "test": "npm run test --workspace @biocall/pdf",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\""

@@ -1,3 +1,4 @@
+import "./env.js";
 import express from "express";
 import cors from "cors";
 import { env } from "./env";
@@ -5,7 +6,11 @@ import { bioCallsRouter } from "./routes/bioCalls";
 
 const app = express();
 
-app.use(cors({ origin: env.corsOrigin }));
+app.use(
+  cors({
+    origin: env.corsOrigins,
+  })
+);
 app.use(express.json());
 
 app.get("/health", (_req, res) => {

@@ -11,6 +11,7 @@ import {
   Save,
   Sparkles,
   Hammer,
+  FileDown,
   type LucideIcon,
 } from "lucide-react";
 import { BIO_CALL_SECTIONS, type BioCallSectionId } from "@biocall/shared";
@@ -40,6 +41,9 @@ const SECTION_ICONS: Record<BioCallSectionId, LucideIcon> = {
 };
 
 export function BioCallForm() {
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+  const [savedBioCallId, setSavedBioCallId] = useState<string | null>(null);
+
   // --- Estado unificado del formulario ---
   const [formData, setFormData] = useState({
     personalData: {
@@ -216,8 +220,11 @@ export function BioCallForm() {
     },
   });
 
-  // Cargar borrador desde localStorage al montar
+  // Cargar borrador e id guardado desde localStorage al montar
   useEffect(() => {
+    const lastId = localStorage.getItem("biocall_last_id");
+    if (lastId) setSavedBioCallId(lastId);
+
     const saved = localStorage.getItem("biocall_draft");
     if (saved) {
       try {
@@ -285,31 +292,46 @@ export function BioCallForm() {
   const handleSave = async () => {
     const loadingToast = toast.loading("Guardando datos en el servidor...");
     try {
-      const response = await fetch("http://localhost:4000/api/bio-calls", {
+      const response = await fetch(`${API_BASE}/api/bio-calls`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          ...(savedBioCallId ? { bioCallId: savedBioCallId } : {}),
+        }),
       });
 
       const resData = await response.json();
 
       if (response.ok) {
         toast.dismiss(loadingToast);
-        toast.success("¡Datos guardados y validados en el servidor con éxito!");
-        console.log("Datos de la Bio Call guardados en el servidor:", resData);
+        const newId = resData?.data?.id as string | undefined;
+        if (newId) {
+          setSavedBioCallId(newId);
+          localStorage.setItem("biocall_last_id", newId);
+        }
+        toast.success("Bio Call guardada y PDF generado en el servidor");
+        console.log("Bio Call guardada:", resData);
       } else {
         toast.dismiss(loadingToast);
-        toast.error(`Error de validación: ${resData.error || "Datos inválidos"}`);
+        toast.error(`Error: ${resData.error || "Datos inválidos"}`);
         console.error("Detalles de validación del servidor:", resData.details);
       }
     } catch (error) {
       toast.dismiss(loadingToast);
-      // Fallback a éxito local si el backend no está disponible
-      toast.success("¡Datos guardados localmente! (Servidor sin conexión)");
-      console.log("Datos de la Bio Call guardados localmente (fuera de línea):", formData);
+      toast.error(
+        "No se pudo conectar con el servidor. Verifica que el backend esté corriendo en " +
+          API_BASE
+      );
+      console.error("Error de red al guardar Bio Call:", error);
     }
+  };
+
+  const handleDownloadPdf = () => {
+    if (!savedBioCallId) return;
+    window.open(`${API_BASE}/api/bio-calls/${savedBioCallId}/pdf`, "_blank", "noopener,noreferrer");
   };
 
   const renderSectionContent = (sectionId: BioCallSectionId) => {
@@ -391,6 +413,19 @@ export function BioCallForm() {
                   disabled
                 >
                   Autocompletar con IA
+                </GlassButton>
+              </span>
+            </Tooltip>
+            <Tooltip content={savedBioCallId ? "Descargar PDF de la Bio Call" : "Guarda primero para generar el PDF"}>
+              <span>
+                <GlassButton
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<FileDown className="h-4 w-4" aria-hidden="true" />}
+                  disabled={!savedBioCallId}
+                  onClick={handleDownloadPdf}
+                >
+                  Descargar PDF
                 </GlassButton>
               </span>
             </Tooltip>
