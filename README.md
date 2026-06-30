@@ -65,8 +65,18 @@ cp apps/ai-service/.env.example apps/ai-service/.env
 |----------|-----------|-------------|
 | `PORT` | `apps/backend/.env` | Puerto de la API (por defecto `4000`) |
 | `CORS_ORIGIN` | `apps/backend/.env` | Origen permitido para CORS (por defecto `http://localhost:3000`) |
-| `DATABASE_URL` | `packages/database/.env` | Cadena de conexion PostgreSQL |
+| `DATABASE_URL` | `apps/backend/.env` o `packages/database/.env` | Session pooler de Supabase (misma URL para todo el equipo) |
 | `AI_SERVICE_PORT` | `apps/ai-service/.env` | Puerto del servicio de IA (por defecto `8000`) |
+
+### Conexion a Supabase (PostgreSQL)
+
+Usa la URL del **Session pooler** (puerto `5432`) en `.env.example` — funciona en redes IPv4 e IPv6. Todos los desarrolladores comparten la misma `DATABASE_URL` y la contraseña de base de datos (compartirla por un gestor de contraseñas, no por chat).
+
+1. Copia `apps/backend/.env.example` → `apps/backend/.env`
+2. Sustituye `[YOUR-PASSWORD]` por la contraseña en **Supabase → Project Settings → Database**
+3. Si la contraseña tiene caracteres especiales (`@`, `#`, `%`, etc.), codificalos en URL (ej. `@` → `%40`)
+
+No uses la conexion directa (`db....supabase.co`): en muchas redes solo resuelve por IPv6 y provoca el error Prisma P1001 (*Can't reach database server*).
 
 ## Desarrollo
 
