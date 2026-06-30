@@ -1,6 +1,10 @@
 "use client";
 
 import React from "react";
+import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
+import { getFieldError } from "@/lib/formErrors";
+
+const PREFIX = "personalData";
 
 interface PersonalDataData {
   nombres: string;
@@ -22,17 +26,20 @@ interface PersonalDataData {
 
 interface PersonalDataSectionProps {
   data: PersonalDataData;
+  errors?: Record<string, string>;
   onChange: (fields: Partial<PersonalDataData>) => void;
 }
 
-export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps) {
+export function PersonalDataSection({ data, errors, onChange }: PersonalDataSectionProps) {
+  const err = (field: keyof PersonalDataData) =>
+    getFieldError(errors, `${PREFIX}.${field}`);
+
   const handleChange = (field: keyof PersonalDataData, value: string) => {
     onChange({ [field]: value });
   };
 
   return (
     <div className="space-y-6">
-      {/* Fila 1: Nombres y Apellidos */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="flex flex-col gap-2">
           <label htmlFor="nombres" className="label-caps">
@@ -41,11 +48,13 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="nombres"
             type="text"
-            className="input-glass"
+            className={fieldInputClass(!!err("nombres"))}
+            aria-invalid={!!err("nombres")}
             placeholder="Ej. Juan Carlos"
             value={data.nombres}
             onChange={(e) => handleChange("nombres", e.target.value)}
           />
+          <FieldError message={err("nombres")} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -55,11 +64,13 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="apellidoPaterno"
             type="text"
-            className="input-glass"
+            className={fieldInputClass(!!err("apellidoPaterno"))}
+            aria-invalid={!!err("apellidoPaterno")}
             placeholder="Ej. Pérez"
             value={data.apellidoPaterno}
             onChange={(e) => handleChange("apellidoPaterno", e.target.value)}
           />
+          <FieldError message={err("apellidoPaterno")} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -69,15 +80,16 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="apellidoMaterno"
             type="text"
-            className="input-glass"
+            className={fieldInputClass(!!err("apellidoMaterno"))}
+            aria-invalid={!!err("apellidoMaterno")}
             placeholder="Ej. García"
             value={data.apellidoMaterno}
             onChange={(e) => handleChange("apellidoMaterno", e.target.value)}
           />
+          <FieldError message={err("apellidoMaterno")} />
         </div>
       </div>
 
-      {/* Fila 1.1: Otros nombres */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2 md:col-span-2">
           <label htmlFor="otrosNombres" className="label-caps">
@@ -86,15 +98,16 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="otrosNombres"
             type="text"
-            className="input-glass"
+            className={fieldInputClass(!!err("otrosNombres"))}
+            aria-invalid={!!err("otrosNombres")}
             placeholder="Ej. JUAN PÉREZ (o escribe N/A)"
             value={data.otrosNombres}
             onChange={(e) => handleChange("otrosNombres", e.target.value)}
           />
+          <FieldError message={err("otrosNombres")} />
         </div>
       </div>
 
-      {/* Fila 2: Fecha de nacimiento y sexo */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
           <label htmlFor="fechaNacimiento" className="label-caps">
@@ -103,10 +116,12 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="fechaNacimiento"
             type="date"
-            className="input-glass"
+            className={fieldInputClass(!!err("fechaNacimiento"))}
+            aria-invalid={!!err("fechaNacimiento")}
             value={data.fechaNacimiento}
             onChange={(e) => handleChange("fechaNacimiento", e.target.value)}
           />
+          <FieldError message={err("fechaNacimiento")} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -115,7 +130,8 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           </label>
           <select
             id="sexo"
-            className="input-glass"
+            className={fieldInputClass(!!err("sexo"))}
+            aria-invalid={!!err("sexo")}
             value={data.sexo}
             onChange={(e) => handleChange("sexo", e.target.value)}
           >
@@ -124,10 +140,10 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
             <option value="Masculino">Masculino</option>
             <option value="Otro">Otro / No especificar</option>
           </select>
+          <FieldError message={err("sexo")} />
         </div>
       </div>
 
-      {/* Fila 2.1: Lugar de nacimiento */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="flex flex-col gap-2">
           <label htmlFor="ciudadNacimiento" className="label-caps">
@@ -136,11 +152,13 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="ciudadNacimiento"
             type="text"
-            className="input-glass"
+            className={fieldInputClass(!!err("ciudadNacimiento"))}
+            aria-invalid={!!err("ciudadNacimiento")}
             placeholder="Ej. Ciudad de México"
             value={data.ciudadNacimiento}
             onChange={(e) => handleChange("ciudadNacimiento", e.target.value)}
           />
+          <FieldError message={err("ciudadNacimiento")} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -150,11 +168,13 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="estadoNacimiento"
             type="text"
-            className="input-glass"
+            className={fieldInputClass(!!err("estadoNacimiento"))}
+            aria-invalid={!!err("estadoNacimiento")}
             placeholder="Ej. CDMX"
             value={data.estadoNacimiento}
             onChange={(e) => handleChange("estadoNacimiento", e.target.value)}
           />
+          <FieldError message={err("estadoNacimiento")} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -164,15 +184,16 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="paisNacimiento"
             type="text"
-            className="input-glass"
+            className={fieldInputClass(!!err("paisNacimiento"))}
+            aria-invalid={!!err("paisNacimiento")}
             placeholder="Ej. México"
             value={data.paisNacimiento}
             onChange={(e) => handleChange("paisNacimiento", e.target.value)}
           />
+          <FieldError message={err("paisNacimiento")} />
         </div>
       </div>
 
-      {/* Fila 3: Estado civil y nacionalidad */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
           <label htmlFor="estadoCivil" className="label-caps">
@@ -180,7 +201,8 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           </label>
           <select
             id="estadoCivil"
-            className="input-glass"
+            className={fieldInputClass(!!err("estadoCivil"))}
+            aria-invalid={!!err("estadoCivil")}
             value={data.estadoCivil}
             onChange={(e) => handleChange("estadoCivil", e.target.value)}
           >
@@ -191,6 +213,7 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
             <option value="Viudo(a)">Viudo(a)</option>
             <option value="Unión libre">Unión libre</option>
           </select>
+          <FieldError message={err("estadoCivil")} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -200,15 +223,16 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
           <input
             id="nacionalidad"
             type="text"
-            className="input-glass"
+            className={fieldInputClass(!!err("nacionalidad"))}
+            aria-invalid={!!err("nacionalidad")}
             placeholder="Ej. Mexicana"
             value={data.nacionalidad}
             onChange={(e) => handleChange("nacionalidad", e.target.value)}
           />
+          <FieldError message={err("nacionalidad")} />
         </div>
       </div>
 
-      {/* Idioma y Comprensión (Con lógica condicional) */}
       <div className="border-t border-brand-100/50 pt-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
@@ -217,7 +241,8 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
             </label>
             <select
               id="comprendeIngles"
-              className="input-glass"
+              className={fieldInputClass(!!err("comprendeIngles"))}
+              aria-invalid={!!err("comprendeIngles")}
               value={data.comprendeIngles}
               onChange={(e) => {
                 const val = e.target.value;
@@ -233,6 +258,7 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
               <option value="no">No</option>
               <option value="parcial">Parcial</option>
             </select>
+            <FieldError message={err("comprendeIngles")} />
           </div>
 
           {(data.comprendeIngles === "no" || data.comprendeIngles === "parcial") && (
@@ -243,11 +269,13 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
               <input
                 id="idiomaPreferido"
                 type="text"
-                className="input-glass"
+                className={fieldInputClass(!!err("idiomaPreferido"))}
+                aria-invalid={!!err("idiomaPreferido")}
                 placeholder="Ej. Español"
                 value={data.idiomaPreferido}
                 onChange={(e) => handleChange("idiomaPreferido", e.target.value)}
               />
+              <FieldError message={err("idiomaPreferido")} />
             </div>
           )}
         </div>
@@ -260,7 +288,8 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
               </label>
               <select
                 id="hablaOtroIdioma"
-                className="input-glass"
+                className={fieldInputClass(!!err("hablaOtroIdioma"))}
+                aria-invalid={!!err("hablaOtroIdioma")}
                 value={data.hablaOtroIdioma}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -271,6 +300,7 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
                 <option value="si">Sí</option>
                 <option value="no">No</option>
               </select>
+              <FieldError message={err("hablaOtroIdioma")} />
             </div>
 
             {data.hablaOtroIdioma === "si" && (
@@ -281,11 +311,13 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
                 <input
                   id="especificarIdioma"
                   type="text"
-                  className="input-glass"
+                  className={fieldInputClass(!!err("especificarIdioma"))}
+                  aria-invalid={!!err("especificarIdioma")}
                   placeholder="Ej. Inglés, Francés"
                   value={data.especificarIdioma}
                   onChange={(e) => handleChange("especificarIdioma", e.target.value)}
                 />
+                <FieldError message={err("especificarIdioma")} />
               </div>
             )}
           </div>

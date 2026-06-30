@@ -3,6 +3,10 @@
 import React from "react";
 
 import { Plus, Trash2 } from "lucide-react";
+import { GlassButton } from "@/components/glass/GlassButton";
+import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
+
+const PREFIX = "family";
 
 export interface HijoData {
   nombres: string;
@@ -44,10 +48,11 @@ interface FamilyData {
 
 interface FamilySectionProps {
   data: FamilyData;
+  errors?: Record<string, string>;
   onChange: (fields: Partial<FamilyData>) => void;
 }
 
-export function FamilySection({ data, onChange }: FamilySectionProps) {
+export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
   const handleChange = (field: keyof FamilyData, value: string) => {
     onChange({ [field]: value });
   };
@@ -115,6 +120,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
 
   return (
     <div className="space-y-6">
+      <SectionErrorBanner errors={errors} prefix={PREFIX} />
       {/* 1. Padres del Cliente */}
       <div className="space-y-4">
         <div className="border-b border-brand-100/50 pb-2">
@@ -402,13 +408,16 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
               <h4 className="label-caps font-semibold text-brand-700">
                 Matrimonios Previos
               </h4>
-              <button
+              <GlassButton
                 type="button"
-                className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-2.5 py-1 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+                variant="ghost"
+                size="xs"
+                className="uppercase tracking-wider"
+                leftIcon={<Plus className="h-3 w-3" aria-hidden="true" />}
                 onClick={addMatrimonioPrevio}
               >
-                <Plus className="h-3 w-3" /> Agregar Matrimonio Previo
-              </button>
+                Agregar Matrimonio Previo
+              </GlassButton>
             </div>
 
             {(data.matrimoniosPrevios || []).map((mat, idx) => (
@@ -416,14 +425,16 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 key={idx}
                 className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
               >
-                <button
+                <GlassButton
                   type="button"
-                  className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+                  variant="danger"
+                  size="xs"
+                  iconOnly
+                  className="absolute top-3 right-3"
+                  leftIcon={<Trash2 className="h-4 w-4" aria-hidden="true" />}
                   aria-label={`Eliminar matrimonio previo ${idx + 1}`}
                   onClick={() => removeMatrimonioPrevio(idx)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                />
 
                 <h5 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
                   Matrimonio Previo #{idx + 1}
@@ -524,13 +535,16 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
           <h3 className="panel-section-title text-base font-semibold">
             3. Información de los Hijos
           </h3>
-          <button
+          <GlassButton
             type="button"
-            className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-brand-600 bg-brand-50 border border-brand-200 rounded-full px-3 py-1.5 transition-colors hover:bg-brand-100/80 active:scale-[0.98]"
+            variant="ghost"
+            size="xs"
+            className="uppercase tracking-wider"
+            leftIcon={<Plus className="h-3 w-3" aria-hidden="true" />}
             onClick={addHijo}
           >
-            <Plus className="h-3 w-3" /> Agregar Hijo
-          </button>
+            Agregar Hijo
+          </GlassButton>
         </div>
 
         <div className="grid grid-cols-1 gap-4">
@@ -571,14 +585,16 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
             key={idx}
             className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
           >
-            <button
+            <GlassButton
               type="button"
-              className="absolute top-3 right-3 text-brand-400 hover:text-red-500 transition-colors p-1"
+              variant="danger"
+              size="xs"
+              iconOnly
+              className="absolute top-3 right-3"
+              leftIcon={<Trash2 className="h-4 w-4" aria-hidden="true" />}
               aria-label={`Eliminar hijo ${idx + 1}`}
               onClick={() => removeHijo(idx)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+            />
 
             <h4 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
               Hijo #{idx + 1}

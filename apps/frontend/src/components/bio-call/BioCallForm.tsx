@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   User,
   Phone,
@@ -14,13 +14,21 @@ import {
   FileDown,
   type LucideIcon,
 } from "lucide-react";
-import { BIO_CALL_SECTIONS, type BioCallSectionId } from "@biocall/shared";
+import { BIO_CALL_SECTIONS, type BioCallSectionId, validateBioCall, getFieldLabel } from "@biocall/shared";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionPanel } from "@/components/ui/SectionPanel";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { GlassButton } from "@/components/glass/GlassButton";
 import { Tooltip } from "@/components/ui/Tooltip";
 import toast from "react-hot-toast";
+import { cn } from "@/lib/cn";
+import {
+  applyServerFieldErrors,
+  scrollToFirstFieldError,
+  validationSummaryMessage,
+  hasMeaningfulFormInput,
+} from "@/lib/formErrors";
+import { persistBioCallDraft, restoreBioCallDraft } from "@/lib/formDraft";
 
 // Importación de componentes de sección
 import { PersonalDataSection } from "./sections/PersonalDataSection";
@@ -219,41 +227,43 @@ function createEmptyFormData() {
   };
 }
 
-const EMPTY_FORM_DATA = createEmptyFormData();
-
 type FormData = ReturnType<typeof createEmptyFormData>;
 
 function mergeDraftIntoForm(parsed: Record<string, unknown>): FormData {
   const base = createEmptyFormData();
-  const merged = { ...base };
+  const merged: Record<string, unknown> = { ...base };
 
-  for (const key of Object.keys(base) as Array<keyof FormData>) {
-    const section = parsed[key as string];
+  for (const key of Object.keys(base)) {
+    const section = parsed[key];
     if (section && typeof section === "object" && !Array.isArray(section)) {
-      Object.assign(merged[key] as object, section as object);
+      merged[key] = {
+        ...((base as Record<string, unknown>)[key] as object),
+        ...(section as object),
+      };
     } else if (section !== undefined) {
-      (merged as Record<string, unknown>)[key as string] = section;
+      merged[key] = section;
     }
   }
 
   const pd = parsed.personalData;
   if (pd && typeof pd === "object" && !Array.isArray(pd)) {
     const legacy = pd as Record<string, unknown>;
+    const personalData = merged.personalData as FormData["personalData"];
     if (
       typeof legacy.lugarNacimiento === "string" &&
       legacy.lugarNacimiento.trim() &&
-      !merged.personalData.ciudadNacimiento &&
-      !merged.personalData.estadoNacimiento &&
-      !merged.personalData.paisNacimiento
+      !personalData.ciudadNacimiento &&
+      !personalData.estadoNacimiento &&
+      !personalData.paisNacimiento
     ) {
       merged.personalData = {
-        ...merged.personalData,
+        ...personalData,
         ciudadNacimiento: legacy.lugarNacimiento,
       };
     }
   }
 
-  return merged;
+  return merged as FormData;
 }
 
 /** Serializa el formulario para comparar si hay cambios reales del usuario. */
@@ -275,10 +285,6 @@ function stableStringify(value: unknown): string {
   return JSON.stringify(value);
 }
 
-function hasUserInput(current: FormData, baseline: FormData = EMPTY_FORM_DATA): boolean {
-  return stableStringify(current) !== stableStringify(baseline);
-}
-
 export function BioCallForm() {
   const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
   const [savedBioCallId, setSavedBioCallId] = useState<string | null>(null);
@@ -286,39 +292,45 @@ export function BioCallForm() {
   const [lastSavedSnapshot, setLastSavedSnapshot] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>(createEmptyFormData);
-  useEffect(() => {
-    const saved = localStorage.getItem("biocall_draft");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as Record<string, unknown>;
-        const merged = mergeDraftIntoForm(parsed);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const skipDraftPersistRef = useRef(true);
+  const formDataRef = useRef(formData);
+  formDataRef.current = formData;
 
-        if (hasUserInput(merged)) {
-          setFormData(merged);
-          toast.success("Borrador recuperado automáticamente");
-        } else {
-          localStorage.removeItem("biocall_draft");
-        }
-      } catch (e) {
-        console.error("Error al cargar borrador desde localStorage:", e);
-        localStorage.removeItem("biocall_draft");
-      }
+  // Restaurar borrador tras el primer render (evita mismatch SSR y carrera con persistencia).
+  useEffect(() => {
+    const { data, recovered } = restoreBioCallDraft(createEmptyFormData, mergeDraftIntoForm);
+    setFormData(data);
+    if (recovered) {
+      toast.success("Borrador recuperado automáticamente", { id: "biocall-draft-recovered" });
     }
   }, []);
 
-  // Guardar en localStorage ante cualquier cambio con datos reales del usuario
+  // Persistir borrador al editar; la primera ejecucion se omite (formData aun no hidratado).
   useEffect(() => {
-    if (hasUserInput(formData)) {
-      localStorage.setItem("biocall_draft", JSON.stringify(formData));
-    } else {
-      localStorage.removeItem("biocall_draft");
+    if (skipDraftPersistRef.current) {
+      skipDraftPersistRef.current = false;
+      return;
+    }
+
+    persistBioCallDraft(formData);
+    if (!hasMeaningfulFormInput(formData)) {
       setSavedBioCallId(null);
       setLastSavedSnapshot(null);
     }
   }, [formData]);
 
+  // Respaldo al cerrar o recargar: guarda el estado mas reciente si hay datos reales.
+  useEffect(() => {
+    const onPageHide = () => {
+      persistBioCallDraft(formDataRef.current);
+    };
+    window.addEventListener("pagehide", onPageHide);
+    return () => window.removeEventListener("pagehide", onPageHide);
+  }, []);
+
   const formSnapshot = stableStringify(formData);
-  const canSave = hasUserInput(formData);
+  const canSave = hasMeaningfulFormInput(formData);
   const canDownloadPdf =
     savedBioCallId !== null && lastSavedSnapshot === formSnapshot;
 
@@ -326,6 +338,18 @@ export function BioCallForm() {
     section: K,
     fields: Partial<FormData[K]>
   ) => {
+    const sectionKey = String(section);
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      for (const key of Object.keys(fields)) {
+        delete next[`${sectionKey}.${key}`];
+        const prefix = `${sectionKey}.${key}.`;
+        for (const path of Object.keys(next)) {
+          if (path.startsWith(prefix)) delete next[path];
+        }
+      }
+      return next;
+    });
     setFormData((prev) => ({
       ...prev,
       [section]: {
@@ -335,6 +359,14 @@ export function BioCallForm() {
     }));
   };
 
+  const showValidationErrors = (errorMap: Record<string, string>) => {
+    const count = Object.keys(errorMap).length;
+    if (count === 0) return;
+    setFieldErrors(errorMap);
+    toast.error(validationSummaryMessage(count));
+    scrollToFirstFieldError(errorMap);
+  };
+
   // Acción para guardar el formulario
   const handleSave = async () => {
     if (!canSave) {
@@ -342,6 +374,13 @@ export function BioCallForm() {
       return;
     }
 
+    const validation = validateBioCall(formData);
+    if (!validation.ok) {
+      showValidationErrors(validation.errorMap);
+      return;
+    }
+
+    setFieldErrors({});
     const loadingToast = toast.loading("Guardando datos en el servidor...");
     try {
       const response = await fetch(`${API_BASE}/api/bio-calls`, {
@@ -365,11 +404,18 @@ export function BioCallForm() {
           setLastSavedSnapshot(formSnapshot);
         }
         toast.success("Bio Call guardada y PDF generado en el servidor");
+        setFieldErrors({});
         console.log("Bio Call guardada:", resData);
       } else {
         toast.dismiss(loadingToast);
-        toast.error(`Error: ${resData.error || "Datos inválidos"}`);
-        console.error("Detalles de validación del servidor:", resData.details);
+        const serverMap =
+          (resData.errorMap as Record<string, string> | undefined) ??
+          applyServerFieldErrors(resData.fieldErrors);
+        if (serverMap && Object.keys(serverMap).length > 0) {
+          showValidationErrors(serverMap);
+        } else {
+          toast.error(resData.error || "No se pudo guardar la Bio Call.");
+        }
       }
     } catch (error) {
       toast.dismiss(loadingToast);
@@ -395,6 +441,7 @@ export function BioCallForm() {
         return (
           <PersonalDataSection
             data={formData.personalData}
+            errors={fieldErrors}
             onChange={(fields) => updateSection("personalData", fields)}
           />
         );
@@ -402,6 +449,7 @@ export function BioCallForm() {
         return (
           <ContactSection
             data={formData.contact}
+            errors={fieldErrors}
             onChange={(fields) => updateSection("contact", fields)}
           />
         );
@@ -409,6 +457,7 @@ export function BioCallForm() {
         return (
           <AddressSection
             data={formData.address}
+            errors={fieldErrors}
             onChange={(fields) => updateSection("address", fields)}
           />
         );
@@ -416,6 +465,7 @@ export function BioCallForm() {
         return (
           <DocumentsSection
             data={formData.documents}
+            errors={fieldErrors}
             onChange={(fields) => updateSection("documents", fields)}
           />
         );
@@ -423,6 +473,7 @@ export function BioCallForm() {
         return (
           <FamilySection
             data={formData.family}
+            errors={fieldErrors}
             onChange={(fields) => updateSection("family", fields)}
           />
         );
@@ -430,6 +481,7 @@ export function BioCallForm() {
         return (
           <CaseSection
             data={formData.caseBackground}
+            errors={fieldErrors}
             onChange={(fields) => updateSection("caseBackground", fields)}
           />
         );
@@ -495,10 +547,14 @@ export function BioCallForm() {
             <Tooltip content={canSave ? "Guardar información de la Bio Call" : "Completa al menos un campo para guardar"}>
               <span>
                 <GlassButton
-                  variant="primary"
+                  variant={canSave ? "primary" : "secondary"}
                   size="sm"
                   leftIcon={<Save className="h-4 w-4" aria-hidden="true" />}
-                  disabled={!canSave}
+                  aria-disabled={!canSave}
+                  className={cn(
+                    !canSave &&
+                      "opacity-50 text-brand-400 border-brand-100/40 shadow-none hover:bg-white/85 hover:text-brand-400 hover:shadow-none active:scale-100 cursor-pointer"
+                  )}
                   onClick={handleSave}
                 >
                   Guardar Bio Call
@@ -507,6 +563,27 @@ export function BioCallForm() {
             </Tooltip>
           </div>
         </header>
+
+        {Object.keys(fieldErrors).length > 0 && (
+          <div
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+            role="alert"
+          >
+            <p className="font-semibold">{validationSummaryMessage(Object.keys(fieldErrors).length)}</p>
+            <ul className="mt-2 list-disc pl-5 space-y-1">
+              {Object.entries(fieldErrors)
+                .slice(0, 5)
+                .map(([path, message]) => (
+                  <li key={path}>
+                    <span className="font-medium">{getFieldLabel(path)}</span>: {message}
+                  </li>
+                ))}
+              {Object.keys(fieldErrors).length > 5 && (
+                <li>...y {Object.keys(fieldErrors).length - 5} mas</li>
+              )}
+            </ul>
+          </div>
+        )}
 
         {/* Layout principal: indice + secciones */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
