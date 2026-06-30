@@ -321,8 +321,11 @@ export function BioCallForm() {
       }
     } catch (error) {
       toast.dismiss(loadingToast);
-      toast.success("¡Datos guardados localmente! (Servidor sin conexión)");
-      console.log("Datos de la Bio Call guardados localmente (fuera de línea):", formData);
+      toast.error(
+        "No se pudo conectar con el servidor. Verifica que el backend esté corriendo en " +
+          API_BASE
+      );
+      console.error("Error de red al guardar Bio Call:", error);
     }
   };
 
