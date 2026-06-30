@@ -110,7 +110,7 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
                 id="numeroPasaporte"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. G27123695"
+                placeholder="Ej. ABC123456"
                 value={data.numeroPasaporte}
                 onChange={(e) => handleChange("numeroPasaporte", e.target.value)}
               />
@@ -204,7 +204,7 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
                 id="aNumberValue"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. 123-456-789"
+                placeholder="Ej. A123456789"
                 value={data.aNumberValue}
                 onChange={(e) => handleChange("aNumberValue", e.target.value)}
               />
@@ -320,7 +320,7 @@ export function DocumentsSection({ data, onChange }: DocumentsSectionProps) {
                 id="eadValue"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. SRC1234567890"
+                placeholder="Ej. IOE1234567890"
                 value={data.eadValue}
                 onChange={(e) => handleChange("eadValue", e.target.value)}
               />

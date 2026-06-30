@@ -7,7 +7,9 @@ interface PersonalDataData {
   apellidoPaterno: string;
   apellidoMaterno: string;
   fechaNacimiento: string;
-  lugarNacimiento: string;
+  ciudadNacimiento: string;
+  estadoNacimiento: string;
+  paisNacimiento: string;
   sexo: string;
   estadoCivil: string;
   nacionalidad: string;
@@ -40,7 +42,7 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
             id="nombres"
             type="text"
             className="input-glass"
-            placeholder="Ej. Natalia Hilda"
+            placeholder="Ej. Juan Carlos"
             value={data.nombres}
             onChange={(e) => handleChange("nombres", e.target.value)}
           />
@@ -54,7 +56,7 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
             id="apellidoPaterno"
             type="text"
             className="input-glass"
-            placeholder="Ej. Reyes"
+            placeholder="Ej. Pérez"
             value={data.apellidoPaterno}
             onChange={(e) => handleChange("apellidoPaterno", e.target.value)}
           />
@@ -68,7 +70,7 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
             id="apellidoMaterno"
             type="text"
             className="input-glass"
-            placeholder="Ej. González"
+            placeholder="Ej. García"
             value={data.apellidoMaterno}
             onChange={(e) => handleChange("apellidoMaterno", e.target.value)}
           />
@@ -85,15 +87,15 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
             id="otrosNombres"
             type="text"
             className="input-glass"
-            placeholder="Ej. NATALIA REYES (O escribe N/A)"
+            placeholder="Ej. JUAN PÉREZ (o escribe N/A)"
             value={data.otrosNombres}
             onChange={(e) => handleChange("otrosNombres", e.target.value)}
           />
         </div>
       </div>
 
-      {/* Fila 2: Fecha de nacimiento, Lugar de nacimiento y Sexo */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      {/* Fila 2: Fecha de nacimiento y sexo */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
           <label htmlFor="fechaNacimiento" className="label-caps">
             Fecha de nacimiento
@@ -104,20 +106,6 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
             className="input-glass"
             value={data.fechaNacimiento}
             onChange={(e) => handleChange("fechaNacimiento", e.target.value)}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="lugarNacimiento" className="label-caps">
-            Lugar de nacimiento (Ciudad/Estado/País)
-          </label>
-          <input
-            id="lugarNacimiento"
-            type="text"
-            className="input-glass"
-            placeholder="Ej. Tamaulipas, México"
-            value={data.lugarNacimiento}
-            onChange={(e) => handleChange("lugarNacimiento", e.target.value)}
           />
         </div>
 
@@ -139,7 +127,52 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
         </div>
       </div>
 
-      {/* Fila 3: Estado civil y Nacionalidad */}
+      {/* Fila 2.1: Lugar de nacimiento */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="ciudadNacimiento" className="label-caps">
+            Ciudad de nacimiento
+          </label>
+          <input
+            id="ciudadNacimiento"
+            type="text"
+            className="input-glass"
+            placeholder="Ej. Ciudad de México"
+            value={data.ciudadNacimiento}
+            onChange={(e) => handleChange("ciudadNacimiento", e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="estadoNacimiento" className="label-caps">
+            Estado / provincia de nacimiento
+          </label>
+          <input
+            id="estadoNacimiento"
+            type="text"
+            className="input-glass"
+            placeholder="Ej. CDMX"
+            value={data.estadoNacimiento}
+            onChange={(e) => handleChange("estadoNacimiento", e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="paisNacimiento" className="label-caps">
+            País de nacimiento
+          </label>
+          <input
+            id="paisNacimiento"
+            type="text"
+            className="input-glass"
+            placeholder="Ej. México"
+            value={data.paisNacimiento}
+            onChange={(e) => handleChange("paisNacimiento", e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Fila 3: Estado civil y nacionalidad */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
           <label htmlFor="estadoCivil" className="label-caps">
@@ -249,7 +282,7 @@ export function PersonalDataSection({ data, onChange }: PersonalDataSectionProps
                   id="especificarIdioma"
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Náhuatl, Francés"
+                  placeholder="Ej. Inglés, Francés"
                   value={data.especificarIdioma}
                   onChange={(e) => handleChange("especificarIdioma", e.target.value)}
                 />

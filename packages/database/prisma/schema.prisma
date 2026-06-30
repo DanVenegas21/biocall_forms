@@ -65,7 +65,9 @@ model BioCallPersonalData {
   apellidoMaterno   String?  @map("apellido_materno")
   otrosNombres      String?  @map("otros_nombres")
   fechaNacimiento   DateTime @map("fecha_nacimiento") @db.Date
-  lugarNacimiento   String?  @map("lugar_nacimiento")
+  ciudadNacimiento  String?  @map("ciudad_nacimiento")
+  estadoNacimiento  String?  @map("estado_nacimiento")
+  paisNacimiento    String?  @map("pais_nacimiento")
   sexo              String?
   estadoCivil       String?  @map("estado_civil")
   nacionalidad      String

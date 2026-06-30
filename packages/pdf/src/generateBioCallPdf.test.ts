@@ -18,10 +18,10 @@ describe("generateBioCallPdf", () => {
     const parsed = await pdfParse(buffer);
     const text = parsed.text;
 
-    expect(text).toContain("Natalia Hilda");
-    expect(text).toContain("Morristown");
+    expect(text).toContain("Juan Carlos");
+    expect(text).toContain("Ciudad de Mexico");
     expect(text).toContain("Datos personales");
-    expect(text).toContain("Morristown Manufacturing");
-    expect(text).toContain("CBP");
+    expect(text).toContain("Empresa Ejemplo S.A.");
+    expect(text).toContain("Patrulla fronteriza");
   });
 });

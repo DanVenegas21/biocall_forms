@@ -47,7 +47,9 @@ function createEmptyFormData() {
       apellidoPaterno: "",
       apellidoMaterno: "",
       fechaNacimiento: "",
-      lugarNacimiento: "",
+      ciudadNacimiento: "",
+      estadoNacimiento: "",
+      paisNacimiento: "",
       sexo: "",
       estadoCivil: "",
       nacionalidad: "",
@@ -228,12 +230,26 @@ function mergeDraftIntoForm(parsed: Record<string, unknown>): FormData {
   for (const key of Object.keys(base) as Array<keyof FormData>) {
     const section = parsed[key as string];
     if (section && typeof section === "object" && !Array.isArray(section)) {
-      merged[key] = {
-        ...base[key],
-        ...(section as Record<string, unknown>),
-      } as FormData[typeof key];
+      Object.assign(merged[key] as object, section as object);
     } else if (section !== undefined) {
-      merged[key] = section as FormData[typeof key];
+      (merged as Record<string, unknown>)[key as string] = section;
+    }
+  }
+
+  const pd = parsed.personalData;
+  if (pd && typeof pd === "object" && !Array.isArray(pd)) {
+    const legacy = pd as Record<string, unknown>;
+    if (
+      typeof legacy.lugarNacimiento === "string" &&
+      legacy.lugarNacimiento.trim() &&
+      !merged.personalData.ciudadNacimiento &&
+      !merged.personalData.estadoNacimiento &&
+      !merged.personalData.paisNacimiento
+    ) {
+      merged.personalData = {
+        ...merged.personalData,
+        ciudadNacimiento: legacy.lugarNacimiento,
+      };
     }
   }
 

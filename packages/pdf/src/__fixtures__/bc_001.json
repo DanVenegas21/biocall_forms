@@ -1,38 +1,40 @@
 {
   "personalData": {
-    "nombres": "Natalia Hilda",
-    "apellidoPaterno": "Reyes",
-    "apellidoMaterno": "Gonzalez",
+    "nombres": "Juan Carlos",
+    "apellidoPaterno": "Perez",
+    "apellidoMaterno": "Garcia",
     "fechaNacimiento": "1985-03-14",
-    "lugarNacimiento": "Tamaulipas, Mexico",
-    "sexo": "Femenino",
+    "ciudadNacimiento": "Ciudad de Mexico",
+    "estadoNacimiento": "CDMX",
+    "paisNacimiento": "Mexico",
+    "sexo": "Masculino",
     "estadoCivil": "Casado(a)",
     "nacionalidad": "Mexicana",
     "comprendeIngles": "no",
     "idiomaPreferido": "Espanol",
     "hablaOtroIdioma": "no",
     "especificarIdioma": "NO",
-    "otrosNombres": "NATALIA REYES"
+    "otrosNombres": "JUAN PEREZ"
   },
   "contact": {
-    "telefono": "423-353-0235",
-    "correoElectronico": "natalia.reyes@ejemplo.com"
+    "telefono": "555-123-4567",
+    "correoElectronico": "correo@ejemplo.com"
   },
   "address": {
-    "calleNumero": "2058 Autumn Lane",
+    "calleNumero": "Av. Principal 123",
     "aptoSuite": "",
-    "ciudad": "Morristown",
-    "estado": "Tennessee",
-    "codigoPostal": "37814",
+    "ciudad": "Ciudad de Mexico",
+    "estado": "CDMX",
+    "codigoPostal": "01000",
     "fechaIngreso": "Mayo 2023",
     "resididoOtrosLugares": "si",
     "direccionesAnteriores": [
       {
-        "calleNumero": "1200 Main St",
-        "aptoSuite": "Apt 2",
-        "ciudad": "Knoxville",
-        "estado": "TN",
-        "codigoPostal": "37902",
+        "calleNumero": "Calle Secundaria 456",
+        "aptoSuite": "Depto 2A",
+        "ciudad": "Guadalajara",
+        "estado": "Jalisco",
+        "codigoPostal": "44100",
         "fechaDesde": "2018",
         "fechaHasta": "Mayo 2023"
       }
@@ -41,30 +43,30 @@
   "documents": {
     "tienePasaporte": "si",
     "pasaportePendiente": "no",
-    "numeroPasaporte": "G27123695",
+    "numeroPasaporte": "ABC123456",
     "paisEmision": "Mexico",
     "fechaEmision": "2019-06-01",
     "fechaExpiracion": "2029-06-01",
     "tieneANumber": "si",
-    "aNumberValue": "123456789",
+    "aNumberValue": "A123456789",
     "aNumberOrigen": "Notificacion de USCIS",
     "tieneSSN": "no",
     "ssnValue": "",
     "tieneEAD": "si",
-    "eadValue": "SRC1234567890"
+    "eadValue": "IOE1234567890"
   },
   "family": {
     "tieneConyuge": "si",
-    "nombresConyuge": "Juan Carlos",
-    "apellidoPaternoConyuge": "Reyes",
-    "apellidoMaternoConyuge": "Lopez",
-    "fechaLugarMatrimonioConyuge": "Junio 2008, Morristown, TN",
+    "nombresConyuge": "Maria",
+    "apellidoPaternoConyuge": "Lopez",
+    "apellidoMaternoConyuge": "Martinez",
+    "fechaLugarMatrimonioConyuge": "Junio 2008, Ciudad de Mexico",
     "fechaLugarNacimientoConyuge": "Enero 1982, Guadalajara, Mexico",
     "nombresPadre": "Pedro",
-    "apellidoPaternoPadre": "Reyes",
+    "apellidoPaternoPadre": "Perez",
     "apellidoMaternoPadre": "",
-    "nombresMadre": "Maria",
-    "apellidoPaternoMadre": "Gonzalez",
+    "nombresMadre": "Ana",
+    "apellidoPaternoMadre": "Garcia",
     "apellidoMaternoMadre": "",
     "casado": "si",
     "previamenteCasado": "no",
@@ -72,12 +74,12 @@
     "tieneHijos": "si",
     "hijos": [
       {
-        "nombres": "Sofia",
-        "apellidoPaterno": "Reyes",
+        "nombres": "Luis",
+        "apellidoPaterno": "Perez",
         "apellidoMaterno": "Lopez",
         "fechaNacimiento": "2010-05-20",
-        "lugarNacimiento": "Morristown, TN",
-        "lugarResidencia": "Morristown, TN"
+        "lugarNacimiento": "Ciudad de Mexico, Mexico",
+        "lugarResidencia": "Ciudad de Mexico, Mexico"
       }
     ]
   },
@@ -85,8 +87,8 @@
     "viajes": [
       {
         "fechaEntrada": "Septiembre 1995",
-        "formaEntrada": "Coyote / EWI",
-        "lugarEntrada": "Calexico, CA",
+        "formaEntrada": "Visa de turista",
+        "lugarEntrada": "Punto fronterizo, TX",
         "fechaSalida": "",
         "fueDetenido": "no",
         "detallesDetencion": ""
@@ -98,7 +100,7 @@
       {
         "lugar": "Texas",
         "fecha": "Noviembre 2022",
-        "autoridad": "CBP",
+        "autoridad": "Patrulla fronteriza",
         "ordenDeportacion": "no",
         "sancionCastigo": "no",
         "regresoVoluntario": "no",
@@ -109,20 +111,20 @@
     "arrestadoPolicia": "si",
     "arrestosPolicia": [
       {
-        "paisCiudadEstado": "Morristown, TN",
+        "paisCiudadEstado": "Ciudad, Estado, EE. UU.",
         "fecha": "Octubre 2021",
-        "motivo": "Manejar sin licencia",
-        "autoridad": "Morristown PD",
+        "motivo": "Infraccion de transito",
+        "autoridad": "Departamento de policia local",
         "disposicion": "Multa pagada"
       }
     ],
-    "empleoNombre": "Morristown Manufacturing",
-    "empleoOcupacion": "Operadora de linea",
-    "empleoDireccionCalle": "500 Industrial Blvd",
+    "empleoNombre": "Empresa Ejemplo S.A.",
+    "empleoOcupacion": "Operador de linea",
+    "empleoDireccionCalle": "Av. Industrial 500",
     "empleoDireccionApto": "",
-    "empleoDireccionCiudad": "Morristown",
-    "empleoDireccionEstado": "TN",
-    "empleoDireccionZip": "37814",
+    "empleoDireccionCiudad": "Ciudad de Mexico",
+    "empleoDireccionEstado": "CDMX",
+    "empleoDireccionZip": "01000",
     "empleoFechaIngreso": "Junio 2021",
     "empleoFechaSalida": "",
     "empleoOtrosLugares": "no",
@@ -153,6 +155,8 @@
     "falsaDeclaracionComo": "",
     "falsaDeclaracionIntencion": "",
     "falsaDeclaracionDetalle": "",
+    "documentosPendientes": "",
+    "correosPendientes": "",
     "foias": {
       "uscis": { "solicitar": "no", "motivo": "" },
       "ice": { "solicitar": "no", "motivo": "" },

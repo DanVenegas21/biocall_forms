@@ -140,7 +140,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                   id="nombresPadre"
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Cendri Omar"
+                  placeholder="Ej. Juan Carlos"
                   value={data.nombresPadre || ""}
                   onChange={(e) => handleChange("nombresPadre", e.target.value)}
                 />
@@ -154,7 +154,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                   id="apellidoPaternoPadre"
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Aguilar"
+                  placeholder="Ej. Pérez"
                   value={data.apellidoPaternoPadre || ""}
                   onChange={(e) => handleChange("apellidoPaternoPadre", e.target.value)}
                 />
@@ -168,7 +168,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                   id="apellidoMaternoPadre"
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Raudales"
+                  placeholder="Ej. García"
                   value={data.apellidoMaternoPadre || ""}
                   onChange={(e) => handleChange("apellidoMaternoPadre", e.target.value)}
                 />
@@ -190,7 +190,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                   id="nombresMadre"
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Nelin Xiomara"
+                  placeholder="Ej. María"
                   value={data.nombresMadre || ""}
                   onChange={(e) => handleChange("nombresMadre", e.target.value)}
                 />
@@ -204,7 +204,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                   id="apellidoPaternoMadre"
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Gonzales"
+                  placeholder="Ej. López"
                   value={data.apellidoPaternoMadre || ""}
                   onChange={(e) => handleChange("apellidoPaternoMadre", e.target.value)}
                 />
@@ -218,7 +218,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                   id="apellidoMaternoMadre"
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Elvir"
+                  placeholder="Ej. Martínez"
                   value={data.apellidoMaternoMadre || ""}
                   onChange={(e) => handleChange("apellidoMaternoMadre", e.target.value)}
                 />
@@ -236,7 +236,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2">
             <label htmlFor="tieneConyuge" className="label-caps">
-              ¿Tiene cónyuge o pareja de hecho?
+              ¿Tiene cónyuge?
             </label>
             <select
               id="tieneConyuge"
@@ -279,7 +279,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
               <option value="no">No</option>
             </select>
             <p className="text-[11px] text-brand-500/80 italic">
-              Nota: Si está separado(a) de hecho pero no divorciado(a) legalmente, seleccione "Sí".
+              Nota: Si está separado(a) pero no divorciado(a) legalmente, seleccione "Sí".
             </p>
           </div>
 
@@ -332,7 +332,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 id="nombresConyuge"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. María del Carmen"
+                placeholder="Ej. Ana"
                 value={data.nombresConyuge}
                 onChange={(e) => handleChange("nombresConyuge", e.target.value)}
               />
@@ -374,7 +374,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 id="fechaLugarMatrimonioConyuge"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. 22 Enero 2020, Bolivia"
+                placeholder="Ej. 15 marzo 2020, Ciudad de México"
                 value={data.fechaLugarMatrimonioConyuge || ""}
                 onChange={(e) => handleChange("fechaLugarMatrimonioConyuge", e.target.value)}
               />
@@ -388,7 +388,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 id="fechaLugarNacimientoConyuge"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. 22 Noviembre 1990, Bolivia"
+                placeholder="Ej. 10 junio 1990, Guadalajara"
                 value={data.fechaLugarNacimientoConyuge || ""}
                 onChange={(e) => handleChange("fechaLugarNacimientoConyuge", e.target.value)}
               />
@@ -437,7 +437,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     id={`mat-${idx}-nombres`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. Guadalupe Elizabeth"
+                    placeholder="Ej. Pedro"
                     value={mat.nombresExConyuge}
                     onChange={(e) => handleMatrimonioPrevioChange(idx, "nombresExConyuge", e.target.value)}
                   />
@@ -451,7 +451,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     id={`mat-${idx}-paterno`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. Escobar"
+                    placeholder="Ej. Hernández"
                     value={mat.apellidoPaternoExConyuge}
                     onChange={(e) => handleMatrimonioPrevioChange(idx, "apellidoPaternoExConyuge", e.target.value)}
                   />
@@ -465,7 +465,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     id={`mat-${idx}-materno`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. Bonilla"
+                    placeholder="Ej. Ramírez"
                     value={mat.apellidoMaternoExConyuge}
                     onChange={(e) => handleMatrimonioPrevioChange(idx, "apellidoMaternoExConyuge", e.target.value)}
                   />
@@ -479,7 +479,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     id={`mat-${idx}-nacimiento`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. Agosto 8 1993, El Salvador"
+                    placeholder="Ej. 8 agosto 1993, Monterrey"
                     value={mat.fechaLugarNacimiento}
                     onChange={(e) => handleMatrimonioPrevioChange(idx, "fechaLugarNacimiento", e.target.value)}
                   />
@@ -493,7 +493,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     id={`mat-${idx}-boda`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. Junio 2018, Ohio"
+                    placeholder="Ej. junio 2018, Ciudad de México"
                     value={mat.fechaLugarMatrimonio}
                     onChange={(e) => handleMatrimonioPrevioChange(idx, "fechaLugarMatrimonio", e.target.value)}
                   />
@@ -507,7 +507,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                     id={`mat-${idx}-divorcio`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. Mayo 2023, Ohio o Julio 2020, TN (defunción)"
+                    placeholder="Ej. mayo 2023, Guadalajara (o fecha de defunción)"
                     value={mat.fechaLugarDivorcio}
                     onChange={(e) => handleMatrimonioPrevioChange(idx, "fechaLugarDivorcio", e.target.value)}
                   />
@@ -592,7 +592,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 id={`hijo-${idx}-nombres`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Jeremi Stiven"
+                placeholder="Ej. Luis"
                 value={hijo.nombres}
                 onChange={(e) => handleHijoChange(idx, "nombres", e.target.value)}
               />
@@ -606,7 +606,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 id={`hijo-${idx}-paterno`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Aguilar"
+                placeholder="Ej. Sánchez"
                 value={hijo.apellidoPaterno}
                 onChange={(e) => handleHijoChange(idx, "apellidoPaterno", e.target.value)}
               />
@@ -620,7 +620,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 id={`hijo-${idx}-materno`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Sierra"
+                placeholder="Ej. Torres"
                 value={hijo.apellidoMaterno}
                 onChange={(e) => handleHijoChange(idx, "apellidoMaterno", e.target.value)}
               />
@@ -647,7 +647,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 id={`hijo-${idx}-lugarNacimiento`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Honduras o Louisiana"
+                placeholder="Ej. México o Texas"
                 value={hijo.lugarNacimiento}
                 onChange={(e) => handleHijoChange(idx, "lugarNacimiento", e.target.value)}
               />
@@ -661,7 +661,7 @@ export function FamilySection({ data, onChange }: FamilySectionProps) {
                 id={`hijo-${idx}-lugarResidencia`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Honduras o Louisiana, EE. UU."
+                placeholder="Ej. México o Texas, EE. UU."
                 value={hijo.lugarResidencia}
                 onChange={(e) => handleHijoChange(idx, "lugarResidencia", e.target.value)}
               />

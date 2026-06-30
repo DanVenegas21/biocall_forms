@@ -81,7 +81,9 @@ export function generateBioCallPdf(
     fieldLine(doc, "Apellido materno", pd.apellidoMaterno);
     fieldLine(doc, "Otros nombres", pd.otrosNombres);
     fieldLine(doc, "Fecha de nacimiento", pd.fechaNacimiento);
-    fieldLine(doc, "Lugar de nacimiento", pd.lugarNacimiento);
+    fieldLine(doc, "Ciudad de nacimiento", pd.ciudadNacimiento);
+    fieldLine(doc, "Estado de nacimiento", pd.estadoNacimiento);
+    fieldLine(doc, "Pais de nacimiento", pd.paisNacimiento);
     fieldLine(doc, "Sexo", pd.sexo);
     fieldLine(doc, "Estado civil", pd.estadoCivil);
     fieldLine(doc, "Nacionalidad", pd.nacionalidad);

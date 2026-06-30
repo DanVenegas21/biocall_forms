@@ -185,10 +185,10 @@ Supabase expone la conexion **directa** (`db.<ref>.supabase.co`) solo por **IPv6
 
 ```env
 # Runtime (backend + Prisma Client)
-DATABASE_URL=postgresql://postgres.mogtigntgzjqihckjfyf:TU_PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres?pgbouncer=true&connect_timeout=30
+DATABASE_URL=postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres?pgbouncer=true&connect_timeout=30
 
 # Migraciones (Prisma CLI)
-DIRECT_URL=postgresql://postgres.mogtigntgzjqihckjfyf:TU_PASSWORD@aws-0-REGION.pooler.supabase.com:5432/postgres?connect_timeout=30
+DIRECT_URL=postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres?connect_timeout=30
 ```
 
 5. Regenera el cliente y aplica el esquema:

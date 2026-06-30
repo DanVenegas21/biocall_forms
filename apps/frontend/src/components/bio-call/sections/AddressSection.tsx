@@ -85,7 +85,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
               id="calleNumero"
               type="text"
               className="input-glass"
-              placeholder="Ej. 2834 Express Blvd"
+              placeholder="Ej. Av. Principal 123"
               value={data.calleNumero || ""}
               onChange={(e) => handleChange("calleNumero", e.target.value)}
             />
@@ -99,7 +99,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
               id="aptoSuite"
               type="text"
               className="input-glass"
-              placeholder="Ej. Apt 4B (Opcional)"
+              placeholder="Ej. Depto. 4B (opcional)"
               value={data.aptoSuite || ""}
               onChange={(e) => handleChange("aptoSuite", e.target.value)}
             />
@@ -115,7 +115,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
               id="ciudad"
               type="text"
               className="input-glass"
-              placeholder="Ej. Houma"
+              placeholder="Ej. Ciudad de México"
               value={data.ciudad || ""}
               onChange={(e) => handleChange("ciudad", e.target.value)}
             />
@@ -129,7 +129,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
               id="estado"
               type="text"
               className="input-glass"
-              placeholder="Ej. LA o Louisiana"
+              placeholder="Ej. CDMX o Ciudad de México"
               value={data.estado || ""}
               onChange={(e) => handleChange("estado", e.target.value)}
             />
@@ -143,7 +143,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
               id="codigoPostal"
               type="text"
               className="input-glass"
-              placeholder="Ej. 70363"
+              placeholder="Ej. 01000"
               value={data.codigoPostal || ""}
               onChange={(e) => handleChange("codigoPostal", e.target.value)}
             />
@@ -248,7 +248,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
                 id={`dir-${idx}-calleNumero`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. 123 Main St"
+                placeholder="Ej. Calle Secundaria 456"
                 value={dir.calleNumero}
                 onChange={(e) => handleDireccionChange(idx, "calleNumero", e.target.value)}
               />
@@ -262,7 +262,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
                 id={`dir-${idx}-aptoSuite`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Apt 4B"
+                placeholder="Ej. Depto. 2A"
                 value={dir.aptoSuite}
                 onChange={(e) => handleDireccionChange(idx, "aptoSuite", e.target.value)}
               />
@@ -276,7 +276,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
                 id={`dir-${idx}-ciudad`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Woodside"
+                placeholder="Ej. Guadalajara"
                 value={dir.ciudad}
                 onChange={(e) => handleDireccionChange(idx, "ciudad", e.target.value)}
               />
@@ -290,7 +290,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
                 id={`dir-${idx}-estado`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. NY"
+                placeholder="Ej. Jalisco"
                 value={dir.estado}
                 onChange={(e) => handleDireccionChange(idx, "estado", e.target.value)}
               />
@@ -304,7 +304,7 @@ export function AddressSection({ data, onChange }: AddressSectionProps) {
                 id={`dir-${idx}-codigoPostal`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. 11377"
+                placeholder="Ej. 44100"
                 value={dir.codigoPostal}
                 onChange={(e) => handleDireccionChange(idx, "codigoPostal", e.target.value)}
               />

@@ -27,7 +27,7 @@ export function ContactSection({ data, onChange }: ContactSectionProps) {
           id="telefono"
           type="tel"
           className="input-glass"
-          placeholder="Ej. 423-353-0235 o 3474051108"
+          placeholder="Ej. 555-123-4567"
           value={data.telefono}
           onChange={(e) => handleChange("telefono", e.target.value)}
         />
@@ -41,7 +41,7 @@ export function ContactSection({ data, onChange }: ContactSectionProps) {
           id="correoElectronico"
           type="email"
           className="input-glass"
-          placeholder="Ej. cliente@gmail.com"
+          placeholder="Ej. correo@ejemplo.com"
           value={data.correoElectronico}
           onChange={(e) => handleChange("correoElectronico", e.target.value)}
         />

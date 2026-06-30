@@ -360,7 +360,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                   id={`viaje-${idx}-forma`}
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Visa de turista, Coyote"
+                  placeholder="Ej. Visa de turista"
                   value={viaje.formaEntrada}
                   onChange={(e) => handleViajeChange(idx, "formaEntrada", e.target.value)}
                 />
@@ -374,7 +374,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                   id={`viaje-${idx}-lugar`}
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Matamoros hacia Brownsville"
+                  placeholder="Ej. Ciudad fronteriza hacia ciudad en EE. UU."
                   value={viaje.lugarEntrada}
                   onChange={(e) => handleViajeChange(idx, "lugarEntrada", e.target.value)}
                 />
@@ -430,7 +430,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                     id={`viaje-${idx}-detallesDetencion`}
                     type="text"
                     className="input-glass"
-                    placeholder="Ej. CBP me detuvo en la frontera y me regresó."
+                    placeholder="Ej. Me detuvieron en la frontera y me regresaron."
                     value={viaje.detallesDetencion}
                     onChange={(e) => handleViajeChange(idx, "detallesDetencion", e.target.value)}
                   />
@@ -448,7 +448,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
             id="viajesComentarios"
             rows={2}
             className="input-glass resize-none min-h-[60px]"
-            placeholder="Ej. El cliente indica que por el COVID-19 se le olvidan algunas fechas de ingresos."
+            placeholder="Ej. El cliente indica que no recuerda algunas fechas exactas."
             value={data.viajesComentarios || ""}
             onChange={(e) => handleChange("viajesComentarios", e.target.value)}
           />
@@ -543,7 +543,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id={`det-${idx}-lugar`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Laredo, TX"
+                placeholder="Ej. Ciudad fronteriza, TX"
                 value={det.lugar}
                 onChange={(e) => handleDetencionInmiChange(idx, "lugar", e.target.value)}
               />
@@ -571,7 +571,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id={`det-${idx}-autoridad`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Border Patrol"
+                placeholder="Ej. Patrulla fronteriza"
                 value={det.autoridad}
                 onChange={(e) => handleDetencionInmiChange(idx, "autoridad", e.target.value)}
               />
@@ -750,7 +750,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id={`arr-${idx}-paisCiudadEstado`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Pineville, OH, EE. UU."
+                placeholder="Ej. Ciudad, Estado, EE. UU."
                 value={arr.paisCiudadEstado}
                 onChange={(e) => handleArrestoPoliciaChange(idx, "paisCiudadEstado", e.target.value)}
               />
@@ -778,7 +778,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id={`arr-${idx}-motivo`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Manejar sin estampillas y no licencia"
+                placeholder="Ej. Infracción de tránsito"
                 value={arr.motivo}
                 onChange={(e) => handleArrestoPoliciaChange(idx, "motivo", e.target.value)}
               />
@@ -792,7 +792,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id={`arr-${idx}-autoridad`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Policía de Pineville"
+                placeholder="Ej. Departamento de policía local"
                 value={arr.autoridad}
                 onChange={(e) => handleArrestoPoliciaChange(idx, "autoridad", e.target.value)}
               />
@@ -806,7 +806,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id={`arr-${idx}-disposicion`}
                 rows={2}
                 className="input-glass resize-none"
-                placeholder="Ej. Pasó la noche en la cárcel, pagó fianza de $350, caso cerrado en corte"
+                placeholder="Ej. Detención breve, pagó fianza, caso cerrado"
                 value={arr.disposicion}
                 onChange={(e) => handleArrestoPoliciaChange(idx, "disposicion", e.target.value)}
               />
@@ -829,7 +829,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
               id="empleoNombre"
               type="text"
               className="input-glass"
-              placeholder="Ej. Independiente - Horses Utility LLC"
+              placeholder="Ej. Independiente - Empresa Ejemplo S.A."
               value={data.empleoNombre || ""}
               onChange={(e) => handleChange("empleoNombre", e.target.value)}
             />
@@ -862,7 +862,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id="empleoDireccionCalle"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. 2834 Express Blvd"
+                placeholder="Ej. Av. Principal 123"
                 value={data.empleoDireccionCalle || ""}
                 onChange={(e) => handleChange("empleoDireccionCalle", e.target.value)}
               />
@@ -876,7 +876,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id="empleoDireccionApto"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Apt 10 (Opcional)"
+                placeholder="Ej. Depto. 10 (opcional)"
                 value={data.empleoDireccionApto || ""}
                 onChange={(e) => handleChange("empleoDireccionApto", e.target.value)}
               />
@@ -892,7 +892,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id="empleoDireccionCiudad"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Houma"
+                placeholder="Ej. Ciudad de México"
                 value={data.empleoDireccionCiudad || ""}
                 onChange={(e) => handleChange("empleoDireccionCiudad", e.target.value)}
               />
@@ -906,7 +906,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id="empleoDireccionEstado"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. LA o Louisiana"
+                placeholder="Ej. CDMX o Ciudad de México"
                 value={data.empleoDireccionEstado || ""}
                 onChange={(e) => handleChange("empleoDireccionEstado", e.target.value)}
               />
@@ -920,7 +920,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id="empleoDireccionZip"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. 70363"
+                placeholder="Ej. 01000"
                 value={data.empleoDireccionZip || ""}
                 onChange={(e) => handleChange("empleoDireccionZip", e.target.value)}
               />
@@ -1071,7 +1071,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                   id={`emp-${idx}-direccionCalle`}
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. 123 Main St"
+                  placeholder="Ej. Calle Secundaria 456"
                   value={emp.direccionCalle}
                   onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionCalle", e.target.value)}
                 />
@@ -1085,7 +1085,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                   id={`emp-${idx}-direccionApto`}
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Apt 4B (Opcional)"
+                  placeholder="Ej. Depto. 4B (opcional)"
                   value={emp.direccionApto}
                   onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionApto", e.target.value)}
                 />
@@ -1101,7 +1101,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                   id={`emp-${idx}-direccionCiudad`}
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Woodside"
+                  placeholder="Ej. Guadalajara"
                   value={emp.direccionCiudad}
                   onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionCiudad", e.target.value)}
                 />
@@ -1115,7 +1115,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                   id={`emp-${idx}-direccionEstado`}
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. NY"
+                  placeholder="Ej. Jalisco"
                   value={emp.direccionEstado}
                   onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionEstado", e.target.value)}
                 />
@@ -1129,7 +1129,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                   id={`emp-${idx}-direccionZip`}
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. 11377"
+                  placeholder="Ej. 44100"
                   value={emp.direccionZip}
                   onChange={(e) => handleEmpleoAnteriorChange(idx, "direccionZip", e.target.value)}
                 />
@@ -1469,7 +1469,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                     id="inadMyUscisDetails"
                     rows={3}
                     className="input-glass"
-                    placeholder="Ej. Correo: juan@example.com&#10;Contraseña: CLAVE123&#10;Preguntas: 1. Mascota: Firulais...&#10;Código de recuperación: ABC-DEF-GHI"
+                    placeholder="Ej. Correo: correo@ejemplo.com&#10;Contraseña: ********&#10;Preguntas: 1. Mascota: Nombre...&#10;Código de recuperación: XXX-XXX-XXX"
                     value={data.inadMyUscis === "si" ? "" : data.inadMyUscis}
                     onChange={(e) => handleChange("inadMyUscis", e.target.value || "si")}
                   />
@@ -1612,7 +1612,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id="falsaDeclaracionLugar"
                 type="text"
                 className="input-glass"
-                placeholder="Ej. Frontera Laredo o Aplicación de Trabajo"
+                placeholder="Ej. Punto fronterizo o solicitud de empleo"
                 value={data.falsaDeclaracionLugar || ""}
                 onChange={(e) => handleChange("falsaDeclaracionLugar", e.target.value)}
               />
@@ -1668,7 +1668,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
                 id="falsaDeclaracionDetalle"
                 rows={2}
                 className="input-glass resize-none"
-                placeholder="Ej. El cliente indica que un empleador le dijo que pusiera que era ciudadano..."
+                placeholder="Ej. El cliente indica que un empleador le pidió declarar ciudadanía..."
                 value={data.falsaDeclaracionDetalle || ""}
                 onChange={(e) => handleChange("falsaDeclaracionDetalle", e.target.value)}
               />
@@ -1752,7 +1752,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
               id="documentosPendientes"
               rows={4}
               className="input-glass resize-y"
-              placeholder="Ej. BC del hijo, Taxes 2024 y 2025, 4 fotos tamaño pasaporte, certificado de divorcio..."
+              placeholder="Ej. Acta de nacimiento, identificación, comprobante de domicilio..."
               value={data.documentosPendientes || ""}
               onChange={(e) => handleChange("documentosPendientes", e.target.value)}
             />
@@ -1766,7 +1766,7 @@ export function CaseSection({ data, onChange }: CaseSectionProps) {
               id="correosPendientes"
               rows={4}
               className="input-glass resize-y"
-              placeholder="Ej. Enviar formulario para subir documentos, correo con registro de FBI, formulario G-28 para ROI..."
+              placeholder="Ej. Enviar formulario para subir documentos, correo con instrucciones..."
               value={data.correosPendientes || ""}
               onChange={(e) => handleChange("correosPendientes", e.target.value)}
             />
