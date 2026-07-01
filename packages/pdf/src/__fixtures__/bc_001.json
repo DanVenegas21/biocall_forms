@@ -26,6 +26,7 @@
     "ciudad": "Ciudad de Mexico",
     "estado": "CDMX",
     "codigoPostal": "01000",
+    "pais": "Mexico",
     "fechaIngreso": "Mayo 2023",
     "resididoOtrosLugares": "si",
     "direccionesAnteriores": [
@@ -35,6 +36,7 @@
         "ciudad": "Guadalajara",
         "estado": "Jalisco",
         "codigoPostal": "44100",
+        "pais": "Mexico",
         "fechaDesde": "2018",
         "fechaHasta": "Mayo 2023"
       }
@@ -125,6 +127,7 @@
     "empleoDireccionCiudad": "Ciudad de Mexico",
     "empleoDireccionEstado": "CDMX",
     "empleoDireccionZip": "01000",
+    "empleoDireccionPais": "Mexico",
     "empleoFechaIngreso": "Junio 2021",
     "empleoFechaSalida": "",
     "empleoOtrosLugares": "no",

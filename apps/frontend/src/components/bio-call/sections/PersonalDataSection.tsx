@@ -256,12 +256,11 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
               <option value="">Seleccione...</option>
               <option value="si">Sí</option>
               <option value="no">No</option>
-              <option value="parcial">Parcial</option>
             </select>
             <FieldError message={err("comprendeIngles")} />
           </div>
 
-          {(data.comprendeIngles === "no" || data.comprendeIngles === "parcial") && (
+          {data.comprendeIngles === "no" && (
             <div className="flex flex-col gap-2 animate-fade-in">
               <label htmlFor="idiomaPreferido" className="label-caps">
                 Idioma preferido para comunicación
@@ -280,7 +279,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
           )}
         </div>
 
-        {(data.comprendeIngles === "no" || data.comprendeIngles === "parcial") && (
+        {data.comprendeIngles === "no" && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start animate-fade-in">
             <div className="flex flex-col gap-2">
               <label htmlFor="hablaOtroIdioma" className="label-caps">

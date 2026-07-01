@@ -78,6 +78,7 @@ function createEmptyFormData() {
       ciudad: "",
       estado: "",
       codigoPostal: "",
+      pais: "",
       fechaIngreso: "",
       resididoOtrosLugares: "",
       direccionesAnteriores: [] as Array<{
@@ -86,6 +87,7 @@ function createEmptyFormData() {
         ciudad: string;
         estado: string;
         codigoPostal: string;
+        pais: string;
         fechaDesde: string;
         fechaHasta: string;
       }>,
@@ -174,6 +176,7 @@ function createEmptyFormData() {
       empleoDireccionCiudad: "",
       empleoDireccionEstado: "",
       empleoDireccionZip: "",
+      empleoDireccionPais: "",
       empleoFechaIngreso: "",
       empleoFechaSalida: "",
       empleoOtrosLugares: "",
@@ -185,6 +188,7 @@ function createEmptyFormData() {
         direccionCiudad: string;
         direccionEstado: string;
         direccionZip: string;
+        direccionPais: string;
         fechaDesde: string;
         fechaHasta: string;
       }>,

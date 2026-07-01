@@ -15,6 +15,7 @@ export interface DireccionAnteriorData {
   ciudad: string;
   estado: string;
   codigoPostal: string;
+  pais: string;
   fechaDesde: string;
   fechaHasta: string;
 }
@@ -25,6 +26,7 @@ interface AddressData {
   ciudad: string;
   estado: string;
   codigoPostal: string;
+  pais: string;
   fechaIngreso: string;
   resididoOtrosLugares: string;
   direccionesAnteriores: DireccionAnteriorData[];
@@ -55,6 +57,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
           ciudad: "",
           estado: "",
           codigoPostal: "",
+          pais: "",
           fechaDesde: "",
           fechaHasta: "",
         },
@@ -117,7 +120,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <div className="flex flex-col gap-2">
             <label htmlFor="ciudad" className="label-caps">
               Ciudad
@@ -140,7 +143,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
               id="estado"
               type="text"
               className="input-glass"
-              placeholder="Ej. CDMX o Ciudad de México"
+              placeholder="Ej. CDMX"
               value={data.estado || ""}
               onChange={(e) => handleChange("estado", e.target.value)}
             />
@@ -161,6 +164,20 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
               onChange={(e) => handleChange("codigoPostal", e.target.value)}
             />
             <FieldError message={err("codigoPostal")} />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="pais" className="label-caps">
+              País
+            </label>
+            <input
+              id="pais"
+              type="text"
+              className="input-glass"
+              placeholder="Ej. México"
+              value={data.pais || ""}
+              onChange={(e) => handleChange("pais", e.target.value)}
+            />
           </div>
         </div>
 
@@ -223,6 +240,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
                           ciudad: "",
                           estado: "",
                           codigoPostal: "",
+                          pais: "",
                           fechaDesde: "",
                           fechaHasta: "",
                         },
@@ -330,6 +348,20 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
                 onChange={(e) => handleDireccionChange(idx, "codigoPostal", e.target.value)}
               />
               <FieldError message={errDir(idx, "codigoPostal")} />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`dir-${idx}-pais`} className="label-caps">
+                País
+              </label>
+              <input
+                id={`dir-${idx}-pais`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. México"
+                value={dir.pais}
+                onChange={(e) => handleDireccionChange(idx, "pais", e.target.value)}
+              />
             </div>
 
             <div className="flex flex-col gap-2">

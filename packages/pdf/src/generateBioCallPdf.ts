@@ -105,6 +105,7 @@ export function generateBioCallPdf(
     fieldLine(doc, "Ciudad", addr.ciudad);
     fieldLine(doc, "Estado", addr.estado);
     fieldLine(doc, "Codigo postal", addr.codigoPostal);
+    fieldLine(doc, "Pais", addr.pais);
     fieldLine(doc, "Fecha de ingreso", addr.fechaIngreso);
     fieldLine(doc, "Residido en otros lugares", addr.resididoOtrosLugares);
     addr.direccionesAnteriores.forEach((item, index) => {
@@ -114,6 +115,7 @@ export function generateBioCallPdf(
       fieldLine(doc, "  Calle", item.calleNumero);
       fieldLine(doc, "  Ciudad", item.ciudad);
       fieldLine(doc, "  Estado", item.estado);
+      fieldLine(doc, "  Pais", item.pais);
       fieldLine(doc, "  Desde", item.fechaDesde);
       fieldLine(doc, "  Hasta", item.fechaHasta);
     });
@@ -232,6 +234,7 @@ export function generateBioCallPdf(
       cb.empleoDireccionCiudad,
       cb.empleoDireccionEstado,
       cb.empleoDireccionZip,
+      cb.empleoDireccionPais,
     ]
       .filter((p) => p?.trim())
       .join(", "));
@@ -243,6 +246,15 @@ export function generateBioCallPdf(
       doc.font("Helvetica");
       fieldLine(doc, "  Empresa", item.empresa);
       fieldLine(doc, "  Puesto", item.puesto);
+      fieldLine(doc, "  Direccion", [
+        item.direccionCalle,
+        item.direccionCiudad,
+        item.direccionEstado,
+        item.direccionZip,
+        item.direccionPais,
+      ]
+        .filter((p) => p?.trim())
+        .join(", "));
     });
 
     sectionTitle(doc, "Inadmisibilidad");
