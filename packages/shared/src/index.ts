@@ -1,4 +1,5 @@
 export * from "./constants";
+export * from "./inadmissibilityQuestions";
 export * from "./schemas";
 export * from "./types";
 export * from "./validation/fields";

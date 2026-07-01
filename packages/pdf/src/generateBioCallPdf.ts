@@ -2,8 +2,9 @@ import PDFDocument from "pdfkit";
 import type { BioCall } from "@biocall/shared";
 import { BIO_CALL_SECTIONS } from "@biocall/shared";
 import { existsSync } from "node:fs";
+import { renderInadmissibilitySection } from "./inadmissibilityTable";
 
-export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1.7";
+export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1.8";
 
 export interface GenerateBioCallPdfOptions {
   logoPath?: string;
@@ -382,14 +383,7 @@ export function generateBioCallPdf(
       ]);
     });
 
-    sectionTitle(doc, "Inadmisibilidad");
-    const inadFields: Array<[string, string]> = [
-      ["Detencion por trafico", cb.inadDetencionTrafico],
-      ["Cometido delito", cb.inadCometidoDelito],
-      ["Procedimiento de remocion", cb.inadProcedimientoRemocion],
-      ["Fraude migratorio", cb.inadFraudeMigratorio],
-    ];
-    inadFields.forEach(([label, value]) => fieldLine(doc, label, value));
+    renderInadmissibilitySection(doc, cb);
 
     sectionTitle(doc, "Declaraciones");
     fieldLine(doc, "Declarado ciudadano", cb.declaradoCiudadano);
