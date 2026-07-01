@@ -12,6 +12,7 @@ const PREFIX = "family";
 
 export interface HijoData {
   nombres: string;
+  segundoNombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
   fechaNacimiento: string;
@@ -21,6 +22,7 @@ export interface HijoData {
 
 export interface MatrimonioPrevioData {
   nombresExConyuge: string;
+  segundoNombreExConyuge: string;
   apellidoPaternoExConyuge: string;
   apellidoMaternoExConyuge: string;
   fechaLugarMatrimonio: string;
@@ -31,14 +33,17 @@ export interface MatrimonioPrevioData {
 interface FamilyData {
   tieneConyuge: string;
   nombresConyuge: string;
+  segundoNombreConyuge: string;
   apellidoPaternoConyuge: string;
   apellidoMaternoConyuge: string;
   fechaLugarMatrimonioConyuge: string;
   fechaLugarNacimientoConyuge: string;
   nombresPadre: string;
+  segundoNombrePadre: string;
   apellidoPaternoPadre: string;
   apellidoMaternoPadre: string;
   nombresMadre: string;
+  segundoNombreMadre: string;
   apellidoPaternoMadre: string;
   apellidoMaternoMadre: string;
   casado: string;
@@ -61,13 +66,14 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
     onChange({ [field]: value });
   };
 
-  const addMatrimonioPrevio = () => {
+   const addMatrimonioPrevio = () => {
     const current = data.matrimoniosPrevios || [];
     onChange({
       matrimoniosPrevios: [
         ...current,
         {
           nombresExConyuge: "",
+          segundoNombreExConyuge: "",
           apellidoPaternoExConyuge: "",
           apellidoMaternoExConyuge: "",
           fechaLugarMatrimonio: "",
@@ -99,7 +105,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
     onChange({
       hijos: [
         ...currentHijos,
-        { nombres: "", apellidoPaterno: "", apellidoMaterno: "", fechaNacimiento: "", lugarNacimiento: "", lugarResidencia: "" },
+        { nombres: "", segundoNombre: "", apellidoPaterno: "", apellidoMaterno: "", fechaNacimiento: "", lugarNacimiento: "", lugarResidencia: "" },
       ],
     });
   };
@@ -141,18 +147,32 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             <h4 className="label-caps text-brand-600 font-bold border-b border-brand-100/30 pb-1">
               Datos del Padre
             </h4>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="flex flex-col gap-2">
                 <label htmlFor="nombresPadre" className="label-caps">
-                  Nombre(s) del Padre
+                  Primer Nombre del Padre
                 </label>
                 <input
                   id="nombresPadre"
                   type="text"
                   className="input-glass"
-                  placeholder="Ej. Juan Carlos"
+                  placeholder="Ej. Juan"
                   value={data.nombresPadre || ""}
                   onChange={(e) => handleChange("nombresPadre", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="segundoNombrePadre" className="label-caps">
+                  Segundo Nombre (opcional)
+                </label>
+                <input
+                  id="segundoNombrePadre"
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Carlos"
+                  value={data.segundoNombrePadre || ""}
+                  onChange={(e) => handleChange("segundoNombrePadre", e.target.value)}
                 />
               </div>
 
@@ -191,10 +211,10 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             <h4 className="label-caps text-brand-600 font-bold border-b border-brand-100/30 pb-1">
               Datos de la Madre
             </h4>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="flex flex-col gap-2">
                 <label htmlFor="nombresMadre" className="label-caps">
-                  Nombre(s) de la Madre
+                  Primer Nombre de la Madre
                 </label>
                 <input
                   id="nombresMadre"
@@ -203,6 +223,20 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                   placeholder="Ej. María"
                   value={data.nombresMadre || ""}
                   onChange={(e) => handleChange("nombresMadre", e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="segundoNombreMadre" className="label-caps">
+                  Segundo Nombre (opcional)
+                </label>
+                <input
+                  id="segundoNombreMadre"
+                  type="text"
+                  className="input-glass"
+                  placeholder="Ej. Luisa"
+                  value={data.segundoNombreMadre || ""}
+                  onChange={(e) => handleChange("segundoNombreMadre", e.target.value)}
                 />
               </div>
 
@@ -258,6 +292,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                   onChange({
                     tieneConyuge: val,
                     nombresConyuge: "",
+                    segundoNombreConyuge: "",
                     apellidoPaternoConyuge: "",
                     apellidoMaternoConyuge: "",
                     fechaLugarMatrimonioConyuge: "",
@@ -311,7 +346,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                     onChange({
                       previamenteCasado: val,
                       matrimoniosPrevios: [
-                        { nombresExConyuge: "", apellidoPaternoExConyuge: "", apellidoMaternoExConyuge: "", fechaLugarMatrimonio: "", fechaLugarNacimiento: "", fechaLugarDivorcio: "" }
+                        { nombresExConyuge: "", segundoNombreExConyuge: "", apellidoPaternoExConyuge: "", apellidoMaternoExConyuge: "", fechaLugarMatrimonio: "", fechaLugarNacimiento: "", fechaLugarDivorcio: "" }
                       ]
                     });
                   }
@@ -329,14 +364,14 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
         </div>
 
         {data.tieneConyuge === "si" && (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in">
-            <h4 className="label-caps md:col-span-3 border-b border-brand-100/30 pb-1 mb-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in">
+            <h4 className="label-caps md:col-span-4 border-b border-brand-100/30 pb-1 mb-2">
               Datos del Cónyuge
             </h4>
 
             <div className="flex flex-col gap-2">
               <label htmlFor="nombresConyuge" className="label-caps">
-                Nombre(s) del cónyuge
+                Primer Nombre del cónyuge
               </label>
               <input
                 id="nombresConyuge"
@@ -348,6 +383,22 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 onChange={(e) => handleChange("nombresConyuge", e.target.value)}
               />
               <FieldError message={err("nombresConyuge")} />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="segundoNombreConyuge" className="label-caps">
+                Segundo Nombre (opcional)
+              </label>
+              <input
+                id="segundoNombreConyuge"
+                type="text"
+                className={fieldInputClass(!!err("segundoNombreConyuge"))}
+                aria-invalid={!!err("segundoNombreConyuge")}
+                placeholder="Ej. María"
+                value={data.segundoNombreConyuge || ""}
+                onChange={(e) => handleChange("segundoNombreConyuge", e.target.value)}
+              />
+              <FieldError message={err("segundoNombreConyuge")} />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -398,7 +449,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               <FieldError message={err("fechaLugarMatrimonioConyuge")} />
             </div>
 
-            <div className="flex flex-col gap-2 md:col-span-2">
+            <div className="flex flex-col gap-2 md:col-span-3">
               <label htmlFor="fechaLugarNacimientoConyuge" className="label-caps">
                 Fecha y lugar de nacimiento del cónyuge
               </label>
@@ -437,7 +488,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             {(data.matrimoniosPrevios || []).map((mat, idx) => (
               <div
                 key={idx}
-                className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
+                className="relative grid grid-cols-1 gap-4 md:grid-cols-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
               >
                 <GlassButton
                   type="button"
@@ -450,13 +501,13 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                   onClick={() => removeMatrimonioPrevio(idx)}
                 />
 
-                <h5 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
+                <h5 className="label-caps md:col-span-4 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
                   Matrimonio Previo #{idx + 1}
                 </h5>
 
                 <div className="flex flex-col gap-2">
                   <label htmlFor={`mat-${idx}-nombres`} className="label-caps">
-                    Nombre(s) del ex-cónyuge
+                    Primer Nombre del ex-cónyuge
                   </label>
                   <input
                     id={`mat-${idx}-nombres`}
@@ -465,6 +516,20 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                     placeholder="Ej. Pedro"
                     value={mat.nombresExConyuge}
                     onChange={(e) => handleMatrimonioPrevioChange(idx, "nombresExConyuge", e.target.value)}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label htmlFor={`mat-${idx}-segundo-nombre`} className="label-caps">
+                    Segundo Nombre (opcional)
+                  </label>
+                  <input
+                    id={`mat-${idx}-segundo-nombre`}
+                    type="text"
+                    className="input-glass"
+                    placeholder="Ej. Luis"
+                    value={mat.segundoNombreExConyuge || ""}
+                    onChange={(e) => handleMatrimonioPrevioChange(idx, "segundoNombreExConyuge", e.target.value)}
                   />
                 </div>
 
@@ -524,7 +589,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                   />
                 </div>
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 md:col-span-2">
                   <label htmlFor={`mat-${idx}-divorcio`} className="label-caps">
                     Fecha y lugar de divorcio / disolución / defunción
                   </label>
@@ -580,7 +645,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                     onChange({
                       tieneHijos: val,
                       hijos: [
-                        { nombres: "", apellidoPaterno: "", apellidoMaterno: "", fechaNacimiento: "", lugarNacimiento: "", lugarResidencia: "" },
+                        { nombres: "", segundoNombre: "", apellidoPaterno: "", apellidoMaterno: "", fechaNacimiento: "", lugarNacimiento: "", lugarResidencia: "" },
                       ],
                     });
                   }
@@ -597,7 +662,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
         {data.tieneHijos === "si" && (data.hijos || []).map((hijo, idx) => (
           <div
             key={idx}
-            className="relative grid grid-cols-1 gap-4 md:grid-cols-3 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
+            className="relative grid grid-cols-1 gap-4 md:grid-cols-4 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in"
           >
             <GlassButton
               type="button"
@@ -610,13 +675,13 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               onClick={() => removeHijo(idx)}
             />
 
-            <h4 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
+            <h4 className="label-caps md:col-span-4 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
               Información de Hijo #{idx + 1}
             </h4>
 
             <div className="flex flex-col gap-2">
               <label htmlFor={`hijo-${idx}-nombres`} className="label-caps">
-                Nombre(s)
+                Primer Nombre
               </label>
               <input
                 id={`hijo-${idx}-nombres`}
@@ -625,6 +690,20 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 placeholder="Ej. Luis"
                 value={hijo.nombres}
                 onChange={(e) => handleHijoChange(idx, "nombres", e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor={`hijo-${idx}-segundo-nombre`} className="label-caps">
+                Segundo Nombre (opcional)
+              </label>
+              <input
+                id={`hijo-${idx}-segundo-nombre`}
+                type="text"
+                className="input-glass"
+                placeholder="Ej. Carlos"
+                value={hijo.segundoNombre || ""}
+                onChange={(e) => handleHijoChange(idx, "segundoNombre", e.target.value)}
               />
             </div>
 
@@ -683,7 +762,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               />
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 md:col-span-2">
               <label htmlFor={`hijo-${idx}-lugarResidencia`} className="label-caps">
                 Lugar de residencia actual (Dirección o País)
               </label>

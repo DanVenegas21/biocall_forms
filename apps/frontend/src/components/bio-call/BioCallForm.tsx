@@ -52,6 +52,7 @@ function createEmptyFormData() {
   return {
     personalData: {
       nombres: "",
+      segundoNombre: "",
       apellidoPaterno: "",
       apellidoMaterno: "",
       fechaNacimiento: "",
@@ -109,20 +110,24 @@ function createEmptyFormData() {
     family: {
       tieneConyuge: "",
       nombresConyuge: "",
+      segundoNombreConyuge: "",
       apellidoPaternoConyuge: "",
       apellidoMaternoConyuge: "",
       fechaLugarMatrimonioConyuge: "",
       fechaLugarNacimientoConyuge: "",
       nombresPadre: "",
+      segundoNombrePadre: "",
       apellidoPaternoPadre: "",
       apellidoMaternoPadre: "",
       nombresMadre: "",
+      segundoNombreMadre: "",
       apellidoPaternoMadre: "",
       apellidoMaternoMadre: "",
       casado: "",
       previamenteCasado: "",
       matrimoniosPrevios: [] as Array<{
         nombresExConyuge: string;
+        segundoNombreExConyuge: string;
         apellidoPaternoExConyuge: string;
         apellidoMaternoExConyuge: string;
         fechaLugarMatrimonio: string;
@@ -132,6 +137,7 @@ function createEmptyFormData() {
       tieneHijos: "",
       hijos: [] as Array<{
         nombres: string;
+        segundoNombre: string;
         apellidoPaterno: string;
         apellidoMaterno: string;
         fechaNacimiento: string;

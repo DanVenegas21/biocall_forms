@@ -35,6 +35,7 @@ function addIssue(
 
 export const personalDataSchema = z.object({
   nombres: personName,
+  segundoNombre: optionalPersonName,
   apellidoPaterno: personName,
   apellidoMaterno: optionalPersonName,
   fechaNacimiento: z
@@ -134,6 +135,7 @@ export const documentsSchema = z
 
 export const hijoSchema = z.object({
   nombres: personName,
+  segundoNombre: optionalPersonName,
   apellidoPaterno: personName,
   apellidoMaterno: optionalPersonName,
   fechaNacimiento: z
@@ -148,6 +150,7 @@ export const hijoSchema = z.object({
 
 export const matrimonioPrevioSchema = z.object({
   nombresExConyuge: personName,
+  segundoNombreExConyuge: optionalPersonName,
   apellidoPaternoExConyuge: personName,
   apellidoMaternoExConyuge: optionalPersonName,
   fechaLugarMatrimonio: freeTextDate,
@@ -159,14 +162,17 @@ export const familySchema = z
   .object({
     tieneConyuge: yesNo,
     nombresConyuge: personName,
+    segundoNombreConyuge: optionalPersonName,
     apellidoPaternoConyuge: personName,
     apellidoMaternoConyuge: optionalPersonName,
     fechaLugarMatrimonioConyuge: freeTextDate,
     fechaLugarNacimientoConyuge: freeTextDate,
     nombresPadre: personName,
+    segundoNombrePadre: optionalPersonName,
     apellidoPaternoPadre: personName,
     apellidoMaternoPadre: optionalPersonName,
     nombresMadre: personName,
+    segundoNombreMadre: optionalPersonName,
     apellidoPaternoMadre: personName,
     apellidoMaternoMadre: optionalPersonName,
     casado: yesNo,

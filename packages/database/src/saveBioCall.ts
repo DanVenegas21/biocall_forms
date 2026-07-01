@@ -106,7 +106,7 @@ function mapBioCallToCreateInput(
     id: bioCallId,
     personalData: {
       create: {
-        nombres: pd.nombres.trim() || "Pendiente",
+        nombres: fullName(pd.nombres, pd.segundoNombre) || "Pendiente",
         apellidoPaterno: pd.apellidoPaterno.trim() || "Pendiente",
         apellidoMaterno: emptyToNull(pd.apellidoMaterno),
         otrosNombres: emptyToNull(pd.otrosNombres),
@@ -175,16 +175,16 @@ function mapBioCallToCreateInput(
     family: {
       create: {
         tieneConyuge: emptyToNull(fam.tieneConyuge),
-        nombresConyuge: emptyToNull(fam.nombresConyuge),
+        nombresConyuge: emptyToNull(fullName(fam.nombresConyuge, fam.segundoNombreConyuge)),
         apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
         apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
         fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
         fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
         nombrePadre: emptyToNull(
-          fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
+          fullName(fam.nombresPadre, fam.segundoNombrePadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
         ),
         nombreMadre: emptyToNull(
-          fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
+          fullName(fam.nombresMadre, fam.segundoNombreMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
         ),
         casado: emptyToNull(fam.casado),
         previamenteCasado: emptyToNull(fam.previamenteCasado),
@@ -196,7 +196,7 @@ function mapBioCallToCreateInput(
         id: childId(bioCallId, "child", index),
         sortOrder: index,
         nombre: emptyToNull(
-          fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
+          fullName(item.nombres, item.segundoNombre, item.apellidoPaterno, item.apellidoMaterno)
         ),
         fechaNacimiento: emptyToNull(item.fechaNacimiento),
         lugarNacimiento: emptyToNull(item.lugarNacimiento),
@@ -210,6 +210,7 @@ function mapBioCallToCreateInput(
         nombreExConyuge: emptyToNull(
           fullName(
             item.nombresExConyuge,
+            item.segundoNombreExConyuge,
             item.apellidoPaternoExConyuge,
             item.apellidoMaternoExConyuge
           )
@@ -318,7 +319,7 @@ async function replaceListChildren(bioCallId: string, data: BioCall): Promise<vo
         bioCallId,
         sortOrder: index,
         nombre: emptyToNull(
-          fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
+          fullName(item.nombres, item.segundoNombre, item.apellidoPaterno, item.apellidoMaterno)
         ),
         fechaNacimiento: emptyToNull(item.fechaNacimiento),
         lugarNacimiento: emptyToNull(item.lugarNacimiento),
@@ -336,6 +337,7 @@ async function replaceListChildren(bioCallId: string, data: BioCall): Promise<vo
         nombreExConyuge: emptyToNull(
           fullName(
             item.nombresExConyuge,
+            item.segundoNombreExConyuge,
             item.apellidoPaternoExConyuge,
             item.apellidoMaternoExConyuge
           )
@@ -438,7 +440,7 @@ export async function saveBioCall(
         where: { bioCallId: existingId },
         create: {
           bioCallId: existingId,
-          nombres: pd.nombres.trim() || "Pendiente",
+          nombres: fullName(pd.nombres, pd.segundoNombre) || "Pendiente",
           apellidoPaterno: pd.apellidoPaterno.trim() || "Pendiente",
           apellidoMaterno: emptyToNull(pd.apellidoMaterno),
           otrosNombres: emptyToNull(pd.otrosNombres),
@@ -455,7 +457,7 @@ export async function saveBioCall(
           especificarIdioma: emptyToNull(pd.especificarIdioma),
         },
         update: {
-          nombres: pd.nombres.trim() || "Pendiente",
+          nombres: fullName(pd.nombres, pd.segundoNombre) || "Pendiente",
           apellidoPaterno: pd.apellidoPaterno.trim() || "Pendiente",
           apellidoMaterno: emptyToNull(pd.apellidoMaterno),
           otrosNombres: emptyToNull(pd.otrosNombres),
@@ -547,16 +549,16 @@ export async function saveBioCall(
         create: {
           bioCallId: existingId,
           tieneConyuge: emptyToNull(fam.tieneConyuge),
-          nombresConyuge: emptyToNull(fam.nombresConyuge),
+          nombresConyuge: emptyToNull(fullName(fam.nombresConyuge, fam.segundoNombreConyuge)),
           apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
           apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
           fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
           fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
           nombrePadre: emptyToNull(
-            fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
+            fullName(fam.nombresPadre, fam.segundoNombrePadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
           ),
           nombreMadre: emptyToNull(
-            fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
+            fullName(fam.nombresMadre, fam.segundoNombreMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
           ),
           casado: emptyToNull(fam.casado),
           previamenteCasado: emptyToNull(fam.previamenteCasado),
@@ -564,16 +566,16 @@ export async function saveBioCall(
         },
         update: {
           tieneConyuge: emptyToNull(fam.tieneConyuge),
-          nombresConyuge: emptyToNull(fam.nombresConyuge),
+          nombresConyuge: emptyToNull(fullName(fam.nombresConyuge, fam.segundoNombreConyuge)),
           apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
           apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
           fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
           fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
           nombrePadre: emptyToNull(
-            fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
+            fullName(fam.nombresPadre, fam.segundoNombrePadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
           ),
           nombreMadre: emptyToNull(
-            fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
+            fullName(fam.nombresMadre, fam.segundoNombreMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
           ),
           casado: emptyToNull(fam.casado),
           previamenteCasado: emptyToNull(fam.previamenteCasado),

@@ -8,6 +8,7 @@ const PREFIX = "personalData";
 
 interface PersonalDataData {
   nombres: string;
+  segundoNombre: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
   fechaNacimiento: string;
@@ -40,21 +41,37 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="flex flex-col gap-2">
           <label htmlFor="nombres" className="label-caps">
-            Nombre(s)
+            Primer Nombre
           </label>
           <input
             id="nombres"
             type="text"
             className={fieldInputClass(!!err("nombres"))}
             aria-invalid={!!err("nombres")}
-            placeholder="Ej. Juan Carlos"
+            placeholder="Ej. Juan"
             value={data.nombres}
             onChange={(e) => handleChange("nombres", e.target.value)}
           />
           <FieldError message={err("nombres")} />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label htmlFor="segundoNombre" className="label-caps">
+            Segundo Nombre (opcional)
+          </label>
+          <input
+            id="segundoNombre"
+            type="text"
+            className={fieldInputClass(!!err("segundoNombre"))}
+            aria-invalid={!!err("segundoNombre")}
+            placeholder="Ej. Carlos"
+            value={data.segundoNombre || ""}
+            onChange={(e) => handleChange("segundoNombre", e.target.value)}
+          />
+          <FieldError message={err("segundoNombre")} />
         </div>
 
         <div className="flex flex-col gap-2">

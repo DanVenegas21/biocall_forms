@@ -44,7 +44,7 @@ export function generateBioCallPdf(
 ): Promise<Buffer> {
   const generatedAt = options.generatedAt ?? new Date();
   const pd = data.personalData;
-  const clientName = [pd.nombres, pd.apellidoPaterno, pd.apellidoMaterno]
+  const clientName = [pd.nombres, pd.segundoNombre, pd.apellidoPaterno, pd.apellidoMaterno]
     .filter((part) => part?.trim())
     .join(" ");
 
@@ -76,7 +76,8 @@ export function generateBioCallPdf(
 
     // Datos personales
     sectionTitle(doc, BIO_CALL_SECTIONS[0].title);
-    fieldLine(doc, "Nombres", pd.nombres);
+    fieldLine(doc, "Primer nombre", pd.nombres);
+    fieldLine(doc, "Segundo nombre", pd.segundoNombre);
     fieldLine(doc, "Apellido paterno", pd.apellidoPaterno);
     fieldLine(doc, "Apellido materno", pd.apellidoMaterno);
     fieldLine(doc, "Otros nombres", pd.otrosNombres);
@@ -145,15 +146,16 @@ export function generateBioCallPdf(
     fieldLine(
       doc,
       "Nombre del padre",
-      fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
+      fullName(fam.nombresPadre, fam.segundoNombrePadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
     );
     fieldLine(
       doc,
       "Nombre de la madre",
-      fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
+      fullName(fam.nombresMadre, fam.segundoNombreMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
     );
     fieldLine(doc, "Tiene conyuge", fam.tieneConyuge);
-    fieldLine(doc, "Nombres conyuge", fam.nombresConyuge);
+    fieldLine(doc, "Primer nombre conyuge", fam.nombresConyuge);
+    fieldLine(doc, "Segundo nombre conyuge", fam.segundoNombreConyuge);
     fieldLine(doc, "Apellido paterno conyuge", fam.apellidoPaternoConyuge);
     fieldLine(doc, "Apellido materno conyuge", fam.apellidoMaternoConyuge);
     fieldLine(doc, "Fecha y lugar de matrimonio", fam.fechaLugarMatrimonioConyuge);
@@ -170,6 +172,7 @@ export function generateBioCallPdf(
         "  Ex-conyuge",
         fullName(
           item.nombresExConyuge,
+          item.segundoNombreExConyuge,
           item.apellidoPaternoExConyuge,
           item.apellidoMaternoExConyuge
         )
@@ -185,7 +188,7 @@ export function generateBioCallPdf(
       fieldLine(
         doc,
         "  Nombre",
-        fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
+        fullName(item.nombres, item.segundoNombre, item.apellidoPaterno, item.apellidoMaterno)
       );
       fieldLine(doc, "  Fecha nacimiento", item.fechaNacimiento);
       fieldLine(doc, "  Lugar nacimiento", item.lugarNacimiento);
