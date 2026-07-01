@@ -141,6 +141,12 @@ CREATE TABLE IF NOT EXISTS bio_call_family (
   fecha_lugar_nacimiento_conyuge TEXT,
   nombre_padre                   TEXT,
   nombre_madre             TEXT,
+  nombres_padre                  TEXT,
+  apellido_paterno_padre         TEXT,
+  apellido_materno_padre         TEXT,
+  nombres_madre                  TEXT,
+  apellido_paterno_madre         TEXT,
+  apellido_materno_madre         TEXT,
   casado                   TEXT,
   previamente_casado       TEXT,
   tiene_hijos              TEXT
@@ -154,6 +160,9 @@ CREATE TABLE IF NOT EXISTS bio_call_children (
   bio_call_id         TEXT NOT NULL REFERENCES bio_calls (id) ON DELETE CASCADE,
   sort_order          INTEGER NOT NULL DEFAULT 0,
   nombre              TEXT,
+  nombres             TEXT,
+  apellido_paterno    TEXT,
+  apellido_materno    TEXT,
   fecha_nacimiento    TEXT,
   lugar_nacimiento    TEXT,
   lugar_residencia    TEXT
@@ -170,6 +179,9 @@ CREATE TABLE IF NOT EXISTS bio_call_previous_marriages (
   bio_call_id               TEXT NOT NULL REFERENCES bio_calls (id) ON DELETE CASCADE,
   sort_order                INTEGER NOT NULL DEFAULT 0,
   nombre_ex_conyuge         TEXT,
+  nombres_ex_conyuge        TEXT,
+  apellido_paterno_ex_conyuge TEXT,
+  apellido_materno_ex_conyuge TEXT,
   fecha_lugar_matrimonio    TEXT,
   fecha_lugar_nacimiento    TEXT,
   fecha_lugar_divorcio      TEXT

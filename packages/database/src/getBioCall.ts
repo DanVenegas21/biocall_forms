@@ -1,29 +1,10 @@
 import type { BioCall, BioCallRecord, BioCallStatus } from "@biocall/shared";
 import { prisma } from "./client";
-
-function nullToEmpty(value: string | null | undefined): string {
-  return value?.trim() ?? "";
-}
+import { nullToEmpty, readSplitName } from "./nameFields";
 
 function formatDate(value: Date | null | undefined): string {
   if (!value) return "";
   return value.toISOString().slice(0, 10);
-}
-
-/**
- * Nombres guardados concatenados en BD: se devuelven en `nombres` sin separar apellidos.
- * Round-trip fiel pendiente de migracion a columnas separadas.
- */
-function concatenatedName(full: string | null | undefined): {
-  nombres: string;
-  apellidoPaterno: string;
-  apellidoMaterno: string;
-} {
-  return {
-    nombres: nullToEmpty(full),
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-  };
 }
 
 const bioCallInclude = {
@@ -58,8 +39,18 @@ export async function getBioCall(id: string): Promise<BioCallRecord | null> {
   const doc = record.documents;
   const fam = record.family;
   const cb = record.caseBackground;
-  const padre = concatenatedName(fam?.nombrePadre);
-  const madre = concatenatedName(fam?.nombreMadre);
+  const padre = readSplitName(
+    fam?.nombresPadre,
+    fam?.apellidoPaternoPadre,
+    fam?.apellidoMaternoPadre,
+    fam?.nombrePadre
+  );
+  const madre = readSplitName(
+    fam?.nombresMadre,
+    fam?.apellidoPaternoMadre,
+    fam?.apellidoMaternoMadre,
+    fam?.nombreMadre
+  );
 
   const data: BioCall = {
     personalData: {
@@ -134,7 +125,12 @@ export async function getBioCall(id: string): Promise<BioCallRecord | null> {
       casado: nullToEmpty(fam?.casado),
       previamenteCasado: nullToEmpty(fam?.previamenteCasado),
       matrimoniosPrevios: record.previousMarriages.map((item) => {
-        const ex = concatenatedName(item.nombreExConyuge);
+        const ex = readSplitName(
+          item.nombresExConyuge,
+          item.apellidoPaternoExConyuge,
+          item.apellidoMaternoExConyuge,
+          item.nombreExConyuge
+        );
         return {
           nombresExConyuge: ex.nombres,
           apellidoPaternoExConyuge: ex.apellidoPaterno,
@@ -146,7 +142,12 @@ export async function getBioCall(id: string): Promise<BioCallRecord | null> {
       }),
       tieneHijos: nullToEmpty(fam?.tieneHijos),
       hijos: record.children.map((item) => {
-        const hijo = concatenatedName(item.nombre);
+        const hijo = readSplitName(
+          item.nombres,
+          item.apellidoPaterno,
+          item.apellidoMaterno,
+          item.nombre
+        );
         return {
           nombres: hijo.nombres,
           apellidoPaterno: hijo.apellidoPaterno,

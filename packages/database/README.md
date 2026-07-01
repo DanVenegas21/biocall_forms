@@ -59,9 +59,9 @@ El backend valida con `bioCallSaveSchema` antes de llamar a `saveBioCall`:
 
 Convencion: **camelCase** en React → **snake_case** en PostgreSQL.
 
-## Nombres concatenados (limitacion temporal)
+## Nombres en familia
 
-Padres, hijos y ex-conyuges se guardan como un solo campo de texto (`nombre_padre`, `nombre`, `nombre_ex_conyuge`). `getBioCall` devuelve el nombre completo en `nombres` con apellidos vacios. La migracion a columnas separadas queda pendiente.
+Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `apellido_paterno`, `apellido_materno`). Las columnas legacy (`nombre_padre`, `nombre`, `nombre_ex_conyuge`) se conservan solo como fallback de lectura para registros anteriores a la migracion `005`.
 
 ## PDFs generados
 
@@ -77,8 +77,9 @@ Padres, hijos y ex-conyuges se guardan como un solo campo de texto (`nombre_padr
 | `002_bio_call_form_sync.sql` | BD existente creada con `001` antiguo (lugar_nacimiento, columnas familia/caso) |
 | `003_bio_call_backend_sync.sql` | BD existente: columna `inad_my_uscis_detalle` |
 | `004_bio_call_pais_sync.sql` | BD existente: columnas `pais` en domicilio y empleo |
+| `005_bio_call_names_split.sql` | BD existente: nombres separados en padres, hijos y ex-conyuges |
 
-Tras `003` o `004`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
+Tras `003`, `004` o `005`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
 
 ## API relacionada
 

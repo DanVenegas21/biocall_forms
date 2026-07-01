@@ -28,5 +28,11 @@ describe("generateBioCallPdf", () => {
     expect(text).toContain("Documentos y correos pendientes");
     expect(text).toContain("Acta de nacimiento, taxes 2024");
     expect(text).toContain("Enviar link del portal");
+    expect(text).toContain("— Hijo 1 —");
+    expect(text).toContain("¿Cual es el nombre del hijo 1?");
+    expect(text).toContain("¿Cual es el apellido paterno del hijo 1?");
+    expect(text).toContain("Plantilla v1.7");
+    expect(text).toContain("Nombres del padre");
+    expect(text).toContain("Pedro");
   });
 });

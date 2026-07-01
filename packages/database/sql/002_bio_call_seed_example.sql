@@ -114,29 +114,37 @@ INSERT INTO bio_call_documents (
 
 INSERT INTO bio_call_family (
   bio_call_id, tiene_conyuge, nombres_conyuge, apellido_paterno_conyuge,
-  apellido_materno_conyuge, nombre_padre, nombre_madre, casado,
-  previamente_casado, tiene_hijos
+  apellido_materno_conyuge, nombre_padre, nombre_madre,
+  nombres_padre, apellido_paterno_padre, nombres_madre, apellido_materno_madre,
+  casado, previamente_casado, tiene_hijos
 ) VALUES
   ('bc_001', 'si', 'Juan Carlos', 'Reyes', 'Lopez', 'Pedro Reyes', 'Maria Gonzalez',
-   'si', 'no', 'si'),
+   'Pedro', 'Reyes', 'Maria', 'Gonzalez', 'si', 'no', 'si'),
   ('bc_002', 'no', NULL, NULL, NULL, 'Jose Ramirez', 'Carmen Lopez',
-   'no', 'no', 'no'),
+   'Jose', 'Ramirez', 'Carmen', 'Lopez', 'no', 'no', 'no'),
   ('bc_003', 'no', NULL, NULL, NULL, NULL, 'Rosa Hernandez',
-   'no', 'si', 'si'),
+   NULL, NULL, 'Rosa', 'Hernandez', 'no', 'si', 'si'),
   ('bc_004', 'si', 'Maria Elena', 'Silva', 'Rojas', 'Antonio Silva', 'Carmen Mendoza',
-   'si', 'si', 'si'),
+   'Antonio', 'Silva', 'Carmen', 'Mendoza', 'si', 'si', 'si'),
   ('bc_005', 'si', 'Pedro', 'Torres', 'Diaz', NULL, NULL,
-   'no', 'no', 'no');
+   NULL, NULL, NULL, NULL, 'no', 'no', 'no');
 
 INSERT INTO bio_call_children (
-  id, bio_call_id, sort_order, nombre, fecha_nacimiento, lugar_nacimiento, lugar_residencia
+  id, bio_call_id, sort_order, nombre, nombres, apellido_paterno, apellido_materno,
+  fecha_nacimiento, lugar_nacimiento, lugar_residencia
 ) VALUES
-  ('child_001_01', 'bc_001', 0, 'Sofia Reyes Lopez', '2010-05-20', 'Morristown, TN', 'Morristown, TN'),
-  ('child_001_02', 'bc_001', 1, 'Mateo Reyes Lopez', '2013-08-15', 'Knoxville, TN', 'Morristown, TN'),
-  ('child_003_01', 'bc_003', 0, 'Diego Martinez', '2018-02-01', 'Honduras', 'Houston, TX'),
-  ('child_004_01', 'bc_004', 0, 'Ana Silva', '2000-01-10', 'Lima, Peru', 'Los Angeles, CA'),
-  ('child_004_02', 'bc_004', 1, 'Luis Silva', '2003-06-22', 'Los Angeles, CA', 'Los Angeles, CA'),
-  ('child_004_03', 'bc_004', 2, 'Carla Silva', '2008-11-30', 'Los Angeles, CA', 'Los Angeles, CA');
+  ('child_001_01', 'bc_001', 0, 'Sofia Reyes Lopez', 'Sofia', 'Reyes', 'Lopez',
+   '2010-05-20', 'Morristown, TN', 'Morristown, TN'),
+  ('child_001_02', 'bc_001', 1, 'Mateo Reyes Lopez', 'Mateo', 'Reyes', 'Lopez',
+   '2013-08-15', 'Knoxville, TN', 'Morristown, TN'),
+  ('child_003_01', 'bc_003', 0, 'Diego Martinez', 'Diego', 'Martinez', NULL,
+   '2018-02-01', 'Honduras', 'Houston, TX'),
+  ('child_004_01', 'bc_004', 0, 'Ana Silva', 'Ana', 'Silva', NULL,
+   '2000-01-10', 'Lima, Peru', 'Los Angeles, CA'),
+  ('child_004_02', 'bc_004', 1, 'Luis Silva', 'Luis', 'Silva', NULL,
+   '2003-06-22', 'Los Angeles, CA', 'Los Angeles, CA'),
+  ('child_004_03', 'bc_004', 2, 'Carla Silva', 'Carla', 'Silva', NULL,
+   '2008-11-30', 'Los Angeles, CA', 'Los Angeles, CA');
 
 INSERT INTO bio_call_previous_marriages (
   id, bio_call_id, sort_order, nombre_ex_conyuge, fecha_lugar_matrimonio,

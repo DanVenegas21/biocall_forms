@@ -52,8 +52,37 @@ function childId(bioCallId: string, prefix: string, index: number): string {
   return `${bioCallId}_${prefix}_${index}`;
 }
 
-function fullName(...parts: (string | undefined | null)[]): string {
-  return parts.map((part) => part?.trim() ?? "").filter(Boolean).join(" ");
+function mapParentFields(fam: BioCall["family"]) {
+  return {
+    nombresPadre: emptyToNull(fam.nombresPadre),
+    apellidoPaternoPadre: emptyToNull(fam.apellidoPaternoPadre),
+    apellidoMaternoPadre: emptyToNull(fam.apellidoMaternoPadre),
+    nombresMadre: emptyToNull(fam.nombresMadre),
+    apellidoPaternoMadre: emptyToNull(fam.apellidoPaternoMadre),
+    apellidoMaternoMadre: emptyToNull(fam.apellidoMaternoMadre),
+  };
+}
+
+function mapChildFields(item: BioCall["family"]["hijos"][number]) {
+  return {
+    nombres: emptyToNull(item.nombres),
+    apellidoPaterno: emptyToNull(item.apellidoPaterno),
+    apellidoMaterno: emptyToNull(item.apellidoMaterno),
+    fechaNacimiento: emptyToNull(item.fechaNacimiento),
+    lugarNacimiento: emptyToNull(item.lugarNacimiento),
+    lugarResidencia: emptyToNull(item.lugarResidencia),
+  };
+}
+
+function mapPreviousMarriageFields(item: BioCall["family"]["matrimoniosPrevios"][number]) {
+  return {
+    nombresExConyuge: emptyToNull(item.nombresExConyuge),
+    apellidoPaternoExConyuge: emptyToNull(item.apellidoPaternoExConyuge),
+    apellidoMaternoExConyuge: emptyToNull(item.apellidoMaternoExConyuge),
+    fechaLugarMatrimonio: emptyToNull(item.fechaLugarMatrimonio),
+    fechaLugarNacimiento: emptyToNull(item.fechaLugarNacimiento),
+    fechaLugarDivorcio: emptyToNull(item.fechaLugarDivorcio),
+  };
 }
 
 function mapCaseBackground(
@@ -230,12 +259,7 @@ function mapBioCallToCreateInput(
         apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
         fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
         fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
-        nombrePadre: emptyToNull(
-          fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
-        ),
-        nombreMadre: emptyToNull(
-          fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
-        ),
+        ...mapParentFields(fam),
         casado: emptyToNull(fam.casado),
         previamenteCasado: emptyToNull(fam.previamenteCasado),
         tieneHijos: emptyToNull(fam.tieneHijos),
@@ -245,28 +269,14 @@ function mapBioCallToCreateInput(
       create: fam.hijos.map((item, index) => ({
         id: childId(bioCallId, "child", index),
         sortOrder: index,
-        nombre: emptyToNull(
-          fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
-        ),
-        fechaNacimiento: emptyToNull(item.fechaNacimiento),
-        lugarNacimiento: emptyToNull(item.lugarNacimiento),
-        lugarResidencia: emptyToNull(item.lugarResidencia),
+        ...mapChildFields(item),
       })),
     },
     previousMarriages: {
       create: fam.matrimoniosPrevios.map((item, index) => ({
         id: childId(bioCallId, "marr", index),
         sortOrder: index,
-        nombreExConyuge: emptyToNull(
-          fullName(
-            item.nombresExConyuge,
-            item.apellidoPaternoExConyuge,
-            item.apellidoMaternoExConyuge
-          )
-        ),
-        fechaLugarMatrimonio: emptyToNull(item.fechaLugarMatrimonio),
-        fechaLugarNacimiento: emptyToNull(item.fechaLugarNacimiento),
-        fechaLugarDivorcio: emptyToNull(item.fechaLugarDivorcio),
+        ...mapPreviousMarriageFields(item),
       })),
     },
     caseBackground: {
@@ -367,12 +377,7 @@ async function replaceListChildren(bioCallId: string, data: BioCall): Promise<vo
         id: childId(bioCallId, "child", index),
         bioCallId,
         sortOrder: index,
-        nombre: emptyToNull(
-          fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
-        ),
-        fechaNacimiento: emptyToNull(item.fechaNacimiento),
-        lugarNacimiento: emptyToNull(item.lugarNacimiento),
-        lugarResidencia: emptyToNull(item.lugarResidencia),
+        ...mapChildFields(item),
       })),
     });
   }
@@ -383,16 +388,7 @@ async function replaceListChildren(bioCallId: string, data: BioCall): Promise<vo
         id: childId(bioCallId, "marr", index),
         bioCallId,
         sortOrder: index,
-        nombreExConyuge: emptyToNull(
-          fullName(
-            item.nombresExConyuge,
-            item.apellidoPaternoExConyuge,
-            item.apellidoMaternoExConyuge
-          )
-        ),
-        fechaLugarMatrimonio: emptyToNull(item.fechaLugarMatrimonio),
-        fechaLugarNacimiento: emptyToNull(item.fechaLugarNacimiento),
-        fechaLugarDivorcio: emptyToNull(item.fechaLugarDivorcio),
+        ...mapPreviousMarriageFields(item),
       })),
     });
   }
@@ -518,12 +514,7 @@ export async function saveBioCall(
           apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
           fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
           fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
-          nombrePadre: emptyToNull(
-            fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
-          ),
-          nombreMadre: emptyToNull(
-            fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
-          ),
+          ...mapParentFields(fam),
           casado: emptyToNull(fam.casado),
           previamenteCasado: emptyToNull(fam.previamenteCasado),
           tieneHijos: emptyToNull(fam.tieneHijos),
@@ -535,12 +526,7 @@ export async function saveBioCall(
           apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
           fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
           fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
-          nombrePadre: emptyToNull(
-            fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
-          ),
-          nombreMadre: emptyToNull(
-            fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
-          ),
+          ...mapParentFields(fam),
           casado: emptyToNull(fam.casado),
           previamenteCasado: emptyToNull(fam.previamenteCasado),
           tieneHijos: emptyToNull(fam.tieneHijos),

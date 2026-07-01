@@ -3,7 +3,7 @@ import type { BioCall } from "@biocall/shared";
 import { BIO_CALL_SECTIONS } from "@biocall/shared";
 import { existsSync } from "node:fs";
 
-export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1.1";
+export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1.7";
 
 export interface GenerateBioCallPdfOptions {
   logoPath?: string;
@@ -17,10 +17,6 @@ function display(value: string | undefined | null): string {
   return trimmed ? trimmed : "—";
 }
 
-function fullName(...parts: (string | undefined | null)[]): string {
-  return parts.map((part) => part?.trim() ?? "").filter(Boolean).join(" ");
-}
-
 function sectionTitle(doc: PdfDoc, title: string): void {
   doc.moveDown(0.5);
   doc.font("Helvetica-Bold").fontSize(12).fillColor("#1e3a5f").text(title);
@@ -29,7 +25,42 @@ function sectionTitle(doc: PdfDoc, title: string): void {
 }
 
 function fieldLine(doc: PdfDoc, label: string, value: string): void {
-  doc.text(`${label}: ${display(value)}`, { lineGap: 2 });
+  doc.font("Helvetica-Bold").text(`${label}: `, { continued: true, lineGap: 2 });
+  doc.font("Helvetica").text(display(value), { lineGap: 2 });
+}
+
+function blockDivider(doc: PdfDoc, label: string, index: number): void {
+  doc.moveDown(0.35);
+  doc
+    .font("Helvetica")
+    .fontSize(9)
+    .fillColor("#5c6b7a")
+    .text(`— ${label} ${index + 1} —`, { lineGap: 1 });
+  doc.fontSize(10).fillColor("#000000");
+  doc.moveDown(0.15);
+}
+
+function formatQuestion(text: string): string {
+  return `¿${text}?`;
+}
+
+type NumberedField = {
+  question: (n: number) => string;
+  value: string;
+};
+
+function numberedBlock(
+  doc: PdfDoc,
+  index: number,
+  blockLabel: string,
+  fields: NumberedField[]
+): void {
+  const n = index + 1;
+  ensureSpace(doc);
+  blockDivider(doc, blockLabel, index);
+  for (const { question, value } of fields) {
+    fieldLine(doc, question(n), value);
+  }
 }
 
 function ensureSpace(doc: PdfDoc, minHeight = 60): void {
@@ -109,15 +140,40 @@ export function generateBioCallPdf(
     fieldLine(doc, "Fecha de ingreso", addr.fechaIngreso);
     fieldLine(doc, "Residido en otros lugares", addr.resididoOtrosLugares);
     addr.direccionesAnteriores.forEach((item, index) => {
-      ensureSpace(doc);
-      doc.font("Helvetica-Bold").text(`Direccion anterior ${index + 1}`);
-      doc.font("Helvetica");
-      fieldLine(doc, "  Calle", item.calleNumero);
-      fieldLine(doc, "  Ciudad", item.ciudad);
-      fieldLine(doc, "  Estado", item.estado);
-      fieldLine(doc, "  Pais", item.pais);
-      fieldLine(doc, "  Desde", item.fechaDesde);
-      fieldLine(doc, "  Hasta", item.fechaHasta);
+      numberedBlock(doc, index, "Domicilio anterior", [
+        {
+          question: (n) => formatQuestion(`Cual es la calle y numero del domicilio anterior ${n}`),
+          value: item.calleNumero,
+        },
+        {
+          question: (n) => formatQuestion(`Cual es el apto o suite del domicilio anterior ${n}`),
+          value: item.aptoSuite,
+        },
+        {
+          question: (n) => formatQuestion(`En que ciudad estaba el domicilio anterior ${n}`),
+          value: item.ciudad,
+        },
+        {
+          question: (n) => formatQuestion(`En que estado estaba el domicilio anterior ${n}`),
+          value: item.estado,
+        },
+        {
+          question: (n) => formatQuestion(`Cual es el codigo postal del domicilio anterior ${n}`),
+          value: item.codigoPostal,
+        },
+        {
+          question: (n) => formatQuestion(`En que pais estaba el domicilio anterior ${n}`),
+          value: item.pais,
+        },
+        {
+          question: (n) => formatQuestion(`Desde cuando vivio en el domicilio anterior ${n}`),
+          value: item.fechaDesde,
+        },
+        {
+          question: (n) => formatQuestion(`Hasta cuando vivio en el domicilio anterior ${n}`),
+          value: item.fechaHasta,
+        },
+      ]);
     });
 
     // Documentos
@@ -142,16 +198,12 @@ export function generateBioCallPdf(
     ensureSpace(doc, 120);
     sectionTitle(doc, BIO_CALL_SECTIONS[4].title);
     const fam = data.family;
-    fieldLine(
-      doc,
-      "Nombre del padre",
-      fullName(fam.nombresPadre, fam.apellidoPaternoPadre, fam.apellidoMaternoPadre)
-    );
-    fieldLine(
-      doc,
-      "Nombre de la madre",
-      fullName(fam.nombresMadre, fam.apellidoPaternoMadre, fam.apellidoMaternoMadre)
-    );
+    fieldLine(doc, "Nombres del padre", fam.nombresPadre);
+    fieldLine(doc, "Apellido paterno del padre", fam.apellidoPaternoPadre);
+    fieldLine(doc, "Apellido materno del padre", fam.apellidoMaternoPadre);
+    fieldLine(doc, "Nombres de la madre", fam.nombresMadre);
+    fieldLine(doc, "Apellido paterno de la madre", fam.apellidoPaternoMadre);
+    fieldLine(doc, "Apellido materno de la madre", fam.apellidoMaternoMadre);
     fieldLine(doc, "Tiene conyuge", fam.tieneConyuge);
     fieldLine(doc, "Nombres conyuge", fam.nombresConyuge);
     fieldLine(doc, "Apellido paterno conyuge", fam.apellidoPaternoConyuge);
@@ -162,34 +214,63 @@ export function generateBioCallPdf(
     fieldLine(doc, "Previamente casado", fam.previamenteCasado);
     fieldLine(doc, "Tiene hijos", fam.tieneHijos);
     fam.matrimoniosPrevios.forEach((item, index) => {
-      ensureSpace(doc);
-      doc.font("Helvetica-Bold").text(`Matrimonio previo ${index + 1}`);
-      doc.font("Helvetica");
-      fieldLine(
-        doc,
-        "  Ex-conyuge",
-        fullName(
-          item.nombresExConyuge,
-          item.apellidoPaternoExConyuge,
-          item.apellidoMaternoExConyuge
-        )
-      );
-      fieldLine(doc, "  Matrimonio", item.fechaLugarMatrimonio);
-      fieldLine(doc, "  Nacimiento ex-conyuge", item.fechaLugarNacimiento);
-      fieldLine(doc, "  Divorcio", item.fechaLugarDivorcio);
+      numberedBlock(doc, index, "Matrimonio previo", [
+        {
+          question: (n) => formatQuestion(`Cual es el nombre del ex-conyuge del matrimonio previo ${n}`),
+          value: item.nombresExConyuge,
+        },
+        {
+          question: (n) =>
+            formatQuestion(`Cual es el apellido paterno del ex-conyuge del matrimonio previo ${n}`),
+          value: item.apellidoPaternoExConyuge,
+        },
+        {
+          question: (n) =>
+            formatQuestion(`Cual es el apellido materno del ex-conyuge del matrimonio previo ${n}`),
+          value: item.apellidoMaternoExConyuge,
+        },
+        {
+          question: (n) => formatQuestion(`Cuando y donde fue el matrimonio previo ${n}`),
+          value: item.fechaLugarMatrimonio,
+        },
+        {
+          question: (n) =>
+            formatQuestion(`Cuando y donde nacio el ex-conyuge del matrimonio previo ${n}`),
+          value: item.fechaLugarNacimiento,
+        },
+        {
+          question: (n) => formatQuestion(`Cuando y donde fue el divorcio del matrimonio previo ${n}`),
+          value: item.fechaLugarDivorcio,
+        },
+      ]);
     });
     fam.hijos.forEach((item, index) => {
-      ensureSpace(doc);
-      doc.font("Helvetica-Bold").text(`Hijo ${index + 1}`);
-      doc.font("Helvetica");
-      fieldLine(
-        doc,
-        "  Nombre",
-        fullName(item.nombres, item.apellidoPaterno, item.apellidoMaterno)
-      );
-      fieldLine(doc, "  Fecha nacimiento", item.fechaNacimiento);
-      fieldLine(doc, "  Lugar nacimiento", item.lugarNacimiento);
-      fieldLine(doc, "  Lugar residencia", item.lugarResidencia);
+      numberedBlock(doc, index, "Hijo", [
+        {
+          question: (n) => formatQuestion(`Cual es el nombre del hijo ${n}`),
+          value: item.nombres,
+        },
+        {
+          question: (n) => formatQuestion(`Cual es el apellido paterno del hijo ${n}`),
+          value: item.apellidoPaterno,
+        },
+        {
+          question: (n) => formatQuestion(`Cual es el apellido materno del hijo ${n}`),
+          value: item.apellidoMaterno,
+        },
+        {
+          question: (n) => formatQuestion(`Cual es la fecha de nacimiento del hijo ${n}`),
+          value: item.fechaNacimiento,
+        },
+        {
+          question: (n) => formatQuestion(`Donde nacio el hijo ${n}`),
+          value: item.lugarNacimiento,
+        },
+        {
+          question: (n) => formatQuestion(`Donde reside el hijo ${n}`),
+          value: item.lugarResidencia,
+        },
+      ]);
     });
 
     // Caso
@@ -199,31 +280,59 @@ export function generateBioCallPdf(
     const cb = data.caseBackground;
     fieldLine(doc, "Comentarios de viajes", cb.viajesComentarios);
     cb.viajes.forEach((item, index) => {
-      ensureSpace(doc);
-      doc.font("Helvetica-Bold").text(`Viaje ${index + 1}`);
-      doc.font("Helvetica");
-      fieldLine(doc, "  Entrada", item.fechaEntrada);
-      fieldLine(doc, "  Forma", item.formaEntrada);
-      fieldLine(doc, "  Lugar", item.lugarEntrada);
-      fieldLine(doc, "  Detenido", item.fueDetenido);
+      numberedBlock(doc, index, "Viaje", [
+        {
+          question: (n) => formatQuestion(`Cuando fue la entrada del viaje ${n}`),
+          value: item.fechaEntrada,
+        },
+        {
+          question: (n) => formatQuestion(`De que forma ingreso en el viaje ${n}`),
+          value: item.formaEntrada,
+        },
+        {
+          question: (n) => formatQuestion(`Por donde ingreso en el viaje ${n}`),
+          value: item.lugarEntrada,
+        },
+        {
+          question: (n) => formatQuestion(`Fue detenido en el viaje ${n}`),
+          value: item.fueDetenido,
+        },
+      ]);
     });
     fieldLine(doc, "Detenido por inmigracion", cb.detenidoInmigracion);
     cb.detencionesInmi.forEach((item, index) => {
-      ensureSpace(doc);
-      doc.font("Helvetica-Bold").text(`Detencion inmigracion ${index + 1}`);
-      doc.font("Helvetica");
-      fieldLine(doc, "  Lugar", item.lugar);
-      fieldLine(doc, "  Fecha", item.fecha);
-      fieldLine(doc, "  Autoridad", item.autoridad);
+      numberedBlock(doc, index, "Detencion por inmigracion", [
+        {
+          question: (n) => formatQuestion(`Donde fue la detencion por inmigracion ${n}`),
+          value: item.lugar,
+        },
+        {
+          question: (n) => formatQuestion(`Cuando fue la detencion por inmigracion ${n}`),
+          value: item.fecha,
+        },
+        {
+          question: (n) => formatQuestion(`Que autoridad realizo la detencion por inmigracion ${n}`),
+          value: item.autoridad,
+        },
+      ]);
     });
     fieldLine(doc, "Arrestado por policia", cb.arrestadoPolicia);
     cb.arrestosPolicia.forEach((item, index) => {
-      ensureSpace(doc);
-      doc.font("Helvetica-Bold").text(`Arresto policial ${index + 1}`);
-      doc.font("Helvetica");
-      fieldLine(doc, "  Lugar", item.paisCiudadEstado);
-      fieldLine(doc, "  Motivo", item.motivo);
-      fieldLine(doc, "  Disposicion", item.disposicion);
+      numberedBlock(doc, index, "Arresto policial", [
+        {
+          question: (n) =>
+            formatQuestion(`En que pais, ciudad y estado fue el arresto policial ${n}`),
+          value: item.paisCiudadEstado,
+        },
+        {
+          question: (n) => formatQuestion(`Cual fue el motivo del arresto policial ${n}`),
+          value: item.motivo,
+        },
+        {
+          question: (n) => formatQuestion(`Cual fue la disposicion del arresto policial ${n}`),
+          value: item.disposicion,
+        },
+      ]);
     });
 
     sectionTitle(doc, "Empleo actual");
@@ -241,20 +350,36 @@ export function generateBioCallPdf(
     fieldLine(doc, "Fecha ingreso", cb.empleoFechaIngreso);
     fieldLine(doc, "Otros empleos", cb.empleoOtrosLugares);
     cb.empleosAnteriores.forEach((item, index) => {
-      ensureSpace(doc);
-      doc.font("Helvetica-Bold").text(`Empleo anterior ${index + 1}`);
-      doc.font("Helvetica");
-      fieldLine(doc, "  Empresa", item.empresa);
-      fieldLine(doc, "  Puesto", item.puesto);
-      fieldLine(doc, "  Direccion", [
-        item.direccionCalle,
-        item.direccionCiudad,
-        item.direccionEstado,
-        item.direccionZip,
-        item.direccionPais,
-      ]
-        .filter((p) => p?.trim())
-        .join(", "));
+      numberedBlock(doc, index, "Empleo anterior", [
+        {
+          question: (n) => formatQuestion(`Cual es el nombre de la empresa del empleo anterior ${n}`),
+          value: item.empresa,
+        },
+        {
+          question: (n) => formatQuestion(`Cual fue el puesto en el empleo anterior ${n}`),
+          value: item.puesto,
+        },
+        {
+          question: (n) => formatQuestion(`Cual es la direccion del empleo anterior ${n}`),
+          value: [
+            item.direccionCalle,
+            item.direccionCiudad,
+            item.direccionEstado,
+            item.direccionZip,
+            item.direccionPais,
+          ]
+            .filter((p) => p?.trim())
+            .join(", "),
+        },
+        {
+          question: (n) => formatQuestion(`Desde cuando trabajo en el empleo anterior ${n}`),
+          value: item.fechaDesde,
+        },
+        {
+          question: (n) => formatQuestion(`Hasta cuando trabajo en el empleo anterior ${n}`),
+          value: item.fechaHasta,
+        },
+      ]);
     });
 
     sectionTitle(doc, "Inadmisibilidad");
