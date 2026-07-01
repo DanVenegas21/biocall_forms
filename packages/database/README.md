@@ -76,8 +76,9 @@ Padres, hijos y ex-conyuges se guardan como un solo campo de texto (`nombre_padr
 | `001_bio_call_schema.sql` | Instalacion nueva (incluye columnas actuales) |
 | `002_bio_call_form_sync.sql` | BD existente creada con `001` antiguo (lugar_nacimiento, columnas familia/caso) |
 | `003_bio_call_backend_sync.sql` | BD existente: columna `inad_my_uscis_detalle` |
+| `004_bio_call_pais_sync.sql` | BD existente: columnas `pais` en domicilio y empleo |
 
-Tras `003`, ejecutar `npm run db:generate --workspace @biocall/database`.
+Tras `003` o `004`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
 
 ## API relacionada
 
