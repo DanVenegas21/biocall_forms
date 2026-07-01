@@ -2,24 +2,50 @@ import type { Prisma } from "@prisma/client";
 import type { BioCall } from "@biocall/shared";
 import { prisma } from "./client";
 
+export class SaveBioCallValidationError extends Error {
+  readonly fieldPath: string;
+
+  constructor(fieldPath: string, message: string) {
+    super(message);
+    this.name = "SaveBioCallValidationError";
+    this.fieldPath = fieldPath;
+  }
+}
+
 function emptyToNull(value: string | undefined | null): string | null {
   const trimmed = value?.trim();
   return trimmed ? trimmed : null;
 }
 
-function parseOptionalDate(value: string): Date | null {
+function requireTrimmed(value: string, fieldPath: string): string {
+  const trimmed = value?.trim();
+  if (!trimmed) {
+    throw new SaveBioCallValidationError(fieldPath, "Este campo es obligatorio.");
+  }
+  return trimmed;
+}
+
+function parseOptionalDate(value: string, fieldPath: string): Date | null {
   const trimmed = value?.trim();
   if (!trimmed) return null;
   const parsed = new Date(trimmed);
-  return Number.isNaN(parsed.getTime()) ? null : parsed;
-}
-
-function parseRequiredDate(value: string): Date {
-  const parsed = parseOptionalDate(value);
-  if (!parsed) {
-    throw new Error(`Fecha invalida: ${value}`);
+  if (Number.isNaN(parsed.getTime())) {
+    throw new SaveBioCallValidationError(fieldPath, `Fecha invalida: ${value}`);
   }
   return parsed;
+}
+
+function parseRequiredDate(value: string, fieldPath: string): Date {
+  const parsed = parseOptionalDate(value, fieldPath);
+  if (!parsed) {
+    throw new SaveBioCallValidationError(fieldPath, "La fecha es obligatoria.");
+  }
+  return parsed;
+}
+
+function yesNoOrDefault(value: string): string {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : "no";
 }
 
 function childId(bioCallId: string, prefix: string, index: number): string {
@@ -48,47 +74,112 @@ function mapCaseBackground(
     empleoFechaIngreso: emptyToNull(cb.empleoFechaIngreso),
     empleoFechaSalida: emptyToNull(cb.empleoFechaSalida),
     empleoOtrosLugares: emptyToNull(cb.empleoOtrosLugares),
-    inadDetencionTrafico: cb.inadDetencionTrafico || "no",
-    inadCometidoDelito: cb.inadCometidoDelito || "no",
-    inadInmunidadDiplomatica: cb.inadInmunidadDiplomatica || "no",
-    inadProstitucionTrafico: cb.inadProstitucionTrafico || "no",
-    inadAyudaIngresoIlegal: cb.inadAyudaIngresoIlegal || "no",
-    inadTerrorismo: cb.inadTerrorismo || "no",
-    inadFondosTerrorismo: cb.inadFondosTerrorismo || "no",
-    inadAsociacionTerrorista: cb.inadAsociacionTerrorista || "no",
-    inadEspionaje: cb.inadEspionaje || "no",
-    inadPartidoComunista: cb.inadPartidoComunista || "no",
-    inadParticipadoPersecucion: cb.inadParticipadoPersecucion || "no",
-    inadProcedimientoRemocion: cb.inadProcedimientoRemocion || "no",
-    inadDenegadoVisa: cb.inadDenegadoVisa || "no",
-    inadVisaT: cb.inadVisaT || "no",
-    inadMyUscis: cb.inadMyUscis || "no",
-    inadGrupoMilitar: cb.inadGrupoMilitar || "no",
-    inadFraudeMigratorio: cb.inadFraudeMigratorio || "no",
-    inadTrastornoFisicoMental: cb.inadTrastornoFisicoMental || "no",
-    inadEnfermedadPublica: cb.inadEnfermedadPublica || "no",
-    inadAdictoDrogas: cb.inadAdictoDrogas || "no",
+    inadDetencionTrafico: yesNoOrDefault(cb.inadDetencionTrafico),
+    inadCometidoDelito: yesNoOrDefault(cb.inadCometidoDelito),
+    inadInmunidadDiplomatica: yesNoOrDefault(cb.inadInmunidadDiplomatica),
+    inadProstitucionTrafico: yesNoOrDefault(cb.inadProstitucionTrafico),
+    inadAyudaIngresoIlegal: yesNoOrDefault(cb.inadAyudaIngresoIlegal),
+    inadTerrorismo: yesNoOrDefault(cb.inadTerrorismo),
+    inadFondosTerrorismo: yesNoOrDefault(cb.inadFondosTerrorismo),
+    inadAsociacionTerrorista: yesNoOrDefault(cb.inadAsociacionTerrorista),
+    inadEspionaje: yesNoOrDefault(cb.inadEspionaje),
+    inadPartidoComunista: yesNoOrDefault(cb.inadPartidoComunista),
+    inadParticipadoPersecucion: yesNoOrDefault(cb.inadParticipadoPersecucion),
+    inadProcedimientoRemocion: yesNoOrDefault(cb.inadProcedimientoRemocion),
+    inadDenegadoVisa: yesNoOrDefault(cb.inadDenegadoVisa),
+    inadVisaT: yesNoOrDefault(cb.inadVisaT),
+    inadMyUscis: yesNoOrDefault(cb.inadMyUscis),
+    inadMyUscisDetalle: emptyToNull(cb.inadMyUscisDetalle),
+    inadGrupoMilitar: yesNoOrDefault(cb.inadGrupoMilitar),
+    inadFraudeMigratorio: yesNoOrDefault(cb.inadFraudeMigratorio),
+    inadTrastornoFisicoMental: yesNoOrDefault(cb.inadTrastornoFisicoMental),
+    inadEnfermedadPublica: yesNoOrDefault(cb.inadEnfermedadPublica),
+    inadAdictoDrogas: yesNoOrDefault(cb.inadAdictoDrogas),
     declaradoCiudadano: emptyToNull(cb.declaradoCiudadano),
     falsaDeclaracionLugar: emptyToNull(cb.falsaDeclaracionLugar),
     falsaDeclaracionFecha: emptyToNull(cb.falsaDeclaracionFecha),
     falsaDeclaracionComo: emptyToNull(cb.falsaDeclaracionComo),
     falsaDeclaracionIntencion: emptyToNull(cb.falsaDeclaracionIntencion),
     falsaDeclaracionDetalle: emptyToNull(cb.falsaDeclaracionDetalle),
-    foiaUscisSolicitar: foias.uscis.solicitar || "no",
+    foiaUscisSolicitar: yesNoOrDefault(foias.uscis.solicitar),
     foiaUscisMotivo: emptyToNull(foias.uscis.motivo),
-    foiaIceSolicitar: foias.ice.solicitar || "no",
+    foiaIceSolicitar: yesNoOrDefault(foias.ice.solicitar),
     foiaIceMotivo: emptyToNull(foias.ice.motivo),
-    foiaCbpSolicitar: foias.cbp.solicitar || "no",
+    foiaCbpSolicitar: yesNoOrDefault(foias.cbp.solicitar),
     foiaCbpMotivo: emptyToNull(foias.cbp.motivo),
-    foiaEoirSolicitar: foias.eoir.solicitar || "no",
+    foiaEoirSolicitar: yesNoOrDefault(foias.eoir.solicitar),
     foiaEoirMotivo: emptyToNull(foias.eoir.motivo),
-    foiaFbiSolicitar: foias.fbi.solicitar || "no",
+    foiaFbiSolicitar: yesNoOrDefault(foias.fbi.solicitar),
     foiaFbiMotivo: emptyToNull(foias.fbi.motivo),
-    foiaPoliciaSolicitar: foias.policia.solicitar || "no",
+    foiaPoliciaSolicitar: yesNoOrDefault(foias.policia.solicitar),
     foiaPoliciaMotivo: emptyToNull(foias.policia.motivo),
     documentosPendientes: emptyToNull(cb.documentosPendientes),
     correosPendientes: emptyToNull(cb.correosPendientes),
   };
+}
+
+function mapPersonalDataFields(pd: BioCall["personalData"]) {
+  return {
+    nombres: requireTrimmed(pd.nombres, "personalData.nombres"),
+    apellidoPaterno: requireTrimmed(pd.apellidoPaterno, "personalData.apellidoPaterno"),
+    apellidoMaterno: emptyToNull(pd.apellidoMaterno),
+    otrosNombres: emptyToNull(pd.otrosNombres),
+    fechaNacimiento: parseRequiredDate(pd.fechaNacimiento, "personalData.fechaNacimiento"),
+    ciudadNacimiento: emptyToNull(pd.ciudadNacimiento),
+    estadoNacimiento: emptyToNull(pd.estadoNacimiento),
+    paisNacimiento: emptyToNull(pd.paisNacimiento),
+    sexo: emptyToNull(pd.sexo),
+    estadoCivil: emptyToNull(pd.estadoCivil),
+    nacionalidad: requireTrimmed(pd.nacionalidad, "personalData.nacionalidad"),
+    comprendeIngles: emptyToNull(pd.comprendeIngles),
+    idiomaPreferido: emptyToNull(pd.idiomaPreferido),
+    hablaOtroIdioma: emptyToNull(pd.hablaOtroIdioma),
+    especificarIdioma: emptyToNull(pd.especificarIdioma),
+  };
+}
+
+function mapContactFields(contact: BioCall["contact"]) {
+  return {
+    telefono: requireTrimmed(contact.telefono, "contact.telefono"),
+    correoElectronico: requireTrimmed(contact.correoElectronico, "contact.correoElectronico"),
+  };
+}
+
+function mapAddressFields(addr: BioCall["address"]) {
+  return {
+    calleNumero: requireTrimmed(addr.calleNumero, "address.calleNumero"),
+    aptoSuite: emptyToNull(addr.aptoSuite),
+    ciudad: requireTrimmed(addr.ciudad, "address.ciudad"),
+    estado: requireTrimmed(addr.estado, "address.estado"),
+    codigoPostal: requireTrimmed(addr.codigoPostal, "address.codigoPostal"),
+    fechaIngreso: emptyToNull(addr.fechaIngreso),
+    resididoOtrosLugares: emptyToNull(addr.resididoOtrosLugares),
+  };
+}
+
+function mapDocumentsFields(doc: BioCall["documents"]) {
+  return {
+    tienePasaporte: emptyToNull(doc.tienePasaporte),
+    pasaportePendiente: emptyToNull(doc.pasaportePendiente),
+    numeroPasaporte: emptyToNull(doc.numeroPasaporte),
+    paisEmision: emptyToNull(doc.paisEmision),
+    fechaEmision: parseOptionalDate(doc.fechaEmision, "documents.fechaEmision"),
+    fechaExpiracion: parseOptionalDate(doc.fechaExpiracion, "documents.fechaExpiracion"),
+    tieneANumber: emptyToNull(doc.tieneANumber),
+    aNumberValue: emptyToNull(doc.aNumberValue),
+    aNumberOrigen: emptyToNull(doc.aNumberOrigen),
+    tieneSSN: emptyToNull(doc.tieneSSN),
+    ssnValue: emptyToNull(doc.ssnValue),
+    tieneEAD: emptyToNull(doc.tieneEAD),
+    eadValue: emptyToNull(doc.eadValue),
+  };
+}
+
+async function touchBioCallRoot(bioCallId: string): Promise<void> {
+  await prisma.bioCall.update({
+    where: { id: bioCallId },
+    data: { updatedAt: new Date() },
+  });
 }
 
 function mapBioCallToCreateInput(
@@ -104,40 +195,13 @@ function mapBioCallToCreateInput(
   return {
     id: bioCallId,
     personalData: {
-      create: {
-        nombres: pd.nombres.trim() || "Pendiente",
-        apellidoPaterno: pd.apellidoPaterno.trim() || "Pendiente",
-        apellidoMaterno: emptyToNull(pd.apellidoMaterno),
-        otrosNombres: emptyToNull(pd.otrosNombres),
-        fechaNacimiento: parseRequiredDate(pd.fechaNacimiento),
-        ciudadNacimiento: emptyToNull(pd.ciudadNacimiento),
-        estadoNacimiento: emptyToNull(pd.estadoNacimiento),
-        paisNacimiento: emptyToNull(pd.paisNacimiento),
-        sexo: emptyToNull(pd.sexo),
-        estadoCivil: emptyToNull(pd.estadoCivil),
-        nacionalidad: pd.nacionalidad.trim() || "Pendiente",
-        comprendeIngles: emptyToNull(pd.comprendeIngles),
-        idiomaPreferido: emptyToNull(pd.idiomaPreferido),
-        hablaOtroIdioma: emptyToNull(pd.hablaOtroIdioma),
-        especificarIdioma: emptyToNull(pd.especificarIdioma),
-      },
+      create: mapPersonalDataFields(pd),
     },
     contact: {
-      create: {
-        telefono: data.contact.telefono.trim() || "Pendiente",
-        correoElectronico: data.contact.correoElectronico.trim() || "pendiente@ejemplo.com",
-      },
+      create: mapContactFields(data.contact),
     },
     address: {
-      create: {
-        calleNumero: addr.calleNumero.trim() || "Pendiente",
-        aptoSuite: emptyToNull(addr.aptoSuite),
-        ciudad: addr.ciudad.trim() || "Pendiente",
-        estado: addr.estado.trim() || "Pendiente",
-        codigoPostal: addr.codigoPostal.trim() || "00000",
-        fechaIngreso: emptyToNull(addr.fechaIngreso),
-        resididoOtrosLugares: emptyToNull(addr.resididoOtrosLugares),
-      },
+      create: mapAddressFields(addr),
     },
     previousAddresses: {
       create: addr.direccionesAnteriores.map((item, index) => ({
@@ -153,21 +217,7 @@ function mapBioCallToCreateInput(
       })),
     },
     documents: {
-      create: {
-        tienePasaporte: emptyToNull(doc.tienePasaporte),
-        pasaportePendiente: emptyToNull(doc.pasaportePendiente),
-        numeroPasaporte: emptyToNull(doc.numeroPasaporte),
-        paisEmision: emptyToNull(doc.paisEmision),
-        fechaEmision: parseOptionalDate(doc.fechaEmision),
-        fechaExpiracion: parseOptionalDate(doc.fechaExpiracion),
-        tieneANumber: emptyToNull(doc.tieneANumber),
-        aNumberValue: emptyToNull(doc.aNumberValue),
-        aNumberOrigen: emptyToNull(doc.aNumberOrigen),
-        tieneSSN: emptyToNull(doc.tieneSSN),
-        ssnValue: emptyToNull(doc.ssnValue),
-        tieneEAD: emptyToNull(doc.tieneEAD),
-        eadValue: emptyToNull(doc.eadValue),
-      },
+      create: mapDocumentsFields(doc),
     },
     family: {
       create: {
@@ -426,113 +476,31 @@ export async function saveBioCall(
     const doc = data.documents;
     const fam = data.family;
     const cb = data.caseBackground;
+    const personalFields = mapPersonalDataFields(pd);
+    const contactFields = mapContactFields(data.contact);
+    const addressFields = mapAddressFields(addr);
+    const documentFields = mapDocumentsFields(doc);
 
     await prisma.$transaction([
       prisma.bioCallPersonalData.upsert({
         where: { bioCallId: existingId },
-        create: {
-          bioCallId: existingId,
-          nombres: pd.nombres.trim() || "Pendiente",
-          apellidoPaterno: pd.apellidoPaterno.trim() || "Pendiente",
-          apellidoMaterno: emptyToNull(pd.apellidoMaterno),
-          otrosNombres: emptyToNull(pd.otrosNombres),
-          fechaNacimiento: parseRequiredDate(pd.fechaNacimiento),
-          ciudadNacimiento: emptyToNull(pd.ciudadNacimiento),
-          estadoNacimiento: emptyToNull(pd.estadoNacimiento),
-          paisNacimiento: emptyToNull(pd.paisNacimiento),
-          sexo: emptyToNull(pd.sexo),
-          estadoCivil: emptyToNull(pd.estadoCivil),
-          nacionalidad: pd.nacionalidad.trim() || "Pendiente",
-          comprendeIngles: emptyToNull(pd.comprendeIngles),
-          idiomaPreferido: emptyToNull(pd.idiomaPreferido),
-          hablaOtroIdioma: emptyToNull(pd.hablaOtroIdioma),
-          especificarIdioma: emptyToNull(pd.especificarIdioma),
-        },
-        update: {
-          nombres: pd.nombres.trim() || "Pendiente",
-          apellidoPaterno: pd.apellidoPaterno.trim() || "Pendiente",
-          apellidoMaterno: emptyToNull(pd.apellidoMaterno),
-          otrosNombres: emptyToNull(pd.otrosNombres),
-          fechaNacimiento: parseRequiredDate(pd.fechaNacimiento),
-          ciudadNacimiento: emptyToNull(pd.ciudadNacimiento),
-          estadoNacimiento: emptyToNull(pd.estadoNacimiento),
-          paisNacimiento: emptyToNull(pd.paisNacimiento),
-          sexo: emptyToNull(pd.sexo),
-          estadoCivil: emptyToNull(pd.estadoCivil),
-          nacionalidad: pd.nacionalidad.trim() || "Pendiente",
-          comprendeIngles: emptyToNull(pd.comprendeIngles),
-          idiomaPreferido: emptyToNull(pd.idiomaPreferido),
-          hablaOtroIdioma: emptyToNull(pd.hablaOtroIdioma),
-          especificarIdioma: emptyToNull(pd.especificarIdioma),
-        },
+        create: { bioCallId: existingId, ...personalFields },
+        update: personalFields,
       }),
       prisma.bioCallContact.upsert({
         where: { bioCallId: existingId },
-        create: {
-          bioCallId: existingId,
-          telefono: data.contact.telefono.trim() || "Pendiente",
-          correoElectronico: data.contact.correoElectronico.trim() || "pendiente@ejemplo.com",
-        },
-        update: {
-          telefono: data.contact.telefono.trim() || "Pendiente",
-          correoElectronico: data.contact.correoElectronico.trim() || "pendiente@ejemplo.com",
-        },
+        create: { bioCallId: existingId, ...contactFields },
+        update: contactFields,
       }),
       prisma.bioCallAddress.upsert({
         where: { bioCallId: existingId },
-        create: {
-          bioCallId: existingId,
-          calleNumero: addr.calleNumero.trim() || "Pendiente",
-          aptoSuite: emptyToNull(addr.aptoSuite),
-          ciudad: addr.ciudad.trim() || "Pendiente",
-          estado: addr.estado.trim() || "Pendiente",
-          codigoPostal: addr.codigoPostal.trim() || "00000",
-          fechaIngreso: emptyToNull(addr.fechaIngreso),
-          resididoOtrosLugares: emptyToNull(addr.resididoOtrosLugares),
-        },
-        update: {
-          calleNumero: addr.calleNumero.trim() || "Pendiente",
-          aptoSuite: emptyToNull(addr.aptoSuite),
-          ciudad: addr.ciudad.trim() || "Pendiente",
-          estado: addr.estado.trim() || "Pendiente",
-          codigoPostal: addr.codigoPostal.trim() || "00000",
-          fechaIngreso: emptyToNull(addr.fechaIngreso),
-          resididoOtrosLugares: emptyToNull(addr.resididoOtrosLugares),
-        },
+        create: { bioCallId: existingId, ...addressFields },
+        update: addressFields,
       }),
       prisma.bioCallDocuments.upsert({
         where: { bioCallId: existingId },
-        create: {
-          bioCallId: existingId,
-          tienePasaporte: emptyToNull(doc.tienePasaporte),
-          pasaportePendiente: emptyToNull(doc.pasaportePendiente),
-          numeroPasaporte: emptyToNull(doc.numeroPasaporte),
-          paisEmision: emptyToNull(doc.paisEmision),
-          fechaEmision: parseOptionalDate(doc.fechaEmision),
-          fechaExpiracion: parseOptionalDate(doc.fechaExpiracion),
-          tieneANumber: emptyToNull(doc.tieneANumber),
-          aNumberValue: emptyToNull(doc.aNumberValue),
-          aNumberOrigen: emptyToNull(doc.aNumberOrigen),
-          tieneSSN: emptyToNull(doc.tieneSSN),
-          ssnValue: emptyToNull(doc.ssnValue),
-          tieneEAD: emptyToNull(doc.tieneEAD),
-          eadValue: emptyToNull(doc.eadValue),
-        },
-        update: {
-          tienePasaporte: emptyToNull(doc.tienePasaporte),
-          pasaportePendiente: emptyToNull(doc.pasaportePendiente),
-          numeroPasaporte: emptyToNull(doc.numeroPasaporte),
-          paisEmision: emptyToNull(doc.paisEmision),
-          fechaEmision: parseOptionalDate(doc.fechaEmision),
-          fechaExpiracion: parseOptionalDate(doc.fechaExpiracion),
-          tieneANumber: emptyToNull(doc.tieneANumber),
-          aNumberValue: emptyToNull(doc.aNumberValue),
-          aNumberOrigen: emptyToNull(doc.aNumberOrigen),
-          tieneSSN: emptyToNull(doc.tieneSSN),
-          ssnValue: emptyToNull(doc.ssnValue),
-          tieneEAD: emptyToNull(doc.tieneEAD),
-          eadValue: emptyToNull(doc.eadValue),
-        },
+        create: { bioCallId: existingId, ...documentFields },
+        update: documentFields,
       }),
       prisma.bioCallFamily.upsert({
         where: { bioCallId: existingId },
@@ -580,6 +548,7 @@ export async function saveBioCall(
     ]);
 
     await replaceListChildren(existingId, data);
+    await touchBioCallRoot(existingId);
     return { id: existingId };
   }
 
@@ -587,6 +556,7 @@ export async function saveBioCall(
   await prisma.bioCall.create({
     data: mapBioCallToCreateInput(bioCallId, data),
   });
+  await touchBioCallRoot(bioCallId);
   return { id: bioCallId };
 }
 

@@ -1,5 +1,5 @@
 import type { ZodError } from "zod";
-import { bioCallSchema } from "../schemas";
+import { bioCallSchema, bioCallSaveSchema } from "../schemas";
 import { getFieldLabel } from "./labels";
 
 export interface BioCallFieldError {
@@ -57,8 +57,31 @@ export function fieldErrorsToMap(
   return Object.fromEntries(fieldErrors.map((e) => [e.path, e.message]));
 }
 
+export interface BioCallSaveValidationResult {
+  ok: true;
+  data: ReturnType<typeof bioCallSaveSchema.parse>;
+}
+
+export type ValidateBioCallSaveResult =
+  | BioCallSaveValidationResult
+  | BioCallValidationFailure;
+
 export function validateBioCall(data: unknown): ValidateBioCallResult {
   const result = bioCallSchema.safeParse(data);
+  if (result.success) {
+    return { ok: true, data: result.data };
+  }
+
+  const fieldErrors = formatBioCallErrors(result.error);
+  return {
+    ok: false,
+    fieldErrors,
+    errorMap: fieldErrorsToMap(fieldErrors),
+  };
+}
+
+export function validateBioCallSave(data: unknown): ValidateBioCallSaveResult {
+  const result = bioCallSaveSchema.safeParse(data);
   if (result.success) {
     return { ok: true, data: result.data };
   }

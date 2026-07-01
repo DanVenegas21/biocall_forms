@@ -55,6 +55,8 @@ model BioCallGeneratedPdf {
   bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
 
   @@index([bioCallId, isCurrent])
+  // SQL usa UNIQUE parcial WHERE is_current = true; Prisma no lo modela. Un solo PDF
+  // current se garantiza en recordGeneratedPdf (updateMany + create).
   @@map("bio_call_generated_pdfs")
 }
 
@@ -224,6 +226,7 @@ model BioCallCaseBackground {
   inadDenegadoVisa           String? @default("no") @map("inad_denegado_visa")
   inadVisaT                  String? @default("no") @map("inad_visa_t")
   inadMyUscis                String? @default("no") @map("inad_my_uscis")
+  inadMyUscisDetalle         String? @map("inad_my_uscis_detalle")
   inadGrupoMilitar           String? @default("no") @map("inad_grupo_militar")
   inadFraudeMigratorio       String? @default("no") @map("inad_fraude_migratorio")
   inadTrastornoFisicoMental  String? @default("no") @map("inad_trastorno_fisico_mental")

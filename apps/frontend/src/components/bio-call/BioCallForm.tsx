@@ -12,6 +12,7 @@ import {
   Sparkles,
   Hammer,
   FileDown,
+  Eraser,
   type LucideIcon,
 } from "lucide-react";
 import { BIO_CALL_SECTIONS, type BioCallSectionId, validateBioCall, getFieldLabel } from "@biocall/shared";
@@ -28,7 +29,7 @@ import {
   validationSummaryMessage,
   hasMeaningfulFormInput,
 } from "@/lib/formErrors";
-import { persistBioCallDraft, restoreBioCallDraft } from "@/lib/formDraft";
+import { persistBioCallDraft, restoreBioCallDraft, clearBioCallDraft } from "@/lib/formDraft";
 
 // Importación de componentes de sección
 import { PersonalDataSection } from "./sections/PersonalDataSection";
@@ -435,6 +436,27 @@ export function BioCallForm() {
     window.open(`${API_BASE}/api/bio-calls/${savedBioCallId}/pdf`, "_blank", "noopener,noreferrer");
   };
 
+  const handleClearForm = () => {
+    if (!hasMeaningfulFormInput(formData)) {
+      clearBioCallDraft();
+      toast("El formulario ya está vacío.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "¿Borrar todos los datos del formulario y el borrador guardado en este navegador? No se puede deshacer."
+    );
+    if (!confirmed) return;
+
+    clearBioCallDraft();
+    setFormData(createEmptyFormData());
+    setFieldErrors({});
+    setSavedBioCallId(null);
+    setLastSavedSnapshot(null);
+    toast.success("Formulario vacío. Puedes iniciar una nueva Bio Call.");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const renderSectionContent = (sectionId: BioCallSectionId) => {
     switch (sectionId) {
       case "datos-personales":
@@ -541,6 +563,25 @@ export function BioCallForm() {
                   onClick={handleDownloadPdf}
                 >
                   Descargar PDF
+                </GlassButton>
+              </span>
+            </Tooltip>
+            <Tooltip
+              content={
+                canSave
+                  ? "Borrar todos los campos y el borrador guardado"
+                  : "El formulario ya está vacío"
+              }
+            >
+              <span>
+                <GlassButton
+                  variant="ghost"
+                  size="sm"
+                  leftIcon={<Eraser className="h-4 w-4" aria-hidden="true" />}
+                  disabled={!canSave}
+                  onClick={handleClearForm}
+                >
+                  Limpiar formulario
                 </GlassButton>
               </span>
             </Tooltip>
