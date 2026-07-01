@@ -611,7 +611,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             />
 
             <h4 className="label-caps md:col-span-3 text-brand-600 font-bold border-b border-brand-100/30 pb-1 mb-1">
-              Hijo #{idx + 1}
+              Información de Hijo #{idx + 1}
             </h4>
 
             <div className="flex flex-col gap-2">
