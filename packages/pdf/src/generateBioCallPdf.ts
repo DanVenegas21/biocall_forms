@@ -1,10 +1,15 @@
 import PDFDocument from "pdfkit";
 import type { BioCall } from "@biocall/shared";
-import { BIO_CALL_SECTIONS } from "@biocall/shared";
+import {
+  BIO_CALL_SECTIONS,
+  getArrayFieldQuestion,
+  getArrayItemBlockLabel,
+  getFieldQuestion,
+} from "@biocall/shared";
 import { existsSync } from "node:fs";
 import { renderInadmissibilitySection } from "./inadmissibilityTable";
 
-export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1.9";
+export const BIO_CALL_PDF_TEMPLATE_VERSION = "v2.0";
 
 export interface GenerateBioCallPdfOptions {
   logoPath?: string;
@@ -30,37 +35,36 @@ function fieldLine(doc: PdfDoc, label: string, value: string): void {
   doc.font("Helvetica").text(display(value), { lineGap: 2 });
 }
 
-function blockDivider(doc: PdfDoc, label: string, index: number): void {
+function questionField(doc: PdfDoc, path: string, value: string): void {
+  fieldLine(doc, getFieldQuestion(path), value);
+}
+
+function blockDivider(doc: PdfDoc, label: string): void {
   doc.moveDown(0.35);
   doc
     .font("Helvetica")
     .fontSize(9)
     .fillColor("#5c6b7a")
-    .text(`— ${label} ${index + 1} —`, { lineGap: 1 });
+    .text(`— ${label} —`, { lineGap: 1 });
   doc.fontSize(10).fillColor("#000000");
   doc.moveDown(0.15);
 }
 
-function formatQuestion(text: string): string {
-  return `¿${text}?`;
-}
-
-type NumberedField = {
-  question: (n: number) => string;
+type ArrayField = {
+  field: string;
   value: string;
 };
 
 function numberedBlock(
   doc: PdfDoc,
+  arrayKey: string,
   index: number,
-  blockLabel: string,
-  fields: NumberedField[]
+  fields: ArrayField[]
 ): void {
-  const n = index + 1;
   ensureSpace(doc);
-  blockDivider(doc, blockLabel, index);
-  for (const { question, value } of fields) {
-    fieldLine(doc, question(n), value);
+  blockDivider(doc, getArrayItemBlockLabel(arrayKey, index));
+  for (const { field, value } of fields) {
+    fieldLine(doc, getArrayFieldQuestion(arrayKey, field, index), value);
   }
 }
 
@@ -69,6 +73,8 @@ function ensureSpace(doc: PdfDoc, minHeight = 60): void {
     doc.addPage();
   }
 }
+
+const FOIA_AGENCIES = ["uscis", "ice", "cbp", "eoir", "fbi", "policia"] as const;
 
 export function generateBioCallPdf(
   data: BioCall,
@@ -106,370 +112,207 @@ export function generateBioCallPdf(
     doc.fillColor("#000000");
     doc.addPage();
 
-    // Datos personales
     sectionTitle(doc, BIO_CALL_SECTIONS[0].title);
-    fieldLine(doc, "Primer nombre", pd.nombres);
-    fieldLine(doc, "Segundo nombre", pd.segundoNombre);
-    fieldLine(doc, "Apellido paterno", pd.apellidoPaterno);
-    fieldLine(doc, "Apellido materno", pd.apellidoMaterno);
-    fieldLine(doc, "Otros nombres", pd.otrosNombres);
-    fieldLine(doc, "Fecha de nacimiento", pd.fechaNacimiento);
-    fieldLine(doc, "Ciudad de nacimiento", pd.ciudadNacimiento);
-    fieldLine(doc, "Estado de nacimiento", pd.estadoNacimiento);
-    fieldLine(doc, "Pais de nacimiento", pd.paisNacimiento);
-    fieldLine(doc, "Sexo", pd.sexo);
-    fieldLine(doc, "Estado civil", pd.estadoCivil);
-    fieldLine(doc, "Nacionalidad", pd.nacionalidad);
-    fieldLine(doc, "Comprende ingles", pd.comprendeIngles);
-    fieldLine(doc, "Idioma preferido", pd.idiomaPreferido);
-    fieldLine(doc, "Habla otro idioma", pd.hablaOtroIdioma);
-    fieldLine(doc, "Especificar idioma", pd.especificarIdioma);
+    questionField(doc, "personalData.nombres", pd.nombres);
+    questionField(doc, "personalData.segundoNombre", pd.segundoNombre);
+    questionField(doc, "personalData.apellidoPaterno", pd.apellidoPaterno);
+    questionField(doc, "personalData.apellidoMaterno", pd.apellidoMaterno);
+    questionField(doc, "personalData.otrosNombres", pd.otrosNombres);
+    questionField(doc, "personalData.fechaNacimiento", pd.fechaNacimiento);
+    questionField(doc, "personalData.ciudadNacimiento", pd.ciudadNacimiento);
+    questionField(doc, "personalData.estadoNacimiento", pd.estadoNacimiento);
+    questionField(doc, "personalData.paisNacimiento", pd.paisNacimiento);
+    questionField(doc, "personalData.sexo", pd.sexo);
+    questionField(doc, "personalData.estadoCivil", pd.estadoCivil);
+    questionField(doc, "personalData.nacionalidad", pd.nacionalidad);
+    questionField(doc, "personalData.comprendeIngles", pd.comprendeIngles);
+    questionField(doc, "personalData.idiomaPreferido", pd.idiomaPreferido);
+    questionField(doc, "personalData.hablaOtroIdioma", pd.hablaOtroIdioma);
+    questionField(doc, "personalData.especificarIdioma", pd.especificarIdioma);
 
-    // Contacto
     sectionTitle(doc, BIO_CALL_SECTIONS[1].title);
-    fieldLine(doc, "Telefono", data.contact.telefono);
-    fieldLine(doc, "Correo electronico", data.contact.correoElectronico);
+    questionField(doc, "contact.telefono", data.contact.telefono);
+    questionField(doc, "contact.correoElectronico", data.contact.correoElectronico);
 
-    // Domicilio
     sectionTitle(doc, BIO_CALL_SECTIONS[2].title);
     const addr = data.address;
-    fieldLine(doc, "Calle y numero", addr.calleNumero);
-    fieldLine(doc, "Apto/Suite", addr.aptoSuite);
-    fieldLine(doc, "Ciudad", addr.ciudad);
-    fieldLine(doc, "Estado", addr.estado);
-    fieldLine(doc, "Codigo postal", addr.codigoPostal);
-    fieldLine(doc, "Pais", addr.pais);
-    fieldLine(doc, "Fecha de ingreso", addr.fechaIngreso);
-    fieldLine(doc, "Residido en otros lugares", addr.resididoOtrosLugares);
+    questionField(doc, "address.calleNumero", addr.calleNumero);
+    questionField(doc, "address.aptoSuite", addr.aptoSuite);
+    questionField(doc, "address.ciudad", addr.ciudad);
+    questionField(doc, "address.estado", addr.estado);
+    questionField(doc, "address.codigoPostal", addr.codigoPostal);
+    questionField(doc, "address.pais", addr.pais);
+    questionField(doc, "address.fechaIngreso", addr.fechaIngreso);
+    questionField(doc, "address.resididoOtrosLugares", addr.resididoOtrosLugares);
     addr.direccionesAnteriores.forEach((item, index) => {
-      numberedBlock(doc, index, "Domicilio anterior", [
-        {
-          question: (n) => formatQuestion(`Cual es la calle y numero del domicilio anterior ${n}`),
-          value: item.calleNumero,
-        },
-        {
-          question: (n) => formatQuestion(`Cual es el apto o suite del domicilio anterior ${n}`),
-          value: item.aptoSuite,
-        },
-        {
-          question: (n) => formatQuestion(`En que ciudad estaba el domicilio anterior ${n}`),
-          value: item.ciudad,
-        },
-        {
-          question: (n) => formatQuestion(`En que estado estaba el domicilio anterior ${n}`),
-          value: item.estado,
-        },
-        {
-          question: (n) => formatQuestion(`Cual es el codigo postal del domicilio anterior ${n}`),
-          value: item.codigoPostal,
-        },
-        {
-          question: (n) => formatQuestion(`En que pais estaba el domicilio anterior ${n}`),
-          value: item.pais,
-        },
-        {
-          question: (n) => formatQuestion(`Desde cuando vivio en el domicilio anterior ${n}`),
-          value: item.fechaDesde,
-        },
-        {
-          question: (n) => formatQuestion(`Hasta cuando vivio en el domicilio anterior ${n}`),
-          value: item.fechaHasta,
-        },
+      numberedBlock(doc, "direccionesAnteriores", index, [
+        { field: "calleNumero", value: item.calleNumero },
+        { field: "aptoSuite", value: item.aptoSuite },
+        { field: "ciudad", value: item.ciudad },
+        { field: "estado", value: item.estado },
+        { field: "codigoPostal", value: item.codigoPostal },
+        { field: "pais", value: item.pais },
+        { field: "fechaDesde", value: item.fechaDesde },
+        { field: "fechaHasta", value: item.fechaHasta },
       ]);
     });
 
-    // Documentos
     ensureSpace(doc, 120);
     sectionTitle(doc, BIO_CALL_SECTIONS[3].title);
     const docu = data.documents;
-    fieldLine(doc, "Tiene pasaporte", docu.tienePasaporte);
-    fieldLine(doc, "Pasaporte pendiente", docu.pasaportePendiente);
-    fieldLine(doc, "Numero de pasaporte", docu.numeroPasaporte);
-    fieldLine(doc, "Pais de emision", docu.paisEmision);
-    fieldLine(doc, "Fecha de emision", docu.fechaEmision);
-    fieldLine(doc, "Fecha de expiracion", docu.fechaExpiracion);
-    fieldLine(doc, "Tiene A-Number", docu.tieneANumber);
-    fieldLine(doc, "A-Number", docu.aNumberValue);
-    fieldLine(doc, "Origen A-Number", docu.aNumberOrigen);
-    fieldLine(doc, "Tiene SSN", docu.tieneSSN);
-    fieldLine(doc, "SSN", docu.ssnValue);
-    fieldLine(doc, "Tiene EAD", docu.tieneEAD);
-    fieldLine(doc, "EAD", docu.eadValue);
+    questionField(doc, "documents.tienePasaporte", docu.tienePasaporte);
+    questionField(doc, "documents.pasaportePendiente", docu.pasaportePendiente);
+    questionField(doc, "documents.numeroPasaporte", docu.numeroPasaporte);
+    questionField(doc, "documents.paisEmision", docu.paisEmision);
+    questionField(doc, "documents.fechaEmision", docu.fechaEmision);
+    questionField(doc, "documents.fechaExpiracion", docu.fechaExpiracion);
+    questionField(doc, "documents.tieneANumber", docu.tieneANumber);
+    questionField(doc, "documents.aNumberValue", docu.aNumberValue);
+    questionField(doc, "documents.aNumberOrigen", docu.aNumberOrigen);
+    questionField(doc, "documents.tieneSSN", docu.tieneSSN);
+    questionField(doc, "documents.ssnValue", docu.ssnValue);
+    questionField(doc, "documents.tieneEAD", docu.tieneEAD);
+    questionField(doc, "documents.eadValue", docu.eadValue);
 
-    // Familia
     ensureSpace(doc, 120);
     sectionTitle(doc, BIO_CALL_SECTIONS[4].title);
     const fam = data.family;
-    fieldLine(doc, "Primer nombre del padre", fam.nombresPadre);
-    fieldLine(doc, "Segundo nombre del padre", fam.segundoNombrePadre);
-    fieldLine(doc, "Apellido paterno del padre", fam.apellidoPaternoPadre);
-    fieldLine(doc, "Apellido materno del padre", fam.apellidoMaternoPadre);
-    fieldLine(doc, "Primer nombre de la madre", fam.nombresMadre);
-    fieldLine(doc, "Segundo nombre de la madre", fam.segundoNombreMadre);
-    fieldLine(doc, "Apellido paterno de la madre", fam.apellidoPaternoMadre);
-    fieldLine(doc, "Apellido materno de la madre", fam.apellidoMaternoMadre);
-    fieldLine(doc, "Tiene conyuge", fam.tieneConyuge);
-    fieldLine(doc, "Primer nombre conyuge", fam.nombresConyuge);
-    fieldLine(doc, "Segundo nombre conyuge", fam.segundoNombreConyuge);
-    fieldLine(doc, "Apellido paterno conyuge", fam.apellidoPaternoConyuge);
-    fieldLine(doc, "Apellido materno conyuge", fam.apellidoMaternoConyuge);
-    fieldLine(doc, "Fecha y lugar de matrimonio", fam.fechaLugarMatrimonioConyuge);
-    fieldLine(doc, "Fecha y lugar de nacimiento del conyuge", fam.fechaLugarNacimientoConyuge);
-    fieldLine(doc, "Casado", fam.casado);
-    fieldLine(doc, "Previamente casado", fam.previamenteCasado);
-    fieldLine(doc, "Tiene hijos", fam.tieneHijos);
+    questionField(doc, "family.nombresPadre", fam.nombresPadre);
+    questionField(doc, "family.segundoNombrePadre", fam.segundoNombrePadre);
+    questionField(doc, "family.apellidoPaternoPadre", fam.apellidoPaternoPadre);
+    questionField(doc, "family.apellidoMaternoPadre", fam.apellidoMaternoPadre);
+    questionField(doc, "family.nombresMadre", fam.nombresMadre);
+    questionField(doc, "family.segundoNombreMadre", fam.segundoNombreMadre);
+    questionField(doc, "family.apellidoPaternoMadre", fam.apellidoPaternoMadre);
+    questionField(doc, "family.apellidoMaternoMadre", fam.apellidoMaternoMadre);
+    questionField(doc, "family.tieneConyuge", fam.tieneConyuge);
+    questionField(doc, "family.nombresConyuge", fam.nombresConyuge);
+    questionField(doc, "family.segundoNombreConyuge", fam.segundoNombreConyuge);
+    questionField(doc, "family.apellidoPaternoConyuge", fam.apellidoPaternoConyuge);
+    questionField(doc, "family.apellidoMaternoConyuge", fam.apellidoMaternoConyuge);
+    questionField(doc, "family.fechaLugarMatrimonioConyuge", fam.fechaLugarMatrimonioConyuge);
+    questionField(doc, "family.fechaLugarNacimientoConyuge", fam.fechaLugarNacimientoConyuge);
+    questionField(doc, "family.casado", fam.casado);
+    questionField(doc, "family.previamenteCasado", fam.previamenteCasado);
+    questionField(doc, "family.tieneHijos", fam.tieneHijos);
     fam.matrimoniosPrevios.forEach((item, index) => {
-      numberedBlock(doc, index, "Matrimonio previo", [
-        {
-          question: (n) => formatQuestion(`Cual es el nombre del ex-conyuge del matrimonio previo ${n}`),
-          value: item.nombresExConyuge,
-        },
-        {
-          question: (n) => formatQuestion(`Cual es el segundo nombre del ex-conyuge del matrimonio previo ${n}`),
-          value: item.segundoNombreExConyuge,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Cual es el apellido paterno del ex-conyuge del matrimonio previo ${n}`),
-          value: item.apellidoPaternoExConyuge,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Cual es el apellido materno del ex-conyuge del matrimonio previo ${n}`),
-          value: item.apellidoMaternoExConyuge,
-        },
-        {
-          question: (n) => formatQuestion(`Cuando y donde fue el matrimonio previo ${n}`),
-          value: item.fechaLugarMatrimonio,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Cuando y donde nacio el ex-conyuge del matrimonio previo ${n}`),
-          value: item.fechaLugarNacimiento,
-        },
-        {
-          question: (n) => formatQuestion(`Cuando y donde fue el divorcio del matrimonio previo ${n}`),
-          value: item.fechaLugarDivorcio,
-        },
+      numberedBlock(doc, "matrimoniosPrevios", index, [
+        { field: "nombresExConyuge", value: item.nombresExConyuge },
+        { field: "segundoNombreExConyuge", value: item.segundoNombreExConyuge },
+        { field: "apellidoPaternoExConyuge", value: item.apellidoPaternoExConyuge },
+        { field: "apellidoMaternoExConyuge", value: item.apellidoMaternoExConyuge },
+        { field: "fechaLugarMatrimonio", value: item.fechaLugarMatrimonio },
+        { field: "fechaLugarNacimiento", value: item.fechaLugarNacimiento },
+        { field: "fechaLugarDivorcio", value: item.fechaLugarDivorcio },
       ]);
     });
     fam.hijos.forEach((item, index) => {
-      numberedBlock(doc, index, "Hijo", [
-        {
-          question: (n) => formatQuestion(`Cual es el nombre del hijo ${n}`),
-          value: item.nombres,
-        },
-        {
-          question: (n) => formatQuestion(`Cual es el segundo nombre del hijo ${n}`),
-          value: item.segundoNombre,
-        },
-        {
-          question: (n) => formatQuestion(`Cual es el apellido paterno del hijo ${n}`),
-          value: item.apellidoPaterno,
-        },
-        {
-          question: (n) => formatQuestion(`Cual es el apellido materno del hijo ${n}`),
-          value: item.apellidoMaterno,
-        },
-        {
-          question: (n) => formatQuestion(`Cual es la fecha de nacimiento del hijo ${n}`),
-          value: item.fechaNacimiento,
-        },
-        {
-          question: (n) => formatQuestion(`Donde nacio el hijo ${n}`),
-          value: item.lugarNacimiento,
-        },
-        {
-          question: (n) => formatQuestion(`Donde reside el hijo ${n}`),
-          value: item.lugarResidencia,
-        },
+      numberedBlock(doc, "hijos", index, [
+        { field: "nombres", value: item.nombres },
+        { field: "segundoNombre", value: item.segundoNombre },
+        { field: "apellidoPaterno", value: item.apellidoPaterno },
+        { field: "apellidoMaterno", value: item.apellidoMaterno },
+        { field: "fechaNacimiento", value: item.fechaNacimiento },
+        { field: "lugarNacimiento", value: item.lugarNacimiento },
+        { field: "lugarResidencia", value: item.lugarResidencia },
       ]);
     });
 
-    // Caso
     ensureSpace(doc, 120);
     doc.addPage();
     sectionTitle(doc, BIO_CALL_SECTIONS[5].title);
     const cb = data.caseBackground;
-    fieldLine(doc, "Comentarios de viajes", cb.viajesComentarios);
+    questionField(doc, "caseBackground.viajesComentarios", cb.viajesComentarios);
     cb.viajes.forEach((item, index) => {
-      const viajeFields: NumberedField[] = [
-        {
-          question: (n) => formatQuestion(`Cuando fue la entrada del viaje ${n}`),
-          value: item.fechaEntrada,
-        },
-        {
-          question: (n) => formatQuestion(`De que forma ingreso en el viaje ${n}`),
-          value: item.formaEntrada,
-        },
-        {
-          question: (n) => formatQuestion(`Por donde ingreso en el viaje ${n}`),
-          value: item.lugarEntrada,
-        },
-        {
-          question: (n) => formatQuestion(`Cuando fue la salida del viaje ${n}`),
-          value: item.fechaSalida,
-        },
-        {
-          question: (n) => formatQuestion(`Fue detenido en el viaje ${n}`),
-          value: item.fueDetenido,
-        },
+      const viajeFields: ArrayField[] = [
+        { field: "fechaEntrada", value: item.fechaEntrada },
+        { field: "formaEntrada", value: item.formaEntrada },
+        { field: "lugarEntrada", value: item.lugarEntrada },
+        { field: "fechaSalida", value: item.fechaSalida },
+        { field: "fueDetenido", value: item.fueDetenido },
       ];
       if (item.fueDetenido === "si" || item.detallesDetencion?.trim()) {
         viajeFields.push({
-          question: (n) => formatQuestion(`Cuales fueron los detalles de la detencion en el viaje ${n}`),
+          field: "detallesDetencion",
           value: item.detallesDetencion,
         });
       }
-      numberedBlock(doc, index, "Viaje", viajeFields);
+      numberedBlock(doc, "viajes", index, viajeFields);
     });
-    fieldLine(doc, "Detenido por inmigracion", cb.detenidoInmigracion);
+    questionField(doc, "caseBackground.detenidoInmigracion", cb.detenidoInmigracion);
     cb.detencionesInmi.forEach((item, index) => {
-      numberedBlock(doc, index, "Detencion por inmigracion", [
-        {
-          question: (n) => formatQuestion(`Donde fue la detencion por inmigracion ${n}`),
-          value: item.lugar,
-        },
-        {
-          question: (n) => formatQuestion(`Cuando fue la detencion por inmigracion ${n}`),
-          value: item.fecha,
-        },
-        {
-          question: (n) => formatQuestion(`Que autoridad realizo la detencion por inmigracion ${n}`),
-          value: item.autoridad,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Hubo orden de deportacion en la detencion por inmigracion ${n}`),
-          value: item.ordenDeportacion,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Hubo sancion o castigo en la detencion por inmigracion ${n}`),
-          value: item.sancionCastigo,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Hubo regreso voluntario en la detencion por inmigracion ${n}`),
-          value: item.regresoVoluntario,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Se tomaron fotos o huellas en la detencion por inmigracion ${n}`),
-          value: item.fotosHuellas,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Hubo cita en corte por la detencion por inmigracion ${n}`),
-          value: item.citaCorte,
-        },
+      numberedBlock(doc, "detencionesInmi", index, [
+        { field: "lugar", value: item.lugar },
+        { field: "fecha", value: item.fecha },
+        { field: "autoridad", value: item.autoridad },
+        { field: "ordenDeportacion", value: item.ordenDeportacion },
+        { field: "sancionCastigo", value: item.sancionCastigo },
+        { field: "regresoVoluntario", value: item.regresoVoluntario },
+        { field: "fotosHuellas", value: item.fotosHuellas },
+        { field: "citaCorte", value: item.citaCorte },
       ]);
     });
-    fieldLine(doc, "Arrestado por policia", cb.arrestadoPolicia);
+    questionField(doc, "caseBackground.arrestadoPolicia", cb.arrestadoPolicia);
     cb.arrestosPolicia.forEach((item, index) => {
-      numberedBlock(doc, index, "Arresto policial", [
-        {
-          question: (n) =>
-            formatQuestion(`En que pais, ciudad y estado fue el arresto policial ${n}`),
-          value: item.paisCiudadEstado,
-        },
-        {
-          question: (n) => formatQuestion(`Cuando fue el arresto policial ${n}`),
-          value: item.fecha,
-        },
-        {
-          question: (n) => formatQuestion(`Cual fue el motivo del arresto policial ${n}`),
-          value: item.motivo,
-        },
-        {
-          question: (n) =>
-            formatQuestion(`Que autoridad realizo el arresto policial ${n}`),
-          value: item.autoridad,
-        },
-        {
-          question: (n) => formatQuestion(`Cual fue la disposicion del arresto policial ${n}`),
-          value: item.disposicion,
-        },
+      numberedBlock(doc, "arrestosPolicia", index, [
+        { field: "paisCiudadEstado", value: item.paisCiudadEstado },
+        { field: "fecha", value: item.fecha },
+        { field: "motivo", value: item.motivo },
+        { field: "autoridad", value: item.autoridad },
+        { field: "disposicion", value: item.disposicion },
       ]);
     });
 
     sectionTitle(doc, "Empleo actual");
-    fieldLine(doc, "Empresa", cb.empleoNombre);
-    fieldLine(doc, "Ocupacion", cb.empleoOcupacion);
-    fieldLine(doc, "Calle", cb.empleoDireccionCalle);
-    fieldLine(doc, "Apto/Suite", cb.empleoDireccionApto);
-    fieldLine(doc, "Direccion", [
-      cb.empleoDireccionCiudad,
-      cb.empleoDireccionEstado,
-      cb.empleoDireccionZip,
-      cb.empleoDireccionPais,
-    ]
-      .filter((p) => p?.trim())
-      .join(", "));
-    fieldLine(doc, "Fecha ingreso", cb.empleoFechaIngreso);
-    fieldLine(doc, "Fecha salida", cb.empleoFechaSalida);
-    fieldLine(doc, "Otros empleos", cb.empleoOtrosLugares);
+    questionField(doc, "caseBackground.empleoNombre", cb.empleoNombre);
+    questionField(doc, "caseBackground.empleoOcupacion", cb.empleoOcupacion);
+    questionField(doc, "caseBackground.empleoDireccionCalle", cb.empleoDireccionCalle);
+    questionField(doc, "caseBackground.empleoDireccionApto", cb.empleoDireccionApto);
+    questionField(doc, "caseBackground.empleoDireccionCiudad", cb.empleoDireccionCiudad);
+    questionField(doc, "caseBackground.empleoDireccionEstado", cb.empleoDireccionEstado);
+    questionField(doc, "caseBackground.empleoDireccionZip", cb.empleoDireccionZip);
+    questionField(doc, "caseBackground.empleoDireccionPais", cb.empleoDireccionPais);
+    questionField(doc, "caseBackground.empleoFechaIngreso", cb.empleoFechaIngreso);
+    questionField(doc, "caseBackground.empleoFechaSalida", cb.empleoFechaSalida);
+    questionField(doc, "caseBackground.empleoOtrosLugares", cb.empleoOtrosLugares);
     cb.empleosAnteriores.forEach((item, index) => {
-      numberedBlock(doc, index, "Empleo anterior", [
-        {
-          question: (n) => formatQuestion(`Cual es el nombre de la empresa del empleo anterior ${n}`),
-          value: item.empresa,
-        },
-        {
-          question: (n) => formatQuestion(`Cual fue el puesto en el empleo anterior ${n}`),
-          value: item.puesto,
-        },
-        {
-          question: (n) => formatQuestion(`Cual es la direccion del empleo anterior ${n}`),
-          value: [
-            item.direccionCalle,
-            item.direccionApto,
-            item.direccionCiudad,
-            item.direccionEstado,
-            item.direccionZip,
-            item.direccionPais,
-          ]
-            .filter((p) => p?.trim())
-            .join(", "),
-        },
-        {
-          question: (n) => formatQuestion(`Desde cuando trabajo en el empleo anterior ${n}`),
-          value: item.fechaDesde,
-        },
-        {
-          question: (n) => formatQuestion(`Hasta cuando trabajo en el empleo anterior ${n}`),
-          value: item.fechaHasta,
-        },
+      numberedBlock(doc, "empleosAnteriores", index, [
+        { field: "empresa", value: item.empresa },
+        { field: "puesto", value: item.puesto },
+        { field: "direccionCalle", value: item.direccionCalle },
+        { field: "direccionApto", value: item.direccionApto },
+        { field: "direccionCiudad", value: item.direccionCiudad },
+        { field: "direccionEstado", value: item.direccionEstado },
+        { field: "direccionZip", value: item.direccionZip },
+        { field: "direccionPais", value: item.direccionPais },
+        { field: "fechaDesde", value: item.fechaDesde },
+        { field: "fechaHasta", value: item.fechaHasta },
       ]);
     });
 
     renderInadmissibilitySection(doc, cb);
 
     sectionTitle(doc, "Declaraciones");
-    fieldLine(doc, "Declarado ciudadano", cb.declaradoCiudadano);
-    fieldLine(doc, "Falsa declaracion (lugar)", cb.falsaDeclaracionLugar);
-    fieldLine(doc, "Falsa declaracion (fecha)", cb.falsaDeclaracionFecha);
-    fieldLine(doc, "Falsa declaracion (como)", cb.falsaDeclaracionComo);
-    fieldLine(doc, "Falsa declaracion (intencion)", cb.falsaDeclaracionIntencion);
-    fieldLine(doc, "Falsa declaracion (detalle)", cb.falsaDeclaracionDetalle);
+    questionField(doc, "caseBackground.declaradoCiudadano", cb.declaradoCiudadano);
+    questionField(doc, "caseBackground.falsaDeclaracionLugar", cb.falsaDeclaracionLugar);
+    questionField(doc, "caseBackground.falsaDeclaracionFecha", cb.falsaDeclaracionFecha);
+    questionField(doc, "caseBackground.falsaDeclaracionComo", cb.falsaDeclaracionComo);
+    questionField(doc, "caseBackground.falsaDeclaracionIntencion", cb.falsaDeclaracionIntencion);
+    questionField(doc, "caseBackground.falsaDeclaracionDetalle", cb.falsaDeclaracionDetalle);
 
     sectionTitle(doc, "Solicitudes FOIA");
-    const foiaAgencies = [
-      ["USCIS", cb.foias.uscis],
-      ["ICE", cb.foias.ice],
-      ["CBP", cb.foias.cbp],
-      ["EOIR", cb.foias.eoir],
-      ["FBI", cb.foias.fbi],
-      ["Policia", cb.foias.policia],
-    ] as const;
-    foiaAgencies.forEach(([name, item]) => {
-      fieldLine(doc, name, `${display(item.solicitar)}${item.motivo?.trim() ? ` — ${item.motivo}` : ""}`);
+    FOIA_AGENCIES.forEach((agency) => {
+      const item = cb.foias[agency];
+      questionField(doc, `caseBackground.foias.${agency}.solicitar`, item.solicitar);
+      if (item.motivo?.trim()) {
+        questionField(doc, `caseBackground.foias.${agency}.motivo`, item.motivo);
+      }
     });
 
     ensureSpace(doc, 80);
     sectionTitle(doc, "Documentos y correos pendientes");
-    fieldLine(doc, "Documentos pendientes", cb.documentosPendientes);
-    fieldLine(doc, "Correos pendientes", cb.correosPendientes);
+    questionField(doc, "caseBackground.documentosPendientes", cb.documentosPendientes);
+    questionField(doc, "caseBackground.correosPendientes", cb.correosPendientes);
 
     doc.end();
   });

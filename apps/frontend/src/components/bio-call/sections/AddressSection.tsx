@@ -6,6 +6,7 @@ import { GlassButton } from "@/components/glass/GlassButton";
 import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
 import { getFieldError } from "@/lib/formErrors";
+import { BioCallFieldLabel } from "../BioCallFieldLabel";
 
 const PREFIX = "address";
 
@@ -92,9 +93,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2 md:col-span-2">
-            <label htmlFor="calleNumero" className="label-caps">
-              Calle y Número
-            </label>
+            <BioCallFieldLabel path="address.calleNumero" htmlFor="calleNumero" />
             <input
               id="calleNumero"
               type="text"
@@ -106,9 +105,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="aptoSuite" className="label-caps">
-              Apto / Suite / Unidad
-            </label>
+            <BioCallFieldLabel path="address.aptoSuite" htmlFor="aptoSuite" />
             <input
               id="aptoSuite"
               type="text"
@@ -122,9 +119,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <div className="flex flex-col gap-2">
-            <label htmlFor="ciudad" className="label-caps">
-              Ciudad
-            </label>
+            <BioCallFieldLabel path="address.ciudad" htmlFor="ciudad" />
             <input
               id="ciudad"
               type="text"
@@ -136,9 +131,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="estado" className="label-caps">
-              Estado
-            </label>
+            <BioCallFieldLabel path="address.estado" htmlFor="estado" />
             <input
               id="estado"
               type="text"
@@ -150,9 +143,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="codigoPostal" className="label-caps">
-              Código Postal (ZIP Code)
-            </label>
+            <BioCallFieldLabel path="address.codigoPostal" htmlFor="codigoPostal" />
             <input
               id="codigoPostal"
               type="text"
@@ -167,9 +158,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="pais" className="label-caps">
-              País
-            </label>
+            <BioCallFieldLabel path="address.pais" htmlFor="pais" />
             <input
               id="pais"
               type="text"
@@ -183,9 +172,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2">
-            <label htmlFor="fechaIngreso" className="label-caps">
-              Fecha de ingreso a esta dirección (Mes y Año)
-            </label>
+            <BioCallFieldLabel path="address.fechaIngreso" htmlFor="fechaIngreso" />
             <input
               id="fechaIngreso"
               type="text"
@@ -278,9 +265,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
             </h4>
 
             <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor={`dir-${idx}-calleNumero`} className="label-caps">
-                Calle y Número
-              </label>
+              <BioCallFieldLabel path={`address.direccionesAnteriores.${idx}.calleNumero`} htmlFor={`dir-${idx}-calleNumero`} />
               <input
                 id={`dir-${idx}-calleNumero`}
                 type="text"
@@ -292,9 +277,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`dir-${idx}-aptoSuite`} className="label-caps">
-                Apto / Suite / Unidad
-              </label>
+              <BioCallFieldLabel path={`address.direccionesAnteriores.${idx}.aptoSuite`} htmlFor={`dir-${idx}-aptoSuite`} />
               <input
                 id={`dir-${idx}-aptoSuite`}
                 type="text"
@@ -306,9 +289,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`dir-${idx}-ciudad`} className="label-caps">
-                Ciudad
-              </label>
+              <BioCallFieldLabel path={`address.direccionesAnteriores.${idx}.ciudad`} htmlFor={`dir-${idx}-ciudad`} />
               <input
                 id={`dir-${idx}-ciudad`}
                 type="text"
@@ -320,9 +301,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`dir-${idx}-estado`} className="label-caps">
-                Estado
-              </label>
+              <BioCallFieldLabel path={`address.direccionesAnteriores.${idx}.estado`} htmlFor={`dir-${idx}-estado`} />
               <input
                 id={`dir-${idx}-estado`}
                 type="text"
@@ -334,9 +313,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`dir-${idx}-codigoPostal`} className="label-caps">
-                Código Postal (ZIP)
-              </label>
+              <BioCallFieldLabel path={`address.direccionesAnteriores.${idx}.codigoPostal`} htmlFor={`dir-${idx}-codigoPostal`} />
               <input
                 id={`dir-${idx}-codigoPostal`}
                 type="text"
@@ -351,9 +328,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`dir-${idx}-pais`} className="label-caps">
-                País
-              </label>
+              <BioCallFieldLabel path={`address.direccionesAnteriores.${idx}.pais`} htmlFor={`dir-${idx}-pais`} />
               <input
                 id={`dir-${idx}-pais`}
                 type="text"
@@ -365,9 +340,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`dir-${idx}-fechaDesde`} className="label-caps">
-                Desde (Mes y Año)
-              </label>
+              <BioCallFieldLabel path={`address.direccionesAnteriores.${idx}.fechaDesde`} htmlFor={`dir-${idx}-fechaDesde`} />
               <input
                 id={`dir-${idx}-fechaDesde`}
                 type="text"
@@ -379,9 +352,7 @@ export function AddressSection({ data, errors, onChange }: AddressSectionProps) 
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`dir-${idx}-fechaHasta`} className="label-caps">
-                Hasta (Mes y Año)
-              </label>
+              <BioCallFieldLabel path={`address.direccionesAnteriores.${idx}.fechaHasta`} htmlFor={`dir-${idx}-fechaHasta`} />
               <input
                 id={`dir-${idx}-fechaHasta`}
                 type="text"

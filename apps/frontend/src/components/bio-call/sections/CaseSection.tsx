@@ -7,6 +7,7 @@ import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
 import { getFieldError } from "@/lib/formErrors";
 import { InadQuestionnaire } from "./InadQuestionnaire";
+import { BioCallFieldLabel } from "../BioCallFieldLabel";
 
 const PREFIX = "caseBackground";
 
@@ -352,9 +353,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </h4>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`viaje-${idx}-entrada`} className="label-caps">
-                  Fecha de entrada
-                </label>
+                <BioCallFieldLabel path={`caseBackground.viajes.${idx}.fechaEntrada`} htmlFor={`viaje-${idx}-entrada`} />
                 <input
                   id={`viaje-${idx}-entrada`}
                   type="text"
@@ -366,9 +365,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`viaje-${idx}-forma`} className="label-caps">
-                  Forma de entrada
-                </label>
+                <BioCallFieldLabel path={`caseBackground.viajes.${idx}.formaEntrada`} htmlFor={`viaje-${idx}-forma`} />
                 <input
                   id={`viaje-${idx}-forma`}
                   type="text"
@@ -380,9 +377,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`viaje-${idx}-lugar`} className="label-caps">
-                  Lugar de entrada
-                </label>
+                <BioCallFieldLabel path={`caseBackground.viajes.${idx}.lugarEntrada`} htmlFor={`viaje-${idx}-lugar`} />
                 <input
                   id={`viaje-${idx}-lugar`}
                   type="text"
@@ -394,9 +389,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`viaje-${idx}-salida`} className="label-caps">
-                  Fecha de salida (si aplica)
-                </label>
+                <BioCallFieldLabel path={`caseBackground.viajes.${idx}.fechaSalida`} htmlFor={`viaje-${idx}-salida`} />
                 <input
                   id={`viaje-${idx}-salida`}
                   type="text"
@@ -408,9 +401,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`viaje-${idx}-detenido`} className="label-caps">
-                  ¿Fue detenido al ingresar?
-                </label>
+                <BioCallFieldLabel path={`caseBackground.viajes.${idx}.fueDetenido`} htmlFor={`viaje-${idx}-detenido`} />
                 <select
                   id={`viaje-${idx}-detenido`}
                   className="input-glass"
@@ -436,9 +427,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
 
               {viaje.fueDetenido === "si" && (
                 <div className="flex flex-col gap-2 md:col-span-3 animate-fade-in">
-                  <label htmlFor={`viaje-${idx}-detallesDetencion`} className="label-caps">
-                    Autoridad y detalles de la detención
-                  </label>
+                  <BioCallFieldLabel path={`caseBackground.viajes.${idx}.detallesDetencion`} htmlFor={`viaje-${idx}-detallesDetencion`} />
                   <input
                     id={`viaje-${idx}-detallesDetencion`}
                     type="text"
@@ -454,9 +443,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
         )}
 
         <div className="flex flex-col gap-2 pt-2">
-          <label htmlFor="viajesComentarios" className="label-caps">
-            Comentarios o aclaraciones sobre el historial de viajes
-          </label>
+          <BioCallFieldLabel path="caseBackground.viajesComentarios" htmlFor="viajesComentarios" />
           <textarea
             id="viajesComentarios"
             rows={2}
@@ -490,9 +477,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="detenidoInmigracion" className="label-caps">
-              ¿Ha sido detenido(a) por inmigración alguna vez?
-            </label>
+            <BioCallFieldLabel path="caseBackground.detenidoInmigracion" htmlFor="detenidoInmigracion" />
             <select
               id="detenidoInmigracion"
               className="input-glass"
@@ -554,9 +539,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </h4>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`det-${idx}-lugar`} className="label-caps">
-                Lugar (ciudad y estado)
-              </label>
+              <BioCallFieldLabel path={`caseBackground.detencionesInmi.${idx}.lugar`} htmlFor={`det-${idx}-lugar`} />
               <input
                 id={`det-${idx}-lugar`}
                 type="text"
@@ -568,9 +551,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`det-${idx}-fecha`} className="label-caps">
-                Fecha
-              </label>
+              <BioCallFieldLabel path={`caseBackground.detencionesInmi.${idx}.fecha`} htmlFor={`det-${idx}-fecha`} />
               <input
                 id={`det-${idx}-fecha`}
                 type="text"
@@ -582,9 +563,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`det-${idx}-autoridad`} className="label-caps">
-                Autoridad que lo detuvo (ICE / CBP / Border Patrol / otra)
-              </label>
+              <BioCallFieldLabel path={`caseBackground.detencionesInmi.${idx}.autoridad`} htmlFor={`det-${idx}-autoridad`} />
               <input
                 id={`det-${idx}-autoridad`}
                 type="text"
@@ -596,9 +575,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`det-${idx}-ordenDeportacion`} className="label-caps">
-                ¿Orden de deportación o remoción?
-              </label>
+              <BioCallFieldLabel path={`caseBackground.detencionesInmi.${idx}.ordenDeportacion`} htmlFor={`det-${idx}-ordenDeportacion`} />
               <select
                 id={`det-${idx}-ordenDeportacion`}
                 className="input-glass"
@@ -613,9 +590,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`det-${idx}-sancionCastigo`} className="label-caps">
-                ¿Sanción o castigo migratorio?
-              </label>
+              <BioCallFieldLabel path={`caseBackground.detencionesInmi.${idx}.sancionCastigo`} htmlFor={`det-${idx}-sancionCastigo`} />
               <select
                 id={`det-${idx}-sancionCastigo`}
                 className="input-glass"
@@ -630,9 +605,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`det-${idx}-regresoVoluntario`} className="label-caps">
-                ¿Salida o regreso voluntarios?
-              </label>
+              <BioCallFieldLabel path={`caseBackground.detencionesInmi.${idx}.regresoVoluntario`} htmlFor={`det-${idx}-regresoVoluntario`} />
               <select
                 id={`det-${idx}-regresoVoluntario`}
                 className="input-glass"
@@ -647,9 +620,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`det-${idx}-fotosHuellas`} className="label-caps">
-                ¿Huellas y fotografías?
-              </label>
+              <BioCallFieldLabel path={`caseBackground.detencionesInmi.${idx}.fotosHuellas`} htmlFor={`det-${idx}-fotosHuellas`} />
               <select
                 id={`det-${idx}-fotosHuellas`}
                 className="input-glass"
@@ -664,9 +635,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`det-${idx}-citaCorte`} className="label-caps">
-                ¿Cita en corte con juez de inmigración?
-              </label>
+              <BioCallFieldLabel path={`caseBackground.detencionesInmi.${idx}.citaCorte`} htmlFor={`det-${idx}-citaCorte`} />
               <select
                 id={`det-${idx}-citaCorte`}
                 className="input-glass"
@@ -705,9 +674,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="arrestadoPolicia" className="label-caps text-xs">
-              ¿Alguna vez ha sido arrestado(a) por la policía? (EE. UU. u otro país, incluyendo arrestos por tickets de tráfico)
-            </label>
+            <BioCallFieldLabel path="caseBackground.arrestadoPolicia" htmlFor="arrestadoPolicia" className="text-xs" />
             <select
               id="arrestadoPolicia"
               className="input-glass"
@@ -766,9 +733,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </h4>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`arr-${idx}-paisCiudadEstado`} className="label-caps">
-                País, ciudad y estado
-              </label>
+              <BioCallFieldLabel path={`caseBackground.arrestosPolicia.${idx}.paisCiudadEstado`} htmlFor={`arr-${idx}-paisCiudadEstado`} />
               <input
                 id={`arr-${idx}-paisCiudadEstado`}
                 type="text"
@@ -780,9 +745,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`arr-${idx}-fecha`} className="label-caps">
-                Fecha (mes y año)
-              </label>
+              <BioCallFieldLabel path={`caseBackground.arrestosPolicia.${idx}.fecha`} htmlFor={`arr-${idx}-fecha`} />
               <input
                 id={`arr-${idx}-fecha`}
                 type="text"
@@ -794,9 +757,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`arr-${idx}-motivo`} className="label-caps">
-                Motivo del arresto / Detalle
-              </label>
+              <BioCallFieldLabel path={`caseBackground.arrestosPolicia.${idx}.motivo`} htmlFor={`arr-${idx}-motivo`} />
               <input
                 id={`arr-${idx}-motivo`}
                 type="text"
@@ -808,9 +769,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`arr-${idx}-autoridad`} className="label-caps">
-                Autoridad que realizó el arresto / Policía local
-              </label>
+              <BioCallFieldLabel path={`caseBackground.arrestosPolicia.${idx}.autoridad`} htmlFor={`arr-${idx}-autoridad`} />
               <input
                 id={`arr-${idx}-autoridad`}
                 type="text"
@@ -822,9 +781,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor={`arr-${idx}-disposicion`} className="label-caps">
-                Disposición o resultado (Ej. se pagó fianza, se resolvió con ticket, etc. Especifique brevemente motivo, fecha, lugar, si pasó la noche en la cárcel, fianza, etc.)
-              </label>
+              <BioCallFieldLabel path={`caseBackground.arrestosPolicia.${idx}.disposicion`} htmlFor={`arr-${idx}-disposicion`} />
               <textarea
                 id={`arr-${idx}-disposicion`}
                 rows={2}
@@ -845,9 +802,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
         </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2 md:col-span-2">
-            <label htmlFor="empleoNombre" className="label-caps">
-              Nombre del empleador / Compañía actual
-            </label>
+            <BioCallFieldLabel path="caseBackground.empleoNombre" htmlFor="empleoNombre" />
             <input
               id="empleoNombre"
               type="text"
@@ -859,9 +814,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="empleoOcupacion" className="label-caps">
-              Ocupación / Puesto
-            </label>
+            <BioCallFieldLabel path="caseBackground.empleoOcupacion" htmlFor="empleoOcupacion" />
             <input
               id="empleoOcupacion"
               type="text"
@@ -878,9 +831,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </h4>
 
             <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor="empleoDireccionCalle" className="label-caps">
-                Calle y Número del trabajo
-              </label>
+              <BioCallFieldLabel path="caseBackground.empleoDireccionCalle" htmlFor="empleoDireccionCalle" />
               <input
                 id="empleoDireccionCalle"
                 type="text"
@@ -892,9 +843,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="empleoDireccionApto" className="label-caps">
-                Apto / Suite / Unidad
-              </label>
+              <BioCallFieldLabel path="caseBackground.empleoDireccionApto" htmlFor="empleoDireccionApto" />
               <input
                 id="empleoDireccionApto"
                 type="text"
@@ -908,9 +857,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4 md:col-span-2 pb-3 border-b border-brand-100/30">
             <div className="flex flex-col gap-2">
-              <label htmlFor="empleoDireccionCiudad" className="label-caps">
-                Ciudad del trabajo
-              </label>
+              <BioCallFieldLabel path="caseBackground.empleoDireccionCiudad" htmlFor="empleoDireccionCiudad" />
               <input
                 id="empleoDireccionCiudad"
                 type="text"
@@ -922,9 +869,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="empleoDireccionEstado" className="label-caps">
-                Estado del trabajo
-              </label>
+              <BioCallFieldLabel path="caseBackground.empleoDireccionEstado" htmlFor="empleoDireccionEstado" />
               <input
                 id="empleoDireccionEstado"
                 type="text"
@@ -936,9 +881,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="empleoDireccionZip" className="label-caps">
-                Código Postal (ZIP) del trabajo
-              </label>
+              <BioCallFieldLabel path="caseBackground.empleoDireccionZip" htmlFor="empleoDireccionZip" />
               <input
                 id="empleoDireccionZip"
                 type="text"
@@ -950,9 +893,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="empleoDireccionPais" className="label-caps">
-                País del trabajo
-              </label>
+              <BioCallFieldLabel path="caseBackground.empleoDireccionPais" htmlFor="empleoDireccionPais" />
               <input
                 id="empleoDireccionPais"
                 type="text"
@@ -965,9 +906,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="empleoFechaIngreso" className="label-caps">
-              Fecha de ingreso
-            </label>
+            <BioCallFieldLabel path="caseBackground.empleoFechaIngreso" htmlFor="empleoFechaIngreso" />
             <input
               id="empleoFechaIngreso"
               type="text"
@@ -979,9 +918,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="empleoFechaSalida" className="label-caps">
-              Fecha de salida / término
-            </label>
+            <BioCallFieldLabel path="caseBackground.empleoFechaSalida" htmlFor="empleoFechaSalida" />
             <input
               id="empleoFechaSalida"
               type="text"
@@ -995,9 +932,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
 
         <div className="flex items-end justify-between border-t border-brand-100/30 pt-4">
           <div className="flex flex-col gap-2">
-            <label htmlFor="empleoOtrosLugares" className="label-caps font-semibold">
-              ¿Ha laborado en algún otro lugar en los últimos 5 años?
-            </label>
+            <BioCallFieldLabel path="caseBackground.empleoOtrosLugares" htmlFor="empleoOtrosLugares" className="font-semibold" />
             <select
               id="empleoOtrosLugares"
               className="input-glass max-w-xs"
@@ -1072,9 +1007,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-empresa`} className="label-caps">
-                  Nombre del Empleador / Compañía
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.empresa`} htmlFor={`emp-${idx}-empresa`} />
                 <input
                   id={`emp-${idx}-empresa`}
                   type="text"
@@ -1086,9 +1019,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-puesto`} className="label-caps">
-                  Ocupación / Puesto
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.puesto`} htmlFor={`emp-${idx}-puesto`} />
                 <input
                   id={`emp-${idx}-puesto`}
                   type="text"
@@ -1107,9 +1038,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </h5>
 
               <div className="flex flex-col gap-2 md:col-span-2">
-                <label htmlFor={`emp-${idx}-direccionCalle`} className="label-caps">
-                  Calle y Número
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.direccionCalle`} htmlFor={`emp-${idx}-direccionCalle`} />
                 <input
                   id={`emp-${idx}-direccionCalle`}
                   type="text"
@@ -1121,9 +1050,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-direccionApto`} className="label-caps">
-                  Apto / Suite / Unidad
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.direccionApto`} htmlFor={`emp-${idx}-direccionApto`} />
                 <input
                   id={`emp-${idx}-direccionApto`}
                   type="text"
@@ -1137,9 +1064,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-direccionCiudad`} className="label-caps">
-                  Ciudad
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.direccionCiudad`} htmlFor={`emp-${idx}-direccionCiudad`} />
                 <input
                   id={`emp-${idx}-direccionCiudad`}
                   type="text"
@@ -1151,9 +1076,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-direccionEstado`} className="label-caps">
-                  Estado
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.direccionEstado`} htmlFor={`emp-${idx}-direccionEstado`} />
                 <input
                   id={`emp-${idx}-direccionEstado`}
                   type="text"
@@ -1165,9 +1088,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-direccionZip`} className="label-caps">
-                  Código Postal (ZIP)
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.direccionZip`} htmlFor={`emp-${idx}-direccionZip`} />
                 <input
                   id={`emp-${idx}-direccionZip`}
                   type="text"
@@ -1179,9 +1100,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-direccionPais`} className="label-caps">
-                  País
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.direccionPais`} htmlFor={`emp-${idx}-direccionPais`} />
                 <input
                   id={`emp-${idx}-direccionPais`}
                   type="text"
@@ -1195,9 +1114,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 border-t border-brand-100/20 pt-3">
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-fechaDesde`} className="label-caps">
-                  Fecha de Inicio (Desde)
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.fechaDesde`} htmlFor={`emp-${idx}-fechaDesde`} />
                 <input
                   id={`emp-${idx}-fechaDesde`}
                   type="text"
@@ -1209,9 +1126,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor={`emp-${idx}-fechaHasta`} className="label-caps">
-                  Fecha de Finalización (Hasta)
-                </label>
+                <BioCallFieldLabel path={`caseBackground.empleosAnteriores.${idx}.fechaHasta`} htmlFor={`emp-${idx}-fechaHasta`} />
                 <input
                   id={`emp-${idx}-fechaHasta`}
                   type="text"
@@ -1276,9 +1191,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
         </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="declaradoCiudadano" className="label-caps">
-              ¿Alguna vez se ha declarado ciudadano de los EE. UU. sin serlo?
-            </label>
+            <BioCallFieldLabel path="caseBackground.declaradoCiudadano" htmlFor="declaradoCiudadano" />
             <select
               id="declaradoCiudadano"
               className="input-glass"
@@ -1314,9 +1227,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </h4>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="falsaDeclaracionLugar" className="label-caps">
-                Lugar donde se declaró ciudadano
-              </label>
+              <BioCallFieldLabel path="caseBackground.falsaDeclaracionLugar" htmlFor="falsaDeclaracionLugar" />
               <input
                 id="falsaDeclaracionLugar"
                 type="text"
@@ -1328,9 +1239,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="falsaDeclaracionFecha" className="label-caps">
-                Fecha de la declaración
-              </label>
+              <BioCallFieldLabel path="caseBackground.falsaDeclaracionFecha" htmlFor="falsaDeclaracionFecha" />
               <input
                 id="falsaDeclaracionFecha"
                 type="text"
@@ -1342,9 +1251,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="falsaDeclaracionComo" className="label-caps">
-                ¿Cómo o en qué documento se declaró ciudadano?
-              </label>
+              <BioCallFieldLabel path="caseBackground.falsaDeclaracionComo" htmlFor="falsaDeclaracionComo" />
               <input
                 id="falsaDeclaracionComo"
                 type="text"
@@ -1356,9 +1263,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="falsaDeclaracionIntencion" className="label-caps">
-                ¿Cuál era la intención de declararse ciudadano?
-              </label>
+              <BioCallFieldLabel path="caseBackground.falsaDeclaracionIntencion" htmlFor="falsaDeclaracionIntencion" />
               <input
                 id="falsaDeclaracionIntencion"
                 type="text"
@@ -1370,9 +1275,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
             </div>
 
             <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor="falsaDeclaracionDetalle" className="label-caps">
-                Detalles / Explicación adicional
-              </label>
+              <BioCallFieldLabel path="caseBackground.falsaDeclaracionDetalle" htmlFor="falsaDeclaracionDetalle" />
               <textarea
                 id="falsaDeclaracionDetalle"
                 rows={2}
@@ -1429,7 +1332,13 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
                         </select>
                       </td>
                       <td className="p-3">
+                        <BioCallFieldLabel
+                          path={`caseBackground.foias.${agency}.motivo`}
+                          htmlFor={`foia-${agency}-motivo`}
+                          className="sr-only"
+                        />
                         <input
+                          id={`foia-${agency}-motivo`}
                           type="text"
                           className="input-glass !py-1 !px-2 text-xs w-full"
                           placeholder={`Ej. Historial completo con ${labelMap[agency]}`}
@@ -1454,9 +1363,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
         </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="documentosPendientes" className="label-caps font-semibold text-brand-700">
-              Documentos Pendientes por Recabar / Entregar
-            </label>
+            <BioCallFieldLabel path="caseBackground.documentosPendientes" htmlFor="documentosPendientes" className="font-semibold text-brand-700" />
             <textarea
               id="documentosPendientes"
               rows={4}
@@ -1470,9 +1377,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="correosPendientes" className="label-caps font-semibold text-brand-700">
-              Correos / Trámites Pendientes por Enviar
-            </label>
+            <BioCallFieldLabel path="caseBackground.correosPendientes" htmlFor="correosPendientes" className="font-semibold text-brand-700" />
             <textarea
               id="correosPendientes"
               rows={4}

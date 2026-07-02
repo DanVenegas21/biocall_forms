@@ -338,30 +338,10 @@ function mergeDraftIntoForm(parsed: Record<string, unknown>): FormData {
   return migrateLegacyDraft(merged as FormData);
 }
 
-/** Serializa el formulario para comparar si hay cambios reales del usuario. */
-function stableStringify(value: unknown): string {
-  if (value === null || value === undefined) {
-    return '""';
-  }
-  if (typeof value === "string") {
-    return JSON.stringify(value.trim());
-  }
-  if (Array.isArray(value)) {
-    return `[${value.map(stableStringify).join(",")}]`;
-  }
-  if (typeof value === "object") {
-    const obj = value as Record<string, unknown>;
-    const keys = Object.keys(obj).sort();
-    return `{${keys.map((key) => `${JSON.stringify(key)}:${stableStringify(obj[key])}`).join(",")}}`;
-  }
-  return JSON.stringify(value);
-}
-
 export function BioCallForm() {
   const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
-  const [savedBioCallId, setSavedBioCallId] = useState<string | null>(null);
-  /** Snapshot del formulario al ultimo guardado exitoso (para habilitar PDF solo si no hubo cambios). */
-  const [lastSavedSnapshot, setLastSavedSnapshot] = useState<string | null>(null);
+  /** ID de la ultima Bio Call guardada; se conserva al vaciar el formulario para seguir descargando el PDF. */
+  const [lastPdfBioCallId, setLastPdfBioCallId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormData>(createEmptyFormData);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -386,10 +366,6 @@ export function BioCallForm() {
     }
 
     persistBioCallDraft(formData);
-    if (!hasMeaningfulFormInput(formData)) {
-      setSavedBioCallId(null);
-      setLastSavedSnapshot(null);
-    }
   }, [formData]);
 
   // Respaldo al cerrar o recargar: guarda el estado mas reciente si hay datos reales.
@@ -401,10 +377,8 @@ export function BioCallForm() {
     return () => window.removeEventListener("pagehide", onPageHide);
   }, []);
 
-  const formSnapshot = stableStringify(formData);
   const canSave = hasMeaningfulFormInput(formData);
-  const canDownloadPdf =
-    savedBioCallId !== null && lastSavedSnapshot === formSnapshot;
+  const canDownloadPdf = lastPdfBioCallId !== null;
 
   const updateSection = <K extends keyof FormData>(
     section: K,
@@ -461,10 +435,7 @@ export function BioCallForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...normalized,
-          ...(savedBioCallId ? { bioCallId: savedBioCallId } : {}),
-        }),
+        body: JSON.stringify(normalized),
       });
 
       const resData = await response.json();
@@ -473,11 +444,17 @@ export function BioCallForm() {
         toast.dismiss(loadingToast);
         const newId = resData?.data?.id as string | undefined;
         if (newId) {
-          setSavedBioCallId(newId);
-          setLastSavedSnapshot(formSnapshot);
+          setLastPdfBioCallId(newId);
         }
-        toast.success(`Bio Call guardada: ${newId}`);
+        clearBioCallDraft();
+        setFormData(createEmptyFormData());
         setFieldErrors({});
+        toast.success(
+          newId
+            ? `Bio Call guardada: ${newId}. Puedes capturar otra o descargar el PDF.`
+            : "Bio Call guardada. Puedes capturar otra o descargar el PDF."
+        );
+        window.scrollTo({ top: 0, behavior: "smooth" });
         console.log("Bio Call guardada:", resData);
       } else {
         toast.dismiss(loadingToast);
@@ -501,11 +478,11 @@ export function BioCallForm() {
   };
 
   const handleDownloadPdf = () => {
-    if (!canDownloadPdf || !savedBioCallId) {
+    if (!canDownloadPdf || !lastPdfBioCallId) {
       toast.error("Guarda la Bio Call primero para generar el PDF.");
       return;
     }
-    window.open(`${API_BASE}/api/bio-calls/${savedBioCallId}/pdf`, "_blank", "noopener,noreferrer");
+    window.open(`${API_BASE}/api/bio-calls/${lastPdfBioCallId}/pdf`, "_blank", "noopener,noreferrer");
   };
 
   const handleClearForm = () => {
@@ -523,8 +500,7 @@ export function BioCallForm() {
     clearBioCallDraft();
     setFormData(createEmptyFormData());
     setFieldErrors({});
-    setSavedBioCallId(null);
-    setLastSavedSnapshot(null);
+    setLastPdfBioCallId(null);
     toast.success("Formulario vacío. Puedes iniciar una nueva Bio Call.");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -611,10 +587,8 @@ export function BioCallForm() {
             <Tooltip
               content={
                 canDownloadPdf
-                  ? "Descargar PDF de la Bio Call"
-                  : savedBioCallId
-                    ? "Guarda de nuevo tras editar el formulario"
-                    : "Guarda primero para generar el PDF"
+                  ? "Descargar PDF de la ultima Bio Call guardada"
+                  : "Guarda primero para generar el PDF"
               }
             >
               <span>

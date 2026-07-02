@@ -6,6 +6,7 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
 import { getFieldError } from "@/lib/formErrors";
+import { BioCallFieldLabel } from "../BioCallFieldLabel";
 
 const PREFIX = "documents";
 
@@ -44,9 +45,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="tienePasaporte" className="label-caps">
-              ¿Cuenta con Pasaporte?
-            </label>
+            <BioCallFieldLabel path="documents.tienePasaporte" htmlFor="tienePasaporte" />
             <select
               id="tienePasaporte"
               className="input-glass"
@@ -111,9 +110,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
         {data.tienePasaporte === "si" && data.pasaportePendiente !== "si" && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in">
             <div className="flex flex-col gap-2">
-              <label htmlFor="numeroPasaporte" className="label-caps">
-                Número de Pasaporte
-              </label>
+              <BioCallFieldLabel path="documents.numeroPasaporte" htmlFor="numeroPasaporte" />
               <input
                 id="numeroPasaporte"
                 type="text"
@@ -127,9 +124,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="paisEmision" className="label-caps">
-                País de emisión
-              </label>
+              <BioCallFieldLabel path="documents.paisEmision" htmlFor="paisEmision" />
               <input
                 id="paisEmision"
                 type="text"
@@ -141,9 +136,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="fechaEmision" className="label-caps">
-                Fecha de emisión
-              </label>
+              <BioCallFieldLabel path="documents.fechaEmision" htmlFor="fechaEmision" />
               <input
                 id="fechaEmision"
                 type="date"
@@ -154,9 +147,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="fechaExpiracion" className="label-caps">
-                Fecha de expiración
-              </label>
+              <BioCallFieldLabel path="documents.fechaExpiracion" htmlFor="fechaExpiracion" />
               <input
                 id="fechaExpiracion"
                 type="date"
@@ -174,9 +165,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-1.5">
-              <label htmlFor="tieneANumber" className="label-caps">
-                ¿Cuenta con Alien Registration Number (A-Number)?
-              </label>
+              <BioCallFieldLabel path="documents.tieneANumber" htmlFor="tieneANumber" />
               <Tooltip content="Número único de 9 dígitos asignado por Inmigración (USCIS/ICE) que inicia con la letra A. Aparece en permisos de trabajo, notificaciones u órdenes de corte.">
                 <span className="inline-flex items-center text-brand-500 hover:text-brand-700 cursor-help">
                   <HelpCircle className="h-3.5 w-3.5" />
@@ -207,9 +196,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
         {data.tieneANumber === "si" && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4 rounded-xl bg-brand-50/40 border border-brand-100/50 animate-fade-in">
             <div className="flex flex-col gap-2">
-              <label htmlFor="aNumberValue" className="label-caps">
-                A-Number (9 dígitos)
-              </label>
+              <BioCallFieldLabel path="documents.aNumberValue" htmlFor="aNumberValue" />
               <input
                 id="aNumberValue"
                 type="text"
@@ -223,9 +210,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="aNumberOrigen" className="label-caps">
-                ¿Dónde lo obtuvo? (EAD, Notificación USCIS, Orden de corte, etc.)
-              </label>
+              <BioCallFieldLabel path="documents.aNumberOrigen" htmlFor="aNumberOrigen" />
               <input
                 id="aNumberOrigen"
                 type="text"
@@ -244,9 +229,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-1.5">
-              <label htmlFor="tieneSSN" className="label-caps">
-                ¿Cuenta con Seguro Social (SSN)?
-              </label>
+              <BioCallFieldLabel path="documents.tieneSSN" htmlFor="tieneSSN" />
               <Tooltip content="Número de 9 dígitos emitido por la Administración del Seguro Social de EE. UU. (Social Security Administration).">
                 <span className="inline-flex items-center text-brand-500 hover:text-brand-700 cursor-help">
                   <HelpCircle className="h-3.5 w-3.5" />
@@ -274,9 +257,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
 
           {data.tieneSSN === "si" && (
             <div className="flex flex-col gap-2 animate-fade-in">
-              <label htmlFor="ssnValue" className="label-caps">
-                Número de Seguro Social
-              </label>
+              <BioCallFieldLabel path="documents.ssnValue" htmlFor="ssnValue" />
               <input
                 id="ssnValue"
                 type="text"
@@ -297,9 +278,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-1.5">
-              <label htmlFor="tieneEAD" className="label-caps">
-                ¿Cuenta con Permiso de Trabajo (EAD)?
-              </label>
+              <BioCallFieldLabel path="documents.tieneEAD" htmlFor="tieneEAD" />
               <Tooltip content="Documento de Autorización de Empleo (Employment Authorization Document), comúnmente conocido como tarjeta de permiso de trabajo de USCIS.">
                 <span className="inline-flex items-center text-brand-500 hover:text-brand-700 cursor-help">
                   <HelpCircle className="h-3.5 w-3.5" />
@@ -327,9 +306,7 @@ export function DocumentsSection({ data, errors, onChange }: DocumentsSectionPro
 
           {data.tieneEAD === "si" && (
             <div className="flex flex-col gap-2 animate-fade-in">
-              <label htmlFor="eadValue" className="label-caps">
-                Número de EAD
-              </label>
+              <BioCallFieldLabel path="documents.eadValue" htmlFor="eadValue" />
               <input
                 id="eadValue"
                 type="text"

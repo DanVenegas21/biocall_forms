@@ -3,6 +3,7 @@
 import React from "react";
 import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { getFieldError } from "@/lib/formErrors";
+import { BioCallFieldLabel } from "../BioCallFieldLabel";
 
 const PREFIX = "personalData";
 
@@ -43,9 +44,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="flex flex-col gap-2">
-          <label htmlFor="nombres" className="label-caps">
-            Primer Nombre
-          </label>
+          <BioCallFieldLabel path="personalData.nombres" htmlFor="nombres" />
           <input
             id="nombres"
             type="text"
@@ -59,9 +58,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="segundoNombre" className="label-caps">
-            Segundo Nombre (opcional)
-          </label>
+          <BioCallFieldLabel path="personalData.segundoNombre" htmlFor="segundoNombre" />
           <input
             id="segundoNombre"
             type="text"
@@ -75,9 +72,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="apellidoPaterno" className="label-caps">
-            Apellido Paterno
-          </label>
+          <BioCallFieldLabel path="personalData.apellidoPaterno" htmlFor="apellidoPaterno" />
           <input
             id="apellidoPaterno"
             type="text"
@@ -91,9 +86,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="apellidoMaterno" className="label-caps">
-            Apellido Materno
-          </label>
+          <BioCallFieldLabel path="personalData.apellidoMaterno" htmlFor="apellidoMaterno" />
           <input
             id="apellidoMaterno"
             type="text"
@@ -109,9 +102,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2 md:col-span-2">
-          <label htmlFor="otrosNombres" className="label-caps">
-            Otros nombres utilizados (alias, nombres anteriores, variaciones)
-          </label>
+          <BioCallFieldLabel path="personalData.otrosNombres" htmlFor="otrosNombres" />
           <input
             id="otrosNombres"
             type="text"
@@ -127,9 +118,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label htmlFor="fechaNacimiento" className="label-caps">
-            Fecha de nacimiento
-          </label>
+          <BioCallFieldLabel path="personalData.fechaNacimiento" htmlFor="fechaNacimiento" />
           <input
             id="fechaNacimiento"
             type="date"
@@ -142,9 +131,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="sexo" className="label-caps">
-            Sexo
-          </label>
+          <BioCallFieldLabel path="personalData.sexo" htmlFor="sexo" />
           <select
             id="sexo"
             className={fieldInputClass(!!err("sexo"))}
@@ -163,9 +150,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="flex flex-col gap-2">
-          <label htmlFor="ciudadNacimiento" className="label-caps">
-            Ciudad de nacimiento
-          </label>
+          <BioCallFieldLabel path="personalData.ciudadNacimiento" htmlFor="ciudadNacimiento" />
           <input
             id="ciudadNacimiento"
             type="text"
@@ -179,9 +164,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="estadoNacimiento" className="label-caps">
-            Estado / provincia de nacimiento
-          </label>
+          <BioCallFieldLabel path="personalData.estadoNacimiento" htmlFor="estadoNacimiento" />
           <input
             id="estadoNacimiento"
             type="text"
@@ -195,9 +178,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="paisNacimiento" className="label-caps">
-            País de nacimiento
-          </label>
+          <BioCallFieldLabel path="personalData.paisNacimiento" htmlFor="paisNacimiento" />
           <input
             id="paisNacimiento"
             type="text"
@@ -213,9 +194,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <label htmlFor="estadoCivil" className="label-caps">
-            Estado civil
-          </label>
+          <BioCallFieldLabel path="personalData.estadoCivil" htmlFor="estadoCivil" />
           <select
             id="estadoCivil"
             className={fieldInputClass(!!err("estadoCivil"))}
@@ -234,9 +213,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="nacionalidad" className="label-caps">
-            Nacionalidad
-          </label>
+          <BioCallFieldLabel path="personalData.nacionalidad" htmlFor="nacionalidad" />
           <input
             id="nacionalidad"
             type="text"
@@ -253,9 +230,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
       <div className="border-t border-brand-100/50 pt-4 space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2">
-            <label htmlFor="comprendeIngles" className="label-caps">
-              ¿Puede leer y comprender inglés?
-            </label>
+            <BioCallFieldLabel path="personalData.comprendeIngles" htmlFor="comprendeIngles" />
             <select
               id="comprendeIngles"
               className={fieldInputClass(!!err("comprendeIngles"))}
@@ -279,9 +254,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
 
           {data.comprendeIngles === "no" && (
             <div className="flex flex-col gap-2 animate-fade-in">
-              <label htmlFor="idiomaPreferido" className="label-caps">
-                Idioma preferido para comunicación
-              </label>
+              <BioCallFieldLabel path="personalData.idiomaPreferido" htmlFor="idiomaPreferido" />
               <input
                 id="idiomaPreferido"
                 type="text"
@@ -299,9 +272,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
         {data.comprendeIngles === "no" && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 items-start animate-fade-in">
             <div className="flex flex-col gap-2">
-              <label htmlFor="hablaOtroIdioma" className="label-caps">
-                ¿Habla otro(s) idioma(s) además de español e inglés?
-              </label>
+              <BioCallFieldLabel path="personalData.hablaOtroIdioma" htmlFor="hablaOtroIdioma" />
               <select
                 id="hablaOtroIdioma"
                 className={fieldInputClass(!!err("hablaOtroIdioma"))}
@@ -321,9 +292,7 @@ export function PersonalDataSection({ data, errors, onChange }: PersonalDataSect
 
             {data.hablaOtroIdioma === "si" && (
               <div className="flex flex-col gap-2 animate-fade-in">
-                <label htmlFor="especificarIdioma" className="label-caps">
-                  Especificar idioma(s)
-                </label>
+                <BioCallFieldLabel path="personalData.especificarIdioma" htmlFor="especificarIdioma" />
                 <input
                   id="especificarIdioma"
                   type="text"

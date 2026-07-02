@@ -7,6 +7,7 @@ import { GlassButton } from "@/components/glass/GlassButton";
 import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
 import { getFieldError } from "@/lib/formErrors";
+import { BioCallFieldLabel } from "../BioCallFieldLabel";
 
 const PREFIX = "family";
 
@@ -149,9 +150,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="flex flex-col gap-2">
-                <label htmlFor="nombresPadre" className="label-caps">
-                  Primer Nombre del Padre
-                </label>
+                <BioCallFieldLabel path="family.nombresPadre" htmlFor="nombresPadre" />
                 <input
                   id="nombresPadre"
                   type="text"
@@ -163,9 +162,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="segundoNombrePadre" className="label-caps">
-                  Segundo Nombre (opcional)
-                </label>
+                <BioCallFieldLabel path="family.segundoNombrePadre" htmlFor="segundoNombrePadre" />
                 <input
                   id="segundoNombrePadre"
                   type="text"
@@ -177,9 +174,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="apellidoPaternoPadre" className="label-caps">
-                  Apellido Paterno
-                </label>
+                <BioCallFieldLabel path="family.apellidoPaternoPadre" htmlFor="apellidoPaternoPadre" />
                 <input
                   id="apellidoPaternoPadre"
                   type="text"
@@ -191,9 +186,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="apellidoMaternoPadre" className="label-caps">
-                  Apellido Materno
-                </label>
+                <BioCallFieldLabel path="family.apellidoMaternoPadre" htmlFor="apellidoMaternoPadre" />
                 <input
                   id="apellidoMaternoPadre"
                   type="text"
@@ -213,9 +206,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="flex flex-col gap-2">
-                <label htmlFor="nombresMadre" className="label-caps">
-                  Primer Nombre de la Madre
-                </label>
+                <BioCallFieldLabel path="family.nombresMadre" htmlFor="nombresMadre" />
                 <input
                   id="nombresMadre"
                   type="text"
@@ -227,9 +218,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="segundoNombreMadre" className="label-caps">
-                  Segundo Nombre (opcional)
-                </label>
+                <BioCallFieldLabel path="family.segundoNombreMadre" htmlFor="segundoNombreMadre" />
                 <input
                   id="segundoNombreMadre"
                   type="text"
@@ -241,9 +230,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="apellidoPaternoMadre" className="label-caps">
-                  Apellido Paterno
-                </label>
+                <BioCallFieldLabel path="family.apellidoPaternoMadre" htmlFor="apellidoPaternoMadre" />
                 <input
                   id="apellidoPaternoMadre"
                   type="text"
@@ -255,9 +242,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label htmlFor="apellidoMaternoMadre" className="label-caps">
-                  Apellido Materno
-                </label>
+                <BioCallFieldLabel path="family.apellidoMaternoMadre" htmlFor="apellidoMaternoMadre" />
                 <input
                   id="apellidoMaternoMadre"
                   type="text"
@@ -279,9 +264,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
         </h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex flex-col gap-2">
-            <label htmlFor="tieneConyuge" className="label-caps">
-              ¿Tiene cónyuge?
-            </label>
+            <BioCallFieldLabel path="family.tieneConyuge" htmlFor="tieneConyuge" />
             <select
               id="tieneConyuge"
               className="input-glass"
@@ -310,9 +293,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="casado" className="label-caps">
-              ¿Está casado actualmente?
-            </label>
+            <BioCallFieldLabel path="family.casado" htmlFor="casado" />
             <select
               id="casado"
               className="input-glass"
@@ -329,9 +310,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="previamenteCasado" className="label-caps">
-              ¿Estuvo previamente casado?
-            </label>
+            <BioCallFieldLabel path="family.previamenteCasado" htmlFor="previamenteCasado" />
             <select
               id="previamenteCasado"
               className="input-glass"
@@ -370,9 +349,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </h4>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="nombresConyuge" className="label-caps">
-                Primer Nombre del cónyuge
-              </label>
+              <BioCallFieldLabel path="family.nombresConyuge" htmlFor="nombresConyuge" />
               <input
                 id="nombresConyuge"
                 type="text"
@@ -386,9 +363,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="segundoNombreConyuge" className="label-caps">
-                Segundo Nombre (opcional)
-              </label>
+              <BioCallFieldLabel path="family.segundoNombreConyuge" htmlFor="segundoNombreConyuge" />
               <input
                 id="segundoNombreConyuge"
                 type="text"
@@ -402,9 +377,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="apellidoPaternoConyuge" className="label-caps">
-                Apellido Paterno
-              </label>
+              <BioCallFieldLabel path="family.apellidoPaternoConyuge" htmlFor="apellidoPaternoConyuge" />
               <input
                 id="apellidoPaternoConyuge"
                 type="text"
@@ -418,9 +391,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="apellidoMaternoConyuge" className="label-caps">
-                Apellido Materno
-              </label>
+              <BioCallFieldLabel path="family.apellidoMaternoConyuge" htmlFor="apellidoMaternoConyuge" />
               <input
                 id="apellidoMaternoConyuge"
                 type="text"
@@ -434,9 +405,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="fechaLugarMatrimonioConyuge" className="label-caps">
-                Fecha y lugar de matrimonio
-              </label>
+              <BioCallFieldLabel path="family.fechaLugarMatrimonioConyuge" htmlFor="fechaLugarMatrimonioConyuge" />
               <input
                 id="fechaLugarMatrimonioConyuge"
                 type="text"
@@ -450,9 +419,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2 md:col-span-3">
-              <label htmlFor="fechaLugarNacimientoConyuge" className="label-caps">
-                Fecha y lugar de nacimiento del cónyuge
-              </label>
+              <BioCallFieldLabel path="family.fechaLugarNacimientoConyuge" htmlFor="fechaLugarNacimientoConyuge" />
               <input
                 id="fechaLugarNacimientoConyuge"
                 type="text"
@@ -506,9 +473,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 </h5>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor={`mat-${idx}-nombres`} className="label-caps">
-                    Primer Nombre del ex-cónyuge
-                  </label>
+                  <BioCallFieldLabel path={`family.matrimoniosPrevios.${idx}.nombresExConyuge`} htmlFor={`mat-${idx}-nombres`} />
                   <input
                     id={`mat-${idx}-nombres`}
                     type="text"
@@ -520,9 +485,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor={`mat-${idx}-segundo-nombre`} className="label-caps">
-                    Segundo Nombre (opcional)
-                  </label>
+                  <BioCallFieldLabel path={`family.matrimoniosPrevios.${idx}.segundoNombreExConyuge`} htmlFor={`mat-${idx}-segundo-nombre`} />
                   <input
                     id={`mat-${idx}-segundo-nombre`}
                     type="text"
@@ -534,9 +497,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor={`mat-${idx}-paterno`} className="label-caps">
-                    Apellido Paterno
-                  </label>
+                  <BioCallFieldLabel path={`family.matrimoniosPrevios.${idx}.apellidoPaternoExConyuge`} htmlFor={`mat-${idx}-paterno`} />
                   <input
                     id={`mat-${idx}-paterno`}
                     type="text"
@@ -548,9 +509,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor={`mat-${idx}-materno`} className="label-caps">
-                    Apellido Materno
-                  </label>
+                  <BioCallFieldLabel path={`family.matrimoniosPrevios.${idx}.apellidoMaternoExConyuge`} htmlFor={`mat-${idx}-materno`} />
                   <input
                     id={`mat-${idx}-materno`}
                     type="text"
@@ -562,9 +521,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor={`mat-${idx}-nacimiento`} className="label-caps">
-                    Fecha y lugar de nacimiento del ex-cónyuge
-                  </label>
+                  <BioCallFieldLabel path={`family.matrimoniosPrevios.${idx}.fechaLugarNacimiento`} htmlFor={`mat-${idx}-nacimiento`} />
                   <input
                     id={`mat-${idx}-nacimiento`}
                     type="text"
@@ -576,9 +533,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor={`mat-${idx}-boda`} className="label-caps">
-                    Fecha y lugar de matrimonio
-                  </label>
+                  <BioCallFieldLabel path={`family.matrimoniosPrevios.${idx}.fechaLugarMatrimonio`} htmlFor={`mat-${idx}-boda`} />
                   <input
                     id={`mat-${idx}-boda`}
                     type="text"
@@ -590,9 +545,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 md:col-span-2">
-                  <label htmlFor={`mat-${idx}-divorcio`} className="label-caps">
-                    Fecha y lugar de divorcio / disolución / defunción
-                  </label>
+                  <BioCallFieldLabel path={`family.matrimoniosPrevios.${idx}.fechaLugarDivorcio`} htmlFor={`mat-${idx}-divorcio`} />
                   <input
                     id={`mat-${idx}-divorcio`}
                     type="text"
@@ -628,9 +581,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
 
         <div className="grid grid-cols-1 gap-4">
           <div className="flex flex-col gap-2 md:col-span-2">
-            <label htmlFor="tieneHijos" className="label-caps">
-              ¿Tiene hijos?
-            </label>
+            <BioCallFieldLabel path="family.tieneHijos" htmlFor="tieneHijos" />
             <select
               id="tieneHijos"
               className="input-glass max-w-md"
@@ -680,9 +631,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </h4>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`hijo-${idx}-nombres`} className="label-caps">
-                Primer Nombre
-              </label>
+              <BioCallFieldLabel path={`family.hijos.${idx}.nombres`} htmlFor={`hijo-${idx}-nombres`} />
               <input
                 id={`hijo-${idx}-nombres`}
                 type="text"
@@ -694,9 +643,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`hijo-${idx}-segundo-nombre`} className="label-caps">
-                Segundo Nombre (opcional)
-              </label>
+              <BioCallFieldLabel path={`family.hijos.${idx}.segundoNombre`} htmlFor={`hijo-${idx}-segundo-nombre`} />
               <input
                 id={`hijo-${idx}-segundo-nombre`}
                 type="text"
@@ -708,9 +655,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`hijo-${idx}-paterno`} className="label-caps">
-                Apellido Paterno
-              </label>
+              <BioCallFieldLabel path={`family.hijos.${idx}.apellidoPaterno`} htmlFor={`hijo-${idx}-paterno`} />
               <input
                 id={`hijo-${idx}-paterno`}
                 type="text"
@@ -722,9 +667,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`hijo-${idx}-materno`} className="label-caps">
-                Apellido Materno
-              </label>
+              <BioCallFieldLabel path={`family.hijos.${idx}.apellidoMaterno`} htmlFor={`hijo-${idx}-materno`} />
               <input
                 id={`hijo-${idx}-materno`}
                 type="text"
@@ -736,9 +679,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`hijo-${idx}-nacimiento`} className="label-caps">
-                Fecha de nacimiento
-              </label>
+              <BioCallFieldLabel path={`family.hijos.${idx}.fechaNacimiento`} htmlFor={`hijo-${idx}-nacimiento`} />
               <input
                 id={`hijo-${idx}-nacimiento`}
                 type="date"
@@ -749,9 +690,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor={`hijo-${idx}-lugarNacimiento`} className="label-caps">
-                Lugar de nacimiento (Ciudad/País)
-              </label>
+              <BioCallFieldLabel path={`family.hijos.${idx}.lugarNacimiento`} htmlFor={`hijo-${idx}-lugarNacimiento`} />
               <input
                 id={`hijo-${idx}-lugarNacimiento`}
                 type="text"
@@ -763,9 +702,7 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
             </div>
 
             <div className="flex flex-col gap-2 md:col-span-2">
-              <label htmlFor={`hijo-${idx}-lugarResidencia`} className="label-caps">
-                Lugar de residencia actual (Estado o País)
-              </label>
+              <BioCallFieldLabel path={`family.hijos.${idx}.lugarResidencia`} htmlFor={`hijo-${idx}-lugarResidencia`} />
               <input
                 id={`hijo-${idx}-lugarResidencia`}
                 type="text"

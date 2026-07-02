@@ -3,6 +3,7 @@
 import React from "react";
 import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { getFieldError } from "@/lib/formErrors";
+import { BioCallFieldLabel } from "../BioCallFieldLabel";
 
 const PREFIX = "contact";
 
@@ -27,9 +28,7 @@ export function ContactSection({ data, errors, onChange }: ContactSectionProps) 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div className="flex flex-col gap-2">
-        <label htmlFor="telefono" className="label-caps">
-          Teléfono de contacto
-        </label>
+        <BioCallFieldLabel path="contact.telefono" htmlFor="telefono" />
         <input
           id="telefono"
           type="tel"
@@ -44,9 +43,7 @@ export function ContactSection({ data, errors, onChange }: ContactSectionProps) 
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="correoElectronico" className="label-caps">
-          Correo electrónico
-        </label>
+        <BioCallFieldLabel path="contact.correoElectronico" htmlFor="correoElectronico" />
         <input
           id="correoElectronico"
           type="email"
