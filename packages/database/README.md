@@ -61,7 +61,7 @@ Convencion: **camelCase** en React → **snake_case** en PostgreSQL.
 
 ## Nombres en familia
 
-Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `apellido_paterno`, `apellido_materno`). Las columnas legacy (`nombre_padre`, `nombre`, `nombre_ex_conyuge`) se conservan solo como fallback de lectura para registros anteriores a la migracion `005`.
+Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `segundo_nombre`, `apellido_paterno`, `apellido_materno`). Las columnas legacy (`nombre_padre`, `nombre`, `nombre_ex_conyuge`) se conservan como fallback de lectura para datos antiguos.
 
 ## PDFs generados
 
@@ -71,18 +71,24 @@ Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `ap
 
 ## Scripts SQL (Supabase)
 
+Solo **dos archivos** en `sql/`:
+
 | Script | Cuando ejecutar |
 |--------|-----------------|
-| `000_bio_call_reset.sql` | Solo pruebas: borra todas las tablas |
-| `001_bio_call_schema.sql` | Instalacion nueva (incluye columnas actuales) |
-| `002_bio_call_form_sync.sql` | BD existente creada con `001` antiguo (lugar_nacimiento, columnas familia/caso) |
-| `003_bio_call_backend_sync.sql` | BD existente: columna `inad_my_uscis_detalle` |
-| `004_bio_call_pais_sync.sql` | BD existente: columnas `pais` en domicilio y empleo |
-| `005_bio_call_names_split.sql` | BD existente: nombres separados en padres, hijos y ex-conyuges |
-| `006_bio_call_segundo_nombre.sql` | BD existente: columnas `segundo_nombre` en cliente, familia, hijos y ex-conyuges |
-| `007_bio_call_pdf_download_filename.sql` | BD existente: columna `download_filename` en PDFs generados |
+| `000_bio_call_reset.sql` | Borra todas las tablas Bio Call (solo dev / pruebas) |
+| `001_bio_call_schema.sql` | Crea el esquema completo y actual |
 
-Tras `003`, `004`, `005`, `006` o `007`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
+**BD nueva:** ejecuta `001` en Supabase → SQL Editor → pegar todo → Run.
+
+**Recrear desde cero (dev):** `000` y luego `001`.
+
+El `001` siempre refleja el estado actual de `schema.prisma` (incluye `pais`, `segundo_nombre`, `download_filename`, nombres separados en familia, etc.). Si cambias el esquema en el codigo, actualiza `001` y recrea con `000` + `001` en entornos de prueba.
+
+Tras cambiar `schema.prisma`, ejecuta:
+
+```bash
+npm run db:generate --workspace @biocall/database
+```
 
 ## API relacionada
 

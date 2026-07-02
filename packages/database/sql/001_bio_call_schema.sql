@@ -1,9 +1,13 @@
 -- =============================================================================
--- Bio Call — esquema alineado al formulario del frontend
--- Fuente de campos: BioCallForm.tsx + packages/shared/src/schemas.ts
+-- Bio Call — esquema completo (instalacion / recreacion)
+-- Fuente de campos: BioCallForm.tsx + packages/shared/src/schemas.ts + schema.prisma
 -- Oficina Manuel Solis
 --
--- Supabase → SQL Editor → pegar TODO el archivo → Run.
+-- Flujo rapido en Supabase (SQL Editor):
+--   • BD nueva: ejecutar solo ESTE archivo (001).
+--   • BD de prueba: 000_bio_call_reset.sql y luego ESTE archivo (001).
+--
+-- Incluye todas las columnas actuales (pais, segundo_nombre, download_filename, etc.).
 -- =============================================================================
 
 -- ---------------------------------------------------------------------------

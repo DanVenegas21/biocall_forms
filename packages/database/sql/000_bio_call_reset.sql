@@ -1,6 +1,10 @@
 -- =============================================================================
 -- Bio Call — RESETEO COMPLETO (solo desarrollo / pruebas)
 -- CUIDADO: borra todas las tablas y enums de la Bio Call.
+--
+-- Flujo rapido en Supabase (SQL Editor):
+--   1. Ejecutar ESTE archivo (000) para borrar todo.
+--   2. Ejecutar 001_bio_call_schema.sql para crear el esquema actual.
 -- =============================================================================
 
 DROP TRIGGER IF EXISTS bio_calls_set_updated_at ON bio_calls;
