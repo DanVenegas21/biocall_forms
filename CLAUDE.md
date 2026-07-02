@@ -59,6 +59,7 @@ Section ids (anchors + sidebar): `datos-personales`, `contacto`, `domicilio`, `d
 - Draft: `localStorage` via `src/lib/formDraft.ts`
 - Save: `POST /api/bio-calls` with `validateBioCallSave` + `normalizeBioCallPayload`
 - PDF: `GET /api/bio-calls/:id/pdf` after successful save
+- PDF naming: `buildBioCallPdfNames()` in `@biocall/shared` — Storage path `bio-calls/{slug}-{shortId}/biocall-{slug}-{YYYYMMDD}.pdf`, download `BioCall-{Name}-{YYYY-MM-DD}.pdf`; persisted in `bio_call_generated_pdfs.download_filename`
 
 ## Design system
 

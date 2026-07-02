@@ -1,9 +1,13 @@
 -- =============================================================================
--- Bio Call — esquema alineado al formulario del frontend
--- Fuente de campos: BioCallForm.tsx + packages/shared/src/schemas.ts
+-- Bio Call — esquema completo (instalacion / recreacion)
+-- Fuente de campos: BioCallForm.tsx + packages/shared/src/schemas.ts + schema.prisma
 -- Oficina Manuel Solis
 --
--- Supabase → SQL Editor → pegar TODO el archivo → Run.
+-- Flujo rapido en Supabase (SQL Editor):
+--   • BD nueva: ejecutar solo ESTE archivo (001).
+--   • BD de prueba: 000_bio_call_reset.sql y luego ESTE archivo (001).
+--
+-- Incluye todas las columnas actuales (pais, segundo_nombre, download_filename, etc.).
 -- =============================================================================
 
 -- ---------------------------------------------------------------------------
@@ -53,6 +57,8 @@ CREATE TABLE IF NOT EXISTS bio_call_personal_data (
 );
 
 COMMENT ON TABLE bio_call_personal_data IS 'Seccion: Datos personales (PersonalDataSection).';
+
+COMMENT ON COLUMN bio_call_personal_data.segundo_nombre IS 'Segundo nombre del cliente (opcional).';
 
 -- ---------------------------------------------------------------------------
 -- Seccion: contacto (1:1) — contact
@@ -348,6 +354,7 @@ CREATE TABLE IF NOT EXISTS bio_call_generated_pdfs (
   id               TEXT PRIMARY KEY,
   bio_call_id      TEXT NOT NULL REFERENCES bio_calls (id) ON DELETE CASCADE,
   storage_path     TEXT NOT NULL,
+  download_filename TEXT,
   template_version TEXT NOT NULL DEFAULT 'v1',
   file_size_bytes  INTEGER,
   generated_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -362,6 +369,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS bio_call_generated_pdfs_one_current_idx
   WHERE is_current = true;
 
 COMMENT ON TABLE bio_call_generated_pdfs IS 'Metadatos de PDFs generados; archivo en Supabase Storage.';
+
+COMMENT ON COLUMN bio_call_generated_pdfs.download_filename IS
+  'Nombre sugerido para descarga en navegador (Content-Disposition).';
 
 -- ---------------------------------------------------------------------------
 -- Trigger: actualizar updated_at en bio_calls

@@ -20,6 +20,7 @@ export type ApiResponse<T> =
 
 export interface BioCallPdfMeta {
   storagePath: string;
+  downloadFilename: string;
   generatedAt: string;
   fileSizeBytes: number;
 }
