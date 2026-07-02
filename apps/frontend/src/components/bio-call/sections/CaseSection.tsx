@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Trash2, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react";
+import { Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { GlassButton } from "@/components/glass/GlassButton";
 import { FieldError, fieldInputClass } from "@/components/ui/FieldError";
 import { SectionErrorBanner } from "@/components/ui/SectionErrorBanner";
@@ -128,14 +128,7 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
   const err = (field: keyof CaseBackgroundData) =>
     getFieldError(errors, `${PREFIX}.${field}`);
 
-  const inadKeys: Array<keyof CaseBackgroundData> = [
-    "inadDetencionTrafico", "inadCometidoDelito", "inadInmunidadDiplomatica", "inadProstitucionTrafico",
-    "inadAyudaIngresoIlegal", "inadTerrorismo", "inadFondosTerrorismo", "inadAsociacionTerrorista",
-    "inadEspionaje", "inadPartidoComunista", "inadParticipadoPersecucion", "inadProcedimientoRemocion",
-    "inadDenegadoVisa", "inadVisaT", "inadGrupoMilitar", "inadFraudeMigratorio",
-    "inadTrastornoFisicoMental", "inadEnfermedadPublica", "inadAdictoDrogas"
-  ];
-  const hasAffirmativeSecurityAnswers = inadKeys.some(key => data[key] === "si") || (data.inadMyUscis !== "no" && data.inadMyUscis !== "");
+
 
   const handleChange = (field: keyof CaseBackgroundData, value: any) => {
     onChange({ [field]: value });
@@ -1258,20 +1251,6 @@ export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
                 “Ahora le haré una serie de preguntas que deben responderse únicamente con Sí, No o No sabe. Algunas pueden ser delicadas, pero es importante responder con honestidad. Si alguna respuesta es Sí, solo la anotaremos y el abogado la revisará más adelante.”
               </p>
             </div>
-
-            {hasAffirmativeSecurityAnswers && (
-              <div className="p-3.5 rounded-xl bg-accent-50 border border-accent-200 text-accent-900 text-xs flex items-start gap-2.5 shadow-sm animate-fade-in mb-3">
-                <AlertTriangle className="h-4 w-4 text-accent-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-accent-800">
-                    Atención: Se ha registrado respuesta «Sí» en una o más preguntas legales.
-                  </p>
-                  <p className="text-accent-700 mt-0.5">
-                    Estas respuestas serán destacadas automáticamente para evaluación prioritaria durante la consulta legal con el abogado.
-                  </p>
-                </div>
-              </div>
-            )}
 
             <div className="space-y-4 divide-y divide-brand-100/30">
               {/* Pregunta 1 */}
