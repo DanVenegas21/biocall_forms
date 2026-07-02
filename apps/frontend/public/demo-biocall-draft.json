@@ -1,6 +1,7 @@
 {
   "personalData": {
     "nombres": "Roberto Antonio",
+    "segundoNombre": "",
     "apellidoPaterno": "Vega",
     "apellidoMaterno": "Morales",
     "fechaNacimiento": "1978-11-03",
@@ -10,7 +11,7 @@
     "sexo": "Masculino",
     "estadoCivil": "Casado(a)",
     "nacionalidad": "Mexicana",
-    "comprendeIngles": "parcial",
+    "comprendeIngles": "si",
     "idiomaPreferido": "Espanol",
     "hablaOtroIdioma": "si",
     "especificarIdioma": "Nahuatl basico",
@@ -26,6 +27,7 @@
     "ciudad": "Nashville",
     "estado": "Tennessee",
     "codigoPostal": "37203",
+    "pais": "Estados Unidos",
     "fechaIngreso": "Marzo 2019",
     "resididoOtrosLugares": "si",
     "direccionesAnteriores": [
@@ -35,6 +37,7 @@
         "ciudad": "Memphis",
         "estado": "Tennessee",
         "codigoPostal": "38104",
+        "pais": "Estados Unidos",
         "fechaDesde": "Enero 2016",
         "fechaHasta": "Febrero 2019"
       },
@@ -44,6 +47,7 @@
         "ciudad": "Monterrey",
         "estado": "Nuevo Leon",
         "codigoPostal": "64000",
+        "pais": "Mexico",
         "fechaDesde": "1990",
         "fechaHasta": "Diciembre 2015"
       }
@@ -67,14 +71,17 @@
   "family": {
     "tieneConyuge": "si",
     "nombresConyuge": "Laura Isabel",
+    "segundoNombreConyuge": "",
     "apellidoPaternoConyuge": "Hernandez",
     "apellidoMaternoConyuge": "Ruiz",
     "fechaLugarMatrimonioConyuge": "14 de febrero 2004, Monterrey, Nuevo Leon",
     "fechaLugarNacimientoConyuge": "22 de julio 1980, Guadalajara, Jalisco",
     "nombresPadre": "Francisco",
+    "segundoNombrePadre": "",
     "apellidoPaternoPadre": "Vega",
     "apellidoMaternoPadre": "Luna",
     "nombresMadre": "Consuelo",
+    "segundoNombreMadre": "",
     "apellidoPaternoMadre": "Morales",
     "apellidoMaternoMadre": "Diaz",
     "casado": "si",
@@ -82,6 +89,7 @@
     "matrimoniosPrevios": [
       {
         "nombresExConyuge": "Patricia",
+        "segundoNombreExConyuge": "",
         "apellidoPaternoExConyuge": "Solis",
         "apellidoMaternoExConyuge": "Nunez",
         "fechaLugarMatrimonio": "Junio 1998, Monterrey",
@@ -93,6 +101,7 @@
     "hijos": [
       {
         "nombres": "Diego Francisco",
+        "segundoNombre": "",
         "apellidoPaterno": "Vega",
         "apellidoMaterno": "Hernandez",
         "fechaNacimiento": "2006-08-19",
@@ -101,6 +110,7 @@
       },
       {
         "nombres": "Valentina",
+        "segundoNombre": "",
         "apellidoPaterno": "Vega",
         "apellidoMaterno": "Hernandez",
         "fechaNacimiento": "2009-03-02",
@@ -109,6 +119,7 @@
       },
       {
         "nombres": "Mateo",
+        "segundoNombre": "",
         "apellidoPaterno": "Vega",
         "apellidoMaterno": "Hernandez",
         "fechaNacimiento": "2014-11-27",
@@ -167,6 +178,7 @@
     "empleoDireccionCiudad": "Nashville",
     "empleoDireccionEstado": "Tennessee",
     "empleoDireccionZip": "37201",
+    "empleoDireccionPais": "Estados Unidos",
     "empleoFechaIngreso": "Abril 2020",
     "empleoFechaSalida": "",
     "empleoOtrosLugares": "si",
@@ -179,6 +191,7 @@
         "direccionCiudad": "Memphis",
         "direccionEstado": "Tennessee",
         "direccionZip": "38104",
+        "direccionPais": "Estados Unidos",
         "fechaDesde": "2016",
         "fechaHasta": "Marzo 2020"
       },
@@ -190,6 +203,7 @@
         "direccionCiudad": "Monterrey",
         "direccionEstado": "Nuevo Leon",
         "direccionZip": "64000",
+        "direccionPais": "Mexico",
         "fechaDesde": "2003",
         "fechaHasta": "2015"
       }

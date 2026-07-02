@@ -13,21 +13,31 @@ packages/database/
 │   └── schema.prisma         ← fuente de verdad en el repositorio
 ├── src/
 │   ├── client.ts             ← singleton PrismaClient
+│   ├── saveBioCall.ts        ← persistencia (guardado estricto)
+│   ├── getBioCall.ts         ← lectura GET /api/bio-calls/:id
 │   └── index.ts
-└── sql/                      ← scripts para Supabase (000 reset, 001 schema, 002 seed)
+└── sql/                      ← scripts para Supabase
 ```
 
 ## Configuracion
 
 1. Copia `packages/database/.env.example` a `packages/database/.env`
-2. Define `DATABASE_URL` apuntando a tu PostgreSQL / Supabase
+2. Define `DATABASE_URL` apuntando a tu PostgreSQL / Supabase (Session pooler recomendado)
 3. Genera el cliente:
 
 ```bash
 npm run db:generate --workspace @biocall/database
 ```
 
-## Modelo de datos (14 tablas)
+## Politica de guardado
+
+El backend valida con `bioCallSaveSchema` antes de llamar a `saveBioCall`:
+
+- Campos NOT NULL obligatorios: nombres, apellido paterno, fecha de nacimiento, nacionalidad, telefono, correo, direccion minima.
+- **No** se insertan placeholders (`"Pendiente"`, correos ficticios).
+- Cada guardado actualiza `bio_calls.updated_at`.
+
+## Modelo de datos (15 tablas)
 
 | Tabla | Seccion UI | Relacion |
 |-------|------------|----------|
@@ -49,60 +59,29 @@ npm run db:generate --workspace @biocall/database
 
 Convencion: **camelCase** en React → **snake_case** en PostgreSQL.
 
+## Nombres en familia
+
+Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `apellido_paterno`, `apellido_materno`). Las columnas legacy (`nombre_padre`, `nombre`, `nombre_ex_conyuge`) se conservan solo como fallback de lectura para registros anteriores a la migracion `005`.
+
 ## PDFs generados
 
 - Archivo binario: **Supabase Storage** bucket `bio-call-pdfs` (o carpeta local `apps/backend/.data/pdfs` en dev sin Supabase).
 - Metadatos: tabla `bio_call_generated_pdfs` (`storage_path`, `template_version`, `is_current`).
 
-## Mapeo por seccion
-
-### `personalData` → `bio_call_personal_data`
-
-Todos los campos del formulario tienen columna homonima en snake_case (`nombres`, `apellido_paterno`, `fecha_nacimiento`, `comprende_ingles`, etc.).
-
-### `contact` → `bio_call_contact`
-
-`telefono`, `correo_electronico`.
-
-### `address` → `bio_call_address` + `bio_call_previous_addresses`
-
-| Formulario | Destino |
-|------------|---------|
-| `calleNumero`, `aptoSuite`, `ciudad`, `estado`, `codigoPostal`, `fechaIngreso`, `resididoOtrosLugares` | `bio_call_address` |
-| `direccionesAnteriores[]` | `bio_call_previous_addresses` (una fila por elemento, `sort_order`) |
-
-### `documents` → `bio_call_documents`
-
-Todos los campos escalares del formulario (`tiene_pasaporte`, `numero_pasaporte`, `a_number_value`, `ead_value`, etc.).
-
-### `family` → `bio_call_family` + hijos + matrimonios
-
-| Formulario | Destino |
-|------------|---------|
-| Conyuge, padres, banderas (`tieneConyuge`, `nombrePadre`, `casado`, …) | `bio_call_family` |
-| `hijos[]` | `bio_call_children` |
-| `matrimoniosPrevios[]` | `bio_call_previous_marriages` |
-
-### `caseBackground` → `bio_call_case_background` + tablas hijas
-
-| Formulario | Destino |
-|------------|---------|
-| Empleo actual, inadmisibilidad (`inad*`), falsa declaracion, FOIA | `bio_call_case_background` |
-| `viajes[]` | `bio_call_trips` |
-| `detencionesInmi[]` | `bio_call_immigration_detentions` |
-| `arrestosPolicia[]` | `bio_call_police_arrests` |
-| `empleosAnteriores[]` | `bio_call_previous_employments` |
-
-FOIA: `foias.uscis.solicitar` → `foia_uscis_solicitar`, `foias.uscis.motivo` → `foia_uscis_motivo` (y lo mismo para `ice`, `cbp`, `eoir`, `fbi`, `policia`).
-
-## Valores si / no
-
-La mayoria de selects envian `si`, `no`, y en algunos casos `parcial`, `no_sabe` o `no_aplica`. Se persisten como `TEXT`.
-
 ## Scripts SQL (Supabase)
 
-Flujo en el SQL Editor:
+| Script | Cuando ejecutar |
+|--------|-----------------|
+| `000_bio_call_reset.sql` | Solo pruebas: borra todas las tablas |
+| `001_bio_call_schema.sql` | Instalacion nueva (incluye columnas actuales) |
+| `002_bio_call_form_sync.sql` | BD existente creada con `001` antiguo (lugar_nacimiento, columnas familia/caso) |
+| `003_bio_call_backend_sync.sql` | BD existente: columna `inad_my_uscis_detalle` |
+| `004_bio_call_pais_sync.sql` | BD existente: columnas `pais` en domicilio y empleo |
+| `005_bio_call_names_split.sql` | BD existente: nombres separados en padres, hijos y ex-conyuges |
 
-1. `000_bio_call_reset.sql` — borra tablas (solo pruebas)
-2. `001_bio_call_schema.sql` — crea las 14 tablas
-3. `002_bio_call_seed_example.sql` — 5 registros de ejemplo
+Tras `003`, `004` o `005`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
+
+## API relacionada
+
+- `POST /api/bio-calls` — guarda con `bioCallSaveSchema` + `saveBioCall`
+- `GET /api/bio-calls/:id` — `getBioCall(id)` devuelve `BioCallRecord`

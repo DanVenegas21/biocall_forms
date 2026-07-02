@@ -9,6 +9,9 @@ const MSG_PERSON_NAME =
 const MSG_ISO_DATE =
   "Ingresa una fecha valida entre 1900 y hoy (formato AAAA-MM-DD).";
 
+const MSG_ISO_DATE_FUTURE =
+  "Ingresa una fecha de expiracion valida (formato AAAA-MM-DD), hoy o en el futuro.";
+
 const MSG_EMAIL = "Ingresa un correo valido (ej. nombre@dominio.com).";
 
 const MSG_PHONE =
@@ -21,17 +24,43 @@ function isBlank(value: string): boolean {
   return value.trim() === "";
 }
 
-function isValidIsoDateString(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+function parseIsoDateParts(value: string): { year: number; month: number; day: number } | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
   const [year, month, day] = value.split("-").map(Number);
-  if (year < 1900 || year > new Date().getFullYear()) return false;
+  if (year < 1900 || year > 2100) return null;
   const date = new Date(year, month - 1, day);
-  return (
-    date.getFullYear() === year &&
-    date.getMonth() === month - 1 &&
-    date.getDate() === day &&
-    date <= new Date()
-  );
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+  return { year, month, day };
+}
+
+function startOfToday(): Date {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
+}
+
+function isValidIsoDateString(value: string): boolean {
+  const parts = parseIsoDateParts(value);
+  if (!parts) return false;
+  const date = new Date(parts.year, parts.month - 1, parts.day);
+  return date <= new Date();
+}
+
+function isValidPastIsoDateString(value: string): boolean {
+  return isValidIsoDateString(value);
+}
+
+function isValidFutureIsoDateString(value: string): boolean {
+  const parts = parseIsoDateParts(value);
+  if (!parts) return false;
+  const date = new Date(parts.year, parts.month - 1, parts.day);
+  return date >= startOfToday();
 }
 
 export const personName = z
@@ -57,6 +86,23 @@ export const optionalIsoDate = z
   .string()
   .trim()
   .refine((v) => isBlank(v) || isValidIsoDateString(v), { message: MSG_ISO_DATE });
+
+export const isoDatePast = z
+  .string()
+  .trim()
+  .refine((v) => isValidPastIsoDateString(v), { message: MSG_ISO_DATE });
+
+export const optionalIsoDatePast = z
+  .string()
+  .trim()
+  .refine((v) => isBlank(v) || isValidPastIsoDateString(v), { message: MSG_ISO_DATE });
+
+export const optionalIsoDateFuture = z
+  .string()
+  .trim()
+  .refine((v) => isBlank(v) || isValidFutureIsoDateString(v), {
+    message: MSG_ISO_DATE_FUTURE,
+  });
 
 export function maxText(max: number) {
   return z

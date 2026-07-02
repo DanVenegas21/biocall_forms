@@ -1,11 +1,17 @@
 import { Router } from "express";
 import {
   BIO_CALL_SECTIONS,
-  bioCallSchema,
+  bioCallSaveSchema,
   formatBioCallErrors,
   fieldErrorsToMap,
+  normalizeBioCallPayload,
 } from "@biocall/shared";
-import { saveBioCall, getCurrentPdfRecord } from "@biocall/database";
+import {
+  saveBioCall,
+  getBioCall,
+  getCurrentPdfRecord,
+  SaveBioCallValidationError,
+} from "@biocall/database";
 import { generateAndStoreBioCallPdf } from "../services/bioCallPdf";
 import { downloadPdf, getPdfSignedUrl } from "../services/storage";
 
@@ -26,7 +32,8 @@ bioCallsRouter.post("/", async (req, res) => {
       ? req.body.bioCallId.trim()
       : undefined;
 
-  const result = bioCallSchema.safeParse(req.body);
+  const normalized = normalizeBioCallPayload(req.body);
+  const result = bioCallSaveSchema.safeParse(normalized);
   if (!result.success) {
     const fieldErrors = formatBioCallErrors(result.error);
     return res.status(400).json({
@@ -54,12 +61,49 @@ bioCallsRouter.post("/", async (req, res) => {
       },
     });
   } catch (error) {
+    if (error instanceof SaveBioCallValidationError) {
+      const fieldErrors = [
+        {
+          path: error.fieldPath,
+          label: error.fieldPath,
+          message: error.message,
+        },
+      ];
+      return res.status(400).json({
+        ok: false,
+        error: "Revisa los campos marcados antes de guardar.",
+        fieldErrors,
+        errorMap: fieldErrorsToMap(fieldErrors),
+      });
+    }
+
     // eslint-disable-next-line no-console
     console.error("[backend] Error al guardar Bio Call:", error);
     return res.status(500).json({
       ok: false,
       error:
         "No se pudo guardar la Bio Call. Verifica los datos e intenta de nuevo.",
+    });
+  }
+});
+
+/** Obtener una Bio Call guardada por id. */
+bioCallsRouter.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const record = await getBioCall(id);
+    if (!record) {
+      return res.status(404).json({ ok: false, error: "Bio Call no encontrada" });
+    }
+
+    return res.json({ ok: true, data: record });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("[backend] Error al obtener Bio Call:", error);
+    return res.status(500).json({
+      ok: false,
+      error: "No se pudo obtener la Bio Call. Intenta de nuevo.",
     });
   }
 });

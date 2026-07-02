@@ -10,11 +10,6 @@ const outFile = join(outDir, "demo-biocall.pdf");
 
 const raw = JSON.parse(await readFile(demoPath, "utf8"));
 
-// La validacion ISO solo acepta fechas <= hoy; el pasaporte demo usa 2028.
-if (raw.documents?.fechaExpiracion?.startsWith("2028")) {
-  raw.documents.fechaExpiracion = "2020-04-12";
-}
-
 console.log("Guardando Bio Call demo en", API_BASE, "…");
 
 const saveRes = await fetch(`${API_BASE}/api/bio-calls`, {

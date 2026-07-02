@@ -1,6 +1,7 @@
 {
   "personalData": {
     "nombres": "Juan Carlos",
+    "segundoNombre": "",
     "apellidoPaterno": "Perez",
     "apellidoMaterno": "Garcia",
     "fechaNacimiento": "1985-03-14",
@@ -48,7 +49,7 @@
     "numeroPasaporte": "ABC123456",
     "paisEmision": "Mexico",
     "fechaEmision": "2019-06-01",
-    "fechaExpiracion": "2020-06-01",
+    "fechaExpiracion": "2028-06-01",
     "tieneANumber": "si",
     "aNumberValue": "A123456789",
     "aNumberOrigen": "Notificacion de USCIS",
@@ -60,14 +61,17 @@
   "family": {
     "tieneConyuge": "si",
     "nombresConyuge": "Maria",
+    "segundoNombreConyuge": "",
     "apellidoPaternoConyuge": "Lopez",
     "apellidoMaternoConyuge": "Martinez",
     "fechaLugarMatrimonioConyuge": "Junio 2008, Ciudad de Mexico",
     "fechaLugarNacimientoConyuge": "Enero 1982, Guadalajara, Mexico",
     "nombresPadre": "Pedro",
+    "segundoNombrePadre": "",
     "apellidoPaternoPadre": "Perez",
     "apellidoMaternoPadre": "",
     "nombresMadre": "Ana",
+    "segundoNombreMadre": "",
     "apellidoPaternoMadre": "Garcia",
     "apellidoMaternoMadre": "",
     "casado": "si",
@@ -77,6 +81,7 @@
     "hijos": [
       {
         "nombres": "Luis",
+        "segundoNombre": "",
         "apellidoPaterno": "Perez",
         "apellidoMaterno": "Lopez",
         "fechaNacimiento": "2010-05-20",

@@ -2,14 +2,18 @@ import { z } from "zod";
 import {
   optionalPersonName,
   personName,
-  optionalIsoDate,
-  isoDate,
+  optionalIsoDatePast,
+  optionalIsoDateFuture,
+  isoDatePast,
   freeTextDate,
   freeText,
   shortText,
   email,
+  requiredEmail,
   phone,
+  requiredPhone,
   postalCode,
+  requiredPostalCode,
   yesNo,
   yesNoSabe,
   passportNumber,
@@ -41,7 +45,7 @@ export const personalDataSchema = z.object({
   fechaNacimiento: z
     .string()
     .trim()
-    .refine((v) => isBlank(v) || isoDate.safeParse(v).success, {
+    .refine((v) => isBlank(v) || isoDatePast.safeParse(v).success, {
       message: "Ingresa una fecha valida entre 1900 y hoy (formato AAAA-MM-DD).",
     }),
   ciudadNacimiento: shortText,
@@ -97,9 +101,9 @@ export const documentsSchema = z
     pasaportePendiente: yesNo,
     numeroPasaporte: passportNumber,
     paisEmision: shortText,
-    fechaEmision: optionalIsoDate,
-    fechaExpiracion: optionalIsoDate,
-    tieneANumber: yesNo,
+    fechaEmision: optionalIsoDatePast,
+    fechaExpiracion: optionalIsoDateFuture,
+    tieneANumber: yesNoSabe,
     aNumberValue: aNumber,
     aNumberOrigen: shortText,
     tieneSSN: yesNo,
@@ -141,7 +145,7 @@ export const hijoSchema = z.object({
   fechaNacimiento: z
     .string()
     .trim()
-    .refine((v) => isBlank(v) || isoDate.safeParse(v).success, {
+    .refine((v) => isBlank(v) || isoDatePast.safeParse(v).success, {
       message: "Ingresa una fecha valida entre 1900 y hoy (formato AAAA-MM-DD).",
     }),
   lugarNacimiento: shortText,
@@ -198,7 +202,7 @@ export const familySchema = z
         if (isBlank(hijo.nombres)) {
           addIssue(ctx, ["hijos", index, "nombres"], "Ingresa el nombre del hijo.");
         }
-        if (!isBlank(hijo.fechaNacimiento) && !isoDate.safeParse(hijo.fechaNacimiento).success) {
+        if (!isBlank(hijo.fechaNacimiento) && !isoDatePast.safeParse(hijo.fechaNacimiento).success) {
           addIssue(
             ctx,
             ["hijos", index, "fechaNacimiento"],
@@ -238,8 +242,8 @@ export const detencionInmiSchema = z.object({
   ordenDeportacion: yesNoSabe,
   sancionCastigo: yesNoSabe,
   regresoVoluntario: yesNoSabe,
-  fotosHuellas: yesNo,
-  citaCorte: yesNo,
+  fotosHuellas: yesNoSabe,
+  citaCorte: yesNoSabe,
 });
 
 export const arrestoPoliciaSchema = z.object({
@@ -275,26 +279,27 @@ export const caseBackgroundSchema = z
     empleoFechaSalida: freeTextDate,
     empleoOtrosLugares: yesNo,
     empleosAnteriores: z.array(empleoAnteriorSchema),
-    inadDetencionTrafico: yesNo,
-    inadCometidoDelito: yesNo,
-    inadInmunidadDiplomatica: yesNo,
-    inadProstitucionTrafico: yesNo,
-    inadAyudaIngresoIlegal: yesNo,
-    inadTerrorismo: yesNo,
-    inadFondosTerrorismo: yesNo,
-    inadAsociacionTerrorista: yesNo,
-    inadEspionaje: yesNo,
-    inadPartidoComunista: yesNo,
-    inadParticipadoPersecucion: yesNo,
-    inadProcedimientoRemocion: yesNo,
-    inadDenegadoVisa: yesNo,
-    inadVisaT: yesNo,
-    inadMyUscis: yesNo,
-    inadGrupoMilitar: yesNo,
-    inadFraudeMigratorio: yesNo,
-    inadTrastornoFisicoMental: yesNo,
-    inadEnfermedadPublica: yesNo,
-    inadAdictoDrogas: yesNo,
+    inadDetencionTrafico: yesNoSabe,
+    inadCometidoDelito: yesNoSabe,
+    inadInmunidadDiplomatica: yesNoSabe,
+    inadProstitucionTrafico: yesNoSabe,
+    inadAyudaIngresoIlegal: yesNoSabe,
+    inadTerrorismo: yesNoSabe,
+    inadFondosTerrorismo: yesNoSabe,
+    inadAsociacionTerrorista: yesNoSabe,
+    inadEspionaje: yesNoSabe,
+    inadPartidoComunista: yesNoSabe,
+    inadParticipadoPersecucion: yesNoSabe,
+    inadProcedimientoRemocion: yesNoSabe,
+    inadDenegadoVisa: yesNoSabe,
+    inadVisaT: yesNoSabe,
+    inadMyUscis: yesNoSabe,
+    inadMyUscisDetalle: z.string().trim().max(200, { message: "Maximo 200 caracteres." }).default(""),
+    inadGrupoMilitar: yesNoSabe,
+    inadFraudeMigratorio: yesNoSabe,
+    inadTrastornoFisicoMental: yesNoSabe,
+    inadEnfermedadPublica: yesNoSabe,
+    inadAdictoDrogas: yesNoSabe,
     declaradoCiudadano: yesNo,
     falsaDeclaracionLugar: shortText,
     falsaDeclaracionFecha: freeTextDate,
@@ -344,6 +349,50 @@ export const bioCallSchema = z.object({
   documents: documentsSchema,
   family: familySchema,
   caseBackground: caseBackgroundSchema,
+});
+
+/** Validacion estricta para guardar en BD (campos NOT NULL del esquema SQL). */
+export const bioCallSaveSchema = bioCallSchema.superRefine((data, ctx) => {
+  const pd = data.personalData;
+  if (isBlank(pd.nombres)) {
+    addIssue(ctx, ["personalData", "nombres"], "Este campo es obligatorio.");
+  }
+  if (isBlank(pd.apellidoPaterno)) {
+    addIssue(ctx, ["personalData", "apellidoPaterno"], "Este campo es obligatorio.");
+  }
+  if (isBlank(pd.fechaNacimiento)) {
+    addIssue(ctx, ["personalData", "fechaNacimiento"], "La fecha de nacimiento es obligatoria.");
+  } else if (!isoDatePast.safeParse(pd.fechaNacimiento).success) {
+    addIssue(
+      ctx,
+      ["personalData", "fechaNacimiento"],
+      "Ingresa una fecha valida entre 1900 y hoy (formato AAAA-MM-DD)."
+    );
+  }
+  if (isBlank(pd.nacionalidad)) {
+    addIssue(ctx, ["personalData", "nacionalidad"], "Este campo es obligatorio.");
+  }
+
+  if (!requiredPhone.safeParse(data.contact.telefono).success) {
+    addIssue(ctx, ["contact", "telefono"], "El telefono es obligatorio.");
+  }
+  if (!requiredEmail.safeParse(data.contact.correoElectronico).success) {
+    addIssue(ctx, ["contact", "correoElectronico"], "El correo electronico es obligatorio.");
+  }
+
+  const addr = data.address;
+  if (isBlank(addr.calleNumero)) {
+    addIssue(ctx, ["address", "calleNumero"], "Este campo es obligatorio.");
+  }
+  if (isBlank(addr.ciudad)) {
+    addIssue(ctx, ["address", "ciudad"], "Este campo es obligatorio.");
+  }
+  if (isBlank(addr.estado)) {
+    addIssue(ctx, ["address", "estado"], "Este campo es obligatorio.");
+  }
+  if (!requiredPostalCode.safeParse(addr.codigoPostal).success) {
+    addIssue(ctx, ["address", "codigoPostal"], "El codigo postal es obligatorio.");
+  }
 });
 
 export type PersonalData = z.infer<typeof personalDataSchema>;

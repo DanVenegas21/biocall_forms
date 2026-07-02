@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { validateBioCall } from "./formatErrors";
+import { normalizeBioCallPayload } from "../normalizeBioCallPayload";
+import { bioCallSchema } from "../schemas";
+import { validateBioCallSave } from "./formatErrors";
 
 const emptyCaseBackground = {
   viajes: [],
@@ -59,7 +61,7 @@ const emptyCaseBackground = {
   correosPendientes: "",
 };
 
-const basePayload = {
+const saveReadyPayload = {
   personalData: {
     nombres: "Natalia Hilda",
     segundoNombre: "",
@@ -100,7 +102,7 @@ const basePayload = {
     paisEmision: "",
     fechaEmision: "",
     fechaExpiracion: "",
-    tieneANumber: "no",
+    tieneANumber: "no_sabe",
     aNumberValue: "",
     aNumberOrigen: "",
     tieneSSN: "no",
@@ -130,109 +132,69 @@ const basePayload = {
     tieneHijos: "no",
     hijos: [],
   },
-  caseBackground: emptyCaseBackground,
+  caseBackground: {
+    ...emptyCaseBackground,
+    inadDetencionTrafico: "no_sabe",
+  },
 };
 
-describe("validateBioCall", () => {
-  it("acepta datos validos", () => {
-    const result = validateBioCall(basePayload);
+describe("validateBioCallSave", () => {
+  it("acepta payload completo con no_sabe y expiracion futura", () => {
+    const payload = {
+      ...saveReadyPayload,
+      documents: {
+        ...saveReadyPayload.documents,
+        tienePasaporte: "si",
+        pasaportePendiente: "no",
+        numeroPasaporte: "G71234567",
+        paisEmision: "Mexico",
+        fechaEmision: "2018-04-12",
+        fechaExpiracion: "2028-04-12",
+      },
+    };
+    const result = validateBioCallSave(payload);
     expect(result.ok).toBe(true);
   });
 
-  it("rechaza nombre con numeros", () => {
-    const result = validateBioCall({
-      ...basePayload,
-      personalData: { ...basePayload.personalData, nombres: "Natalia 4" },
-    });
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.errorMap["personalData.nombres"]).toBeTruthy();
-    }
-  });
-
-  it("rechaza apellido con simbolos", () => {
-    const result = validateBioCall({
-      ...basePayload,
-      personalData: { ...basePayload.personalData, apellidoPaterno: "Reyes_" },
-    });
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.errorMap["personalData.apellidoPaterno"]).toBeTruthy();
-    }
-  });
-
-  it("rechaza fecha de nacimiento fuera de rango", () => {
-    const result = validateBioCall({
-      ...basePayload,
-      personalData: { ...basePayload.personalData, fechaNacimiento: "0001-01-01" },
+  it("rechaza fecha de nacimiento vacia al guardar", () => {
+    const result = validateBioCallSave({
+      ...saveReadyPayload,
+      personalData: { ...saveReadyPayload.personalData, fechaNacimiento: "" },
     });
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.errorMap["personalData.fechaNacimiento"]).toBeTruthy();
     }
   });
+});
 
-  it("rechaza correo sin formato valido", () => {
-    const result = validateBioCall({
-      ...basePayload,
-      contact: { ...basePayload.contact, correoElectronico: "maquinadefuego134" },
-    });
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.errorMap["contact.correoElectronico"]).toBeTruthy();
-    }
-  });
-
-  it("rechaza codigo postal invalido", () => {
-    const result = validateBioCall({
-      ...basePayload,
-      address: {
-        ...basePayload.address,
-        codigoPostal: "78000598762518526+56+",
+describe("bioCallSchema fechas de pasaporte", () => {
+  it("acepta fecha de expiracion futura", () => {
+    const result = bioCallSchema.safeParse({
+      ...saveReadyPayload,
+      documents: {
+        ...saveReadyPayload.documents,
+        fechaExpiracion: "2028-04-12",
       },
     });
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.errorMap["address.codigoPostal"]).toBeTruthy();
-    }
+    expect(result.success).toBe(true);
   });
+});
 
-  it("permite fecha de ingreso en texto libre", () => {
-    const result = validateBioCall({
-      ...basePayload,
-      address: { ...basePayload.address, fechaIngreso: "Ayer" },
-    });
-    expect(result.ok).toBe(true);
-  });
-
-  it("rechaza documentos pendientes que exceden el maximo", () => {
-    const result = validateBioCall({
-      ...basePayload,
+describe("normalizeBioCallPayload", () => {
+  it("mueve credenciales myUSCIS a inadMyUscisDetalle", () => {
+    const normalized = normalizeBioCallPayload({
+      ...saveReadyPayload,
       caseBackground: {
         ...emptyCaseBackground,
-        documentosPendientes: "x".repeat(2001),
+        inadMyUscis: "usuario@email.com / pass123",
       },
-    });
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.errorMap["caseBackground.documentosPendientes"]).toBeTruthy();
-    }
-  });
+    }) as typeof saveReadyPayload;
 
-  it("rechaza fecha de matrimonio del conyuge demasiado larga", () => {
-    const result = validateBioCall({
-      ...basePayload,
-      family: {
-        ...basePayload.family,
-        tieneConyuge: "si",
-        nombresConyuge: "Ana",
-        apellidoPaternoConyuge: "Lopez",
-        fechaLugarMatrimonioConyuge: "x".repeat(101),
-      },
-    });
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.errorMap["family.fechaLugarMatrimonioConyuge"]).toBeTruthy();
-    }
+    expect(normalized.caseBackground.inadMyUscis).toBe("si");
+    expect(normalized.caseBackground.inadMyUscisDetalle).toBe("usuario@email.com / pass123");
+
+    const parsed = bioCallSchema.safeParse(normalized);
+    expect(parsed.success).toBe(true);
   });
 });

@@ -23,10 +23,8 @@ next-env.d.ts
 packages/database/prisma/*.db
 packages/database/prisma/migrations/dev.db*
 
-# Scripts SQL de Supabase (solo local; la documentacion vive en packages/database/README.md)
-packages/database/sql/*.sql
-
-# PDFs generados o de prueba local (no versionar)
+# PDFs y salidas generadas localmente (no versionar)
+output/
 bio-call-*.pdf
 
 # Python (ai-service)
@@ -54,3 +52,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# TestSprite / artefactos locales de prueba automatizada
+testsprite_tests/
