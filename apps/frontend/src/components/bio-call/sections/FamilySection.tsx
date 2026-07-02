@@ -764,13 +764,13 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
 
             <div className="flex flex-col gap-2 md:col-span-2">
               <label htmlFor={`hijo-${idx}-lugarResidencia`} className="label-caps">
-                Lugar de residencia actual (Dirección o País)
+                Lugar de residencia actual (Estado o País)
               </label>
               <input
                 id={`hijo-${idx}-lugarResidencia`}
                 type="text"
                 className="input-glass"
-                placeholder="Ej. México o Texas, EE. UU."
+                placeholder="Ej. Texas, EE. UU. o Jalisco, México"
                 value={hijo.lugarResidencia}
                 onChange={(e) => handleHijoChange(idx, "lugarResidencia", e.target.value)}
               />
