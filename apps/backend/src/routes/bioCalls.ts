@@ -55,6 +55,7 @@ bioCallsRouter.post("/", async (req, res) => {
         id,
         pdf: {
           storagePath: pdf.storagePath,
+          downloadFilename: pdf.downloadFilename,
           generatedAt: pdf.generatedAt.toISOString(),
           fileSizeBytes: pdf.fileSizeBytes,
         },
@@ -118,7 +119,8 @@ bioCallsRouter.get("/:id/pdf", async (req, res) => {
       return res.status(404).json({ ok: false, error: "PDF no encontrado para esta Bio Call" });
     }
 
-    const signedUrl = await getPdfSignedUrl(record.storagePath);
+    const filename = record.downloadFilename ?? `bio-call-${id}.pdf`;
+    const signedUrl = await getPdfSignedUrl(record.storagePath, filename);
     if (signedUrl) {
       return res.redirect(signedUrl);
     }
@@ -127,7 +129,7 @@ bioCallsRouter.get("/:id/pdf", async (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `inline; filename="bio-call-${id}.pdf"`
+      `inline; filename="${filename}"`
     );
     return res.send(buffer);
   } catch (error) {

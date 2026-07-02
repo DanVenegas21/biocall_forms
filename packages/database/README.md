@@ -66,7 +66,8 @@ Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `ap
 ## PDFs generados
 
 - Archivo binario: **Supabase Storage** bucket `bio-call-pdfs` (o carpeta local `apps/backend/.data/pdfs` en dev sin Supabase).
-- Metadatos: tabla `bio_call_generated_pdfs` (`storage_path`, `template_version`, `is_current`).
+- Ruta legible: `bio-calls/{apellido-paterno-apellido-materno-nombre}-{shortId}/biocall-{slug}-{YYYYMMDD}.pdf` (ver `buildBioCallPdfNames` en `@biocall/shared`).
+- Metadatos: tabla `bio_call_generated_pdfs` (`storage_path`, `download_filename`, `template_version`, `is_current`).
 
 ## Scripts SQL (Supabase)
 
@@ -79,8 +80,9 @@ Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `ap
 | `004_bio_call_pais_sync.sql` | BD existente: columnas `pais` en domicilio y empleo |
 | `005_bio_call_names_split.sql` | BD existente: nombres separados en padres, hijos y ex-conyuges |
 | `006_bio_call_segundo_nombre.sql` | BD existente: columnas `segundo_nombre` en cliente, familia, hijos y ex-conyuges |
+| `007_bio_call_pdf_download_filename.sql` | BD existente: columna `download_filename` en PDFs generados |
 
-Tras `003`, `004`, `005` o `006`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
+Tras `003`, `004`, `005`, `006` o `007`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
 
 ## API relacionada
 

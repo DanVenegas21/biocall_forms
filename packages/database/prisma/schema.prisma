@@ -47,6 +47,7 @@ model BioCallGeneratedPdf {
   id              String   @id
   bioCallId       String   @map("bio_call_id")
   storagePath     String   @map("storage_path")
+  downloadFilename String? @map("download_filename")
   templateVersion String   @default("v1") @map("template_version")
   fileSizeBytes   Int?     @map("file_size_bytes")
   generatedAt     DateTime @default(now()) @map("generated_at")

@@ -563,6 +563,7 @@ export async function saveBioCall(
 export async function recordGeneratedPdf(params: {
   bioCallId: string;
   storagePath: string;
+  downloadFilename: string;
   templateVersion: string;
   fileSizeBytes: number;
 }): Promise<{ id: string; generatedAt: Date }> {
@@ -578,6 +579,7 @@ export async function recordGeneratedPdf(params: {
         id: pdfId,
         bioCallId: params.bioCallId,
         storagePath: params.storagePath,
+        downloadFilename: params.downloadFilename,
         templateVersion: params.templateVersion,
         fileSizeBytes: params.fileSizeBytes,
         isCurrent: true,

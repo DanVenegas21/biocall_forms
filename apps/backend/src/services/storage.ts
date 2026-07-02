@@ -56,19 +56,18 @@ export async function downloadPdf(storagePath: string): Promise<Buffer> {
   return readFile(localPdfPath(storagePath));
 }
 
-export async function getPdfSignedUrl(storagePath: string): Promise<string | null> {
+export async function getPdfSignedUrl(
+  storagePath: string,
+  downloadFilename?: string
+): Promise<string | null> {
   const supabase = getSupabase();
   if (!supabase) return null;
 
   const { data, error } = await supabase.storage
     .from(env.supabaseStorageBucket)
-    .createSignedUrl(storagePath, 3600);
+    .createSignedUrl(storagePath, 3600, downloadFilename ? { download: downloadFilename } : undefined);
   if (error || !data?.signedUrl) {
     throw new Error(`Error al firmar URL: ${error?.message ?? "sin URL"}`);
   }
   return data.signedUrl;
-}
-
-export function buildPdfStoragePath(bioCallId: string): string {
-  return `bio-calls/${bioCallId}/current.pdf`;
 }
