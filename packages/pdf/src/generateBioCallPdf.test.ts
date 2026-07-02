@@ -24,17 +24,19 @@ describe("generateBioCallPdf", () => {
     expect(text).toContain("Datos personales");
     expect(text).toContain("Empresa Ejemplo S.A.");
     expect(text).toContain("Patrulla fronteriza");
-    expect(text).toContain("Junio 2008, Ciudad de Mexico");
-    expect(text).toContain("Enero 1982, Guadalajara, Mexico");
+    expect(text).toContain("Junio 2008");
+    expect(text).toContain("Ciudad de Mexico");
+    expect(text).toContain("Enero 1982");
+    expect(text).toContain("Guadalajara, Mexico");
     expect(text).toContain("Documentos y correos");
     expect(text).toContain("pendientes");
     expect(text).toContain("Acta de nacimiento, taxes 2024");
     expect(text).toContain("Enviar link del portal");
     expect(text).toContain("— Hijo 1 —");
-    expect(text).toContain("¿Cual es el nombre del hijo 1?");
-    expect(text).toContain("¿Cual es el apellido paterno del hijo 1?");
+    expect(text).toContain("¿Cual es el primer nombre del hijo #1 del cliente?");
+    expect(text).toContain("¿Cual es el apellido paterno del hijo #1 del cliente?");
     expect(text).toContain("Plantilla v1.9");
-    expect(text).toContain("Primer nombre del padre");
+    expect(text).toContain("¿Cuál es el primer nombre del padre del cliente?");
     expect(text).toContain("Pedro");
   });
 

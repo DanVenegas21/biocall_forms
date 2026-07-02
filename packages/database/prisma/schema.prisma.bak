@@ -1,0 +1,356 @@
+// Esquema Prisma de la Bio Call — alineado con el formulario del frontend.
+// Fuente de campos: packages/shared/src/schemas.ts
+// SQL canonico para Supabase: packages/database/sql/001_bio_call_schema.sql
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BioCallStatus {
+  draft
+  in_review
+  completed
+
+  @@map("bio_call_status")
+}
+
+model BioCall {
+  id        String        @id
+  status    BioCallStatus @default(draft) @map("form_capture_status")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  personalData            BioCallPersonalData?
+  contact                 BioCallContact?
+  address                 BioCallAddress?
+  previousAddresses       BioCallPreviousAddress[]
+  documents               BioCallDocuments?
+  family                  BioCallFamily?
+  children                BioCallChild[]
+  previousMarriages       BioCallPreviousMarriage[]
+  caseBackground          BioCallCaseBackground?
+  trips                   BioCallTrip[]
+  immigrationDetentions     BioCallImmigrationDetention[]
+  policeArrests           BioCallPoliceArrest[]
+  previousEmployments     BioCallPreviousEmployment[]
+  generatedPdfs           BioCallGeneratedPdf[]
+
+  @@map("bio_calls")
+}
+
+model BioCallGeneratedPdf {
+  id              String   @id
+  bioCallId       String   @map("bio_call_id")
+  storagePath     String   @map("storage_path")
+  downloadFilename String? @map("download_filename")
+  templateVersion String   @default("v1") @map("template_version")
+  fileSizeBytes   Int?     @map("file_size_bytes")
+  generatedAt     DateTime @default(now()) @map("generated_at")
+  isCurrent       Boolean  @default(true) @map("is_current")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@index([bioCallId, isCurrent])
+  // SQL usa UNIQUE parcial WHERE is_current = true; Prisma no lo modela. Un solo PDF
+  // current se garantiza en recordGeneratedPdf (updateMany + create).
+  @@map("bio_call_generated_pdfs")
+}
+
+model BioCallPersonalData {
+  bioCallId         String   @id @map("bio_call_id")
+  nombres           String
+  segundoNombre     String?  @map("segundo_nombre")
+  apellidoPaterno   String   @map("apellido_paterno")
+  apellidoMaterno   String?  @map("apellido_materno")
+  otrosNombres      String?  @map("otros_nombres")
+  fechaNacimiento   DateTime @map("fecha_nacimiento") @db.Date
+  ciudadNacimiento  String?  @map("ciudad_nacimiento")
+  estadoNacimiento  String?  @map("estado_nacimiento")
+  paisNacimiento    String?  @map("pais_nacimiento")
+  sexo              String?
+  estadoCivil       String?  @map("estado_civil")
+  nacionalidad      String
+  comprendeIngles   String?  @map("comprende_ingles")
+  idiomaPreferido   String?  @map("idioma_preferido")
+  hablaOtroIdioma   String?  @map("habla_otro_idioma")
+  especificarIdioma String?  @map("especificar_idioma")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_personal_data")
+}
+
+model BioCallContact {
+  bioCallId         String @id @map("bio_call_id")
+  telefono          String
+  correoElectronico String @map("correo_electronico")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_contact")
+}
+
+model BioCallAddress {
+  bioCallId            String  @id @map("bio_call_id")
+  calleNumero          String  @map("calle_numero")
+  aptoSuite            String? @map("apto_suite")
+  ciudad               String
+  estado               String
+  codigoPostal         String  @map("codigo_postal")
+  pais                 String?
+  fechaIngreso         String? @map("fecha_ingreso")
+  resididoOtrosLugares String? @map("residido_otros_lugares")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_address")
+}
+
+model BioCallPreviousAddress {
+  id           String  @id
+  bioCallId    String  @map("bio_call_id")
+  sortOrder    Int     @default(0) @map("sort_order")
+  calleNumero  String? @map("calle_numero")
+  aptoSuite    String? @map("apto_suite")
+  ciudad       String?
+  estado       String?
+  codigoPostal String? @map("codigo_postal")
+  pais         String?
+  fechaDesde   String? @map("fecha_desde")
+  fechaHasta   String? @map("fecha_hasta")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@index([bioCallId, sortOrder])
+  @@map("bio_call_previous_addresses")
+}
+
+model BioCallDocuments {
+  bioCallId          String    @id @map("bio_call_id")
+  tienePasaporte     String?   @map("tiene_pasaporte")
+  pasaportePendiente String?   @map("pasaporte_pendiente")
+  numeroPasaporte    String?   @map("numero_pasaporte")
+  paisEmision        String?   @map("pais_emision")
+  fechaEmision       DateTime? @map("fecha_emision") @db.Date
+  fechaExpiracion    DateTime? @map("fecha_expiracion") @db.Date
+  tieneANumber       String?   @map("tiene_a_number")
+  aNumberValue       String?   @map("a_number_value")
+  aNumberOrigen      String?   @map("a_number_origen")
+  tieneSSN           String?   @map("tiene_ssn")
+  ssnValue           String?   @map("ssn_value")
+  tieneEAD           String?   @map("tiene_ead")
+  eadValue           String?   @map("ead_value")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_documents")
+}
+
+model BioCallFamily {
+  bioCallId              String  @id @map("bio_call_id")
+  tieneConyuge           String? @map("tiene_conyuge")
+  nombresConyuge         String? @map("nombres_conyuge")
+  segundoNombreConyuge   String? @map("segundo_nombre_conyuge")
+  apellidoPaternoConyuge String? @map("apellido_paterno_conyuge")
+  apellidoMaternoConyuge          String? @map("apellido_materno_conyuge")
+  fechaMatrimonioConyuge          String? @map("fecha_matrimonio_conyuge")
+  lugarMatrimonioConyuge          String? @map("lugar_matrimonio_conyuge")
+  fechaNacimientoConyuge          String? @map("fecha_nacimiento_conyuge")
+  lugarNacimientoConyuge          String? @map("lugar_nacimiento_conyuge")
+  nombrePadre                     String? @map("nombre_padre")
+  nombreMadre                     String? @map("nombre_madre")
+  nombresPadre                    String? @map("nombres_padre")
+  segundoNombrePadre              String? @map("segundo_nombre_padre")
+  apellidoPaternoPadre            String? @map("apellido_paterno_padre")
+  apellidoMaternoPadre            String? @map("apellido_materno_padre")
+  nombresMadre                    String? @map("nombres_madre")
+  segundoNombreMadre              String? @map("segundo_nombre_madre")
+  apellidoPaternoMadre            String? @map("apellido_paterno_madre")
+  apellidoMaternoMadre            String? @map("apellido_materno_madre")
+  casado                 String?
+  previamenteCasado      String? @map("previamente_casado")
+  tieneHijos             String? @map("tiene_hijos")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_family")
+}
+
+model BioCallChild {
+  id               String  @id
+  bioCallId        String  @map("bio_call_id")
+  sortOrder        Int     @default(0) @map("sort_order")
+  nombre           String?
+  nombres          String?
+  segundoNombre    String? @map("segundo_nombre")
+  apellidoPaterno  String? @map("apellido_paterno")
+  apellidoMaterno  String? @map("apellido_materno")
+  fechaNacimiento  String? @map("fecha_nacimiento")
+  lugarNacimiento  String? @map("lugar_nacimiento")
+  lugarResidencia  String? @map("lugar_residencia")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@index([bioCallId, sortOrder])
+  @@map("bio_call_children")
+}
+
+model BioCallPreviousMarriage {
+  id                     String  @id
+  bioCallId              String  @map("bio_call_id")
+  sortOrder              Int     @default(0) @map("sort_order")
+  nombreExConyuge        String? @map("nombre_ex_conyuge")
+  nombresExConyuge       String? @map("nombres_ex_conyuge")
+  segundoNombreExConyuge String? @map("segundo_nombre_ex_conyuge")
+  apellidoPaternoExConyuge String? @map("apellido_paterno_ex_conyuge")
+  apellidoMaternoExConyuge String? @map("apellido_materno_ex_conyuge")
+  fechaLugarMatrimonio   String? @map("fecha_lugar_matrimonio")
+  fechaLugarNacimiento   String? @map("fecha_lugar_nacimiento")
+  fechaLugarDivorcio     String? @map("fecha_lugar_divorcio")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@index([bioCallId, sortOrder])
+  @@map("bio_call_previous_marriages")
+}
+
+model BioCallCaseBackground {
+  bioCallId                  String  @id @map("bio_call_id")
+  viajesComentarios          String? @map("viajes_comentarios")
+  detenidoInmigracion        String? @map("detenido_inmigracion")
+  arrestadoPolicia           String? @map("arrestado_policia")
+  empleoNombre               String? @map("empleo_nombre")
+  empleoOcupacion            String? @map("empleo_ocupacion")
+  empleoDireccionCalle       String? @map("empleo_direccion_calle")
+  empleoDireccionApto        String? @map("empleo_direccion_apto")
+  empleoDireccionCiudad      String? @map("empleo_direccion_ciudad")
+  empleoDireccionEstado      String? @map("empleo_direccion_estado")
+  empleoDireccionZip         String? @map("empleo_direccion_zip")
+  empleoDireccionPais       String? @map("empleo_direccion_pais")
+  empleoFechaIngreso         String? @map("empleo_fecha_ingreso")
+  empleoFechaSalida          String? @map("empleo_fecha_salida")
+  empleoOtrosLugares         String? @map("empleo_otros_lugares")
+  inadDetencionTrafico       String? @default("no") @map("inad_detencion_trafico")
+  inadCometidoDelito         String? @default("no") @map("inad_cometido_delito")
+  inadInmunidadDiplomatica   String? @default("no") @map("inad_inmunidad_diplomatica")
+  inadProstitucionTrafico    String? @default("no") @map("inad_prostitucion_trafico")
+  inadAyudaIngresoIlegal     String? @default("no") @map("inad_ayuda_ingreso_ilegal")
+  inadTerrorismo             String? @default("no") @map("inad_terrorismo")
+  inadFondosTerrorismo       String? @default("no") @map("inad_fondos_terrorismo")
+  inadAsociacionTerrorista   String? @default("no") @map("inad_asociacion_terrorista")
+  inadEspionaje              String? @default("no") @map("inad_espionaje")
+  inadPartidoComunista       String? @default("no") @map("inad_partido_comunista")
+  inadParticipadoPersecucion String? @default("no") @map("inad_participado_persecucion")
+  inadProcedimientoRemocion  String? @default("no") @map("inad_procedimiento_remocion")
+  inadDenegadoVisa           String? @default("no") @map("inad_denegado_visa")
+  inadVisaT                  String? @default("no") @map("inad_visa_t")
+  inadMyUscis                String? @default("no") @map("inad_my_uscis")
+  inadMyUscisDetalle         String? @map("inad_my_uscis_detalle")
+  inadGrupoMilitar           String? @default("no") @map("inad_grupo_militar")
+  inadFraudeMigratorio       String? @default("no") @map("inad_fraude_migratorio")
+  inadTrastornoFisicoMental  String? @default("no") @map("inad_trastorno_fisico_mental")
+  inadEnfermedadPublica      String? @default("no") @map("inad_enfermedad_publica")
+  inadAdictoDrogas           String? @default("no") @map("inad_adicto_drogas")
+  declaradoCiudadano         String? @map("declarado_ciudadano")
+  falsaDeclaracionLugar      String? @map("falsa_declaracion_lugar")
+  falsaDeclaracionFecha      String? @map("falsa_declaracion_fecha")
+  falsaDeclaracionComo       String? @map("falsa_declaracion_como")
+  falsaDeclaracionIntencion  String? @map("falsa_declaracion_intencion")
+  falsaDeclaracionDetalle    String? @map("falsa_declaracion_detalle")
+  foiaUscisSolicitar         String? @default("no") @map("foia_uscis_solicitar")
+  foiaUscisMotivo            String? @map("foia_uscis_motivo")
+  foiaIceSolicitar           String? @default("no") @map("foia_ice_solicitar")
+  foiaIceMotivo              String? @map("foia_ice_motivo")
+  foiaCbpSolicitar           String? @default("no") @map("foia_cbp_solicitar")
+  foiaCbpMotivo              String? @map("foia_cbp_motivo")
+  foiaEoirSolicitar           String? @default("no") @map("foia_eoir_solicitar")
+  foiaEoirMotivo             String? @map("foia_eoir_motivo")
+  foiaFbiSolicitar           String? @default("no") @map("foia_fbi_solicitar")
+  foiaFbiMotivo              String? @map("foia_fbi_motivo")
+  foiaPoliciaSolicitar       String? @default("no") @map("foia_policia_solicitar")
+  foiaPoliciaMotivo          String? @map("foia_policia_motivo")
+  documentosPendientes       String? @map("documentos_pendientes")
+  correosPendientes          String? @map("correos_pendientes")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@map("bio_call_case_background")
+}
+
+model BioCallTrip {
+  id                String  @id
+  bioCallId         String  @map("bio_call_id")
+  sortOrder         Int     @default(0) @map("sort_order")
+  fechaEntrada      String? @map("fecha_entrada")
+  formaEntrada      String? @map("forma_entrada")
+  lugarEntrada      String? @map("lugar_entrada")
+  fechaSalida       String? @map("fecha_salida")
+  fueDetenido       String? @map("fue_detenido")
+  detallesDetencion String? @map("detalles_detencion")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@index([bioCallId, sortOrder])
+  @@map("bio_call_trips")
+}
+
+model BioCallImmigrationDetention {
+  id                String  @id
+  bioCallId         String  @map("bio_call_id")
+  sortOrder         Int     @default(0) @map("sort_order")
+  lugar             String?
+  fecha             String?
+  autoridad         String?
+  ordenDeportacion  String? @map("orden_deportacion")
+  sancionCastigo    String? @map("sancion_castigo")
+  regresoVoluntario String? @map("regreso_voluntario")
+  fotosHuellas      String? @map("fotos_huellas")
+  citaCorte         String? @map("cita_corte")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@index([bioCallId, sortOrder])
+  @@map("bio_call_immigration_detentions")
+}
+
+model BioCallPoliceArrest {
+  id               String  @id
+  bioCallId        String  @map("bio_call_id")
+  sortOrder        Int     @default(0) @map("sort_order")
+  paisCiudadEstado String? @map("pais_ciudad_estado")
+  fecha            String?
+  motivo           String?
+  autoridad        String?
+  disposicion      String?
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@index([bioCallId, sortOrder])
+  @@map("bio_call_police_arrests")
+}
+
+model BioCallPreviousEmployment {
+  id              String  @id
+  bioCallId       String  @map("bio_call_id")
+  sortOrder       Int     @default(0) @map("sort_order")
+  empresa         String?
+  puesto          String?
+  direccionCalle  String? @map("direccion_calle")
+  direccionApto   String? @map("direccion_apto")
+  direccionCiudad String? @map("direccion_ciudad")
+  direccionEstado String? @map("direccion_estado")
+  direccionZip    String? @map("direccion_zip")
+  direccionPais   String? @map("direccion_pais")
+  fechaDesde      String? @map("fecha_desde")
+  fechaHasta      String? @map("fecha_hasta")
+
+  bioCall BioCall @relation(fields: [bioCallId], references: [id], onDelete: Cascade)
+
+  @@index([bioCallId, sortOrder])
+  @@map("bio_call_previous_employments")
+}
