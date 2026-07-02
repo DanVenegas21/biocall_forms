@@ -1,10 +1,13 @@
 -- =============================================================================
 -- Bio Call — RESETEO COMPLETO (solo desarrollo / pruebas)
--- CUIDADO: borra todas las tablas y enums de la Bio Call.
+-- CUIDADO: borra todas las tablas, datos y politicas RLS de la Bio Call.
 --
--- Flujo rapido en Supabase (SQL Editor):
---   1. Ejecutar ESTE archivo (000) para borrar todo.
---   2. Ejecutar 001_bio_call_schema.sql para crear el esquema actual.
+-- Flujo en Supabase (SQL Editor):
+--   1. Ejecutar ESTE archivo (000).
+--   2. Ejecutar 001_bio_call_schema.sql.
+--   3. Si usas RLS en Supabase, volver a activarlo en el panel (no esta en 001).
+--
+-- Desde terminal: npm run db:reset --workspace @biocall/database
 -- =============================================================================
 
 DROP TRIGGER IF EXISTS bio_calls_set_updated_at ON bio_calls;

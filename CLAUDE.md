@@ -58,8 +58,9 @@ Section ids (anchors + sidebar): `datos-personales`, `contacto`, `domicilio`, `d
 - Empty shape: `createEmptyFormData()` in `BioCallForm.tsx` (must stay aligned with `bioCallSchema`)
 - Draft: `localStorage` via `src/lib/formDraft.ts`
 - Save: `POST /api/bio-calls` with `validateBioCallSave` + `normalizeBioCallPayload`
+- Bio Call ID: legible slug en `bio_calls.id`, ej. `vega-morales-roberto-20250702`; colisiones mismo dia → `-02`, `-03`. UUID solo en metadatos internos de PDFs generados.
 - PDF: `GET /api/bio-calls/:id/pdf` after successful save
-- PDF naming: `buildBioCallPdfNames()` in `@biocall/shared` — Storage path `bio-calls/{slug}-{shortId}/biocall-{slug}-{YYYYMMDD}.pdf`, download `BioCall-{Name}-{YYYY-MM-DD}.pdf`; persisted in `bio_call_generated_pdfs.download_filename`
+- PDF naming: `buildBioCallPdfNames()` — Storage `bio-calls/{id}/biocall-{id}.pdf`, download `BioCall-{Name}-{YYYY-MM-DD}.pdf`; `download_filename` en `bio_call_generated_pdfs`
 
 ## Design system
 

@@ -476,7 +476,7 @@ export function BioCallForm() {
           setSavedBioCallId(newId);
           setLastSavedSnapshot(formSnapshot);
         }
-        toast.success("Bio Call guardada y PDF generado en el servidor");
+        toast.success(`Bio Call guardada: ${newId}`);
         setFieldErrors({});
         console.log("Bio Call guardada:", resData);
       } else {

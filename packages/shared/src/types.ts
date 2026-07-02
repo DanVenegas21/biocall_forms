@@ -6,6 +6,7 @@ export type BioCallStatus = "draft" | "in_review" | "completed";
 
 /** Representacion de una Bio Call persistida. */
 export interface BioCallRecord {
+  /** ID legible (slug + fecha), ej. vega-morales-roberto-20250702 */
   id: string;
   status: BioCallStatus;
   data: BioCall;

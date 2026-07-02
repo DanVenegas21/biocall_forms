@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Prisma } from "@prisma/client";
 import {
   BIO_CALL_SECTIONS,
   bioCallSaveSchema,
@@ -75,6 +76,17 @@ bioCallsRouter.post("/", async (req, res) => {
         error: "Revisa los campos marcados antes de guardar.",
         fieldErrors,
         errorMap: fieldErrorsToMap(fieldErrors),
+      });
+    }
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2022"
+    ) {
+      return res.status(500).json({
+        ok: false,
+        error:
+          "La base de datos no esta sincronizada con el codigo. Ejecuta 000 y luego 001 en Supabase, o: npm run db:reset --workspace @biocall/database",
       });
     }
 

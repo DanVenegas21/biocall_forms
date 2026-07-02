@@ -3,9 +3,11 @@
 -- Fuente de campos: BioCallForm.tsx + packages/shared/src/schemas.ts + schema.prisma
 -- Oficina Manuel Solis
 --
--- Flujo rapido en Supabase (SQL Editor):
---   • BD nueva: ejecutar solo ESTE archivo (001).
---   • BD de prueba: 000_bio_call_reset.sql y luego ESTE archivo (001).
+-- Flujo en Supabase (SQL Editor):
+--   • BD nueva (sin tablas bio_call): ejecutar solo ESTE archivo (001).
+--   • Actualizar esquema o corregir errores de columnas: 000 y luego 001.
+--
+-- Nota: 001 no incluye RLS. Si ejecutaste 000, reconfigura RLS en Supabase si lo usas.
 --
 -- Incluye todas las columnas actuales (pais, segundo_nombre, download_filename, etc.).
 -- =============================================================================

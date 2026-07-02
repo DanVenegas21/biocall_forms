@@ -1,3 +1,4 @@
+import { allocateBioCallId } from "./allocateBioCallId";
 import type { Prisma } from "@prisma/client";
 import type { BioCall } from "@biocall/shared";
 import { prisma } from "./client";
@@ -475,84 +476,82 @@ export async function saveBioCall(
 ): Promise<{ id: string }> {
   if (existingId) {
     const exists = await prisma.bioCall.findUnique({ where: { id: existingId } });
-    if (!exists) {
-      throw new Error(`Bio Call no encontrada: ${existingId}`);
+    if (exists) {
+      const pd = data.personalData;
+      const addr = data.address;
+      const doc = data.documents;
+      const fam = data.family;
+      const cb = data.caseBackground;
+      const personalFields = mapPersonalDataFields(pd);
+      const contactFields = mapContactFields(data.contact);
+      const addressFields = mapAddressFields(addr);
+      const documentFields = mapDocumentsFields(doc);
+
+      await prisma.$transaction([
+        prisma.bioCallPersonalData.upsert({
+          where: { bioCallId: existingId },
+          create: { bioCallId: existingId, ...personalFields },
+          update: personalFields,
+        }),
+        prisma.bioCallContact.upsert({
+          where: { bioCallId: existingId },
+          create: { bioCallId: existingId, ...contactFields },
+          update: contactFields,
+        }),
+        prisma.bioCallAddress.upsert({
+          where: { bioCallId: existingId },
+          create: { bioCallId: existingId, ...addressFields },
+          update: addressFields,
+        }),
+        prisma.bioCallDocuments.upsert({
+          where: { bioCallId: existingId },
+          create: { bioCallId: existingId, ...documentFields },
+          update: documentFields,
+        }),
+        prisma.bioCallFamily.upsert({
+          where: { bioCallId: existingId },
+          create: {
+            bioCallId: existingId,
+            tieneConyuge: emptyToNull(fam.tieneConyuge),
+            nombresConyuge: emptyToNull(fam.nombresConyuge),
+            segundoNombreConyuge: emptyToNull(fam.segundoNombreConyuge),
+            apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
+            apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
+            fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
+            fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
+            ...mapParentFields(fam),
+            casado: emptyToNull(fam.casado),
+            previamenteCasado: emptyToNull(fam.previamenteCasado),
+            tieneHijos: emptyToNull(fam.tieneHijos),
+          },
+          update: {
+            tieneConyuge: emptyToNull(fam.tieneConyuge),
+            nombresConyuge: emptyToNull(fam.nombresConyuge),
+            segundoNombreConyuge: emptyToNull(fam.segundoNombreConyuge),
+            apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
+            apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
+            fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
+            fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
+            ...mapParentFields(fam),
+            casado: emptyToNull(fam.casado),
+            previamenteCasado: emptyToNull(fam.previamenteCasado),
+            tieneHijos: emptyToNull(fam.tieneHijos),
+          },
+        }),
+        prisma.bioCallCaseBackground.upsert({
+          where: { bioCallId: existingId },
+          create: { bioCallId: existingId, ...mapCaseBackground(cb) },
+          update: mapCaseBackground(cb),
+        }),
+      ]);
+
+      await replaceListChildren(existingId, data);
+      await touchBioCallRoot(existingId);
+      return { id: existingId };
     }
-
-    const pd = data.personalData;
-    const addr = data.address;
-    const doc = data.documents;
-    const fam = data.family;
-    const cb = data.caseBackground;
-    const personalFields = mapPersonalDataFields(pd);
-    const contactFields = mapContactFields(data.contact);
-    const addressFields = mapAddressFields(addr);
-    const documentFields = mapDocumentsFields(doc);
-
-    await prisma.$transaction([
-      prisma.bioCallPersonalData.upsert({
-        where: { bioCallId: existingId },
-        create: { bioCallId: existingId, ...personalFields },
-        update: personalFields,
-      }),
-      prisma.bioCallContact.upsert({
-        where: { bioCallId: existingId },
-        create: { bioCallId: existingId, ...contactFields },
-        update: contactFields,
-      }),
-      prisma.bioCallAddress.upsert({
-        where: { bioCallId: existingId },
-        create: { bioCallId: existingId, ...addressFields },
-        update: addressFields,
-      }),
-      prisma.bioCallDocuments.upsert({
-        where: { bioCallId: existingId },
-        create: { bioCallId: existingId, ...documentFields },
-        update: documentFields,
-      }),
-      prisma.bioCallFamily.upsert({
-        where: { bioCallId: existingId },
-        create: {
-          bioCallId: existingId,
-          tieneConyuge: emptyToNull(fam.tieneConyuge),
-          nombresConyuge: emptyToNull(fam.nombresConyuge),
-          segundoNombreConyuge: emptyToNull(fam.segundoNombreConyuge),
-          apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
-          apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
-          fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
-          fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
-          ...mapParentFields(fam),
-          casado: emptyToNull(fam.casado),
-          previamenteCasado: emptyToNull(fam.previamenteCasado),
-          tieneHijos: emptyToNull(fam.tieneHijos),
-        },
-        update: {
-          tieneConyuge: emptyToNull(fam.tieneConyuge),
-          nombresConyuge: emptyToNull(fam.nombresConyuge),
-          segundoNombreConyuge: emptyToNull(fam.segundoNombreConyuge),
-          apellidoPaternoConyuge: emptyToNull(fam.apellidoPaternoConyuge),
-          apellidoMaternoConyuge: emptyToNull(fam.apellidoMaternoConyuge),
-          fechaLugarMatrimonioConyuge: emptyToNull(fam.fechaLugarMatrimonioConyuge),
-          fechaLugarNacimientoConyuge: emptyToNull(fam.fechaLugarNacimientoConyuge),
-          ...mapParentFields(fam),
-          casado: emptyToNull(fam.casado),
-          previamenteCasado: emptyToNull(fam.previamenteCasado),
-          tieneHijos: emptyToNull(fam.tieneHijos),
-        },
-      }),
-      prisma.bioCallCaseBackground.upsert({
-        where: { bioCallId: existingId },
-        create: { bioCallId: existingId, ...mapCaseBackground(cb) },
-        update: mapCaseBackground(cb),
-      }),
-    ]);
-
-    await replaceListChildren(existingId, data);
-    await touchBioCallRoot(existingId);
-    return { id: existingId };
   }
 
-  const bioCallId = crypto.randomUUID();
+  const bioCallId = await allocateBioCallId(data.personalData);
   await prisma.bioCall.create({
     data: mapBioCallToCreateInput(bioCallId, data),
   });

@@ -15,10 +15,10 @@ describe("slugifyNamePart", () => {
 });
 
 describe("buildBioCallPdfNames", () => {
-  const bioCallId = "a3f8c2e1-4b5d-6e7f-8a9b-0c1d2e3f4a5b";
+  const bioCallId = "vega-morales-roberto-20250702";
   const generatedAt = new Date(2025, 6, 2); // 2025-07-02 local
 
-  it("genera rutas legibles con apellidos y primer nombre", () => {
+  it("usa bioCallId como carpeta en Storage", () => {
     const result = buildBioCallPdfNames({
       bioCallId,
       personalData: {
@@ -30,14 +30,14 @@ describe("buildBioCallPdfNames", () => {
     });
 
     expect(result.storagePath).toBe(
-      "bio-calls/vega-morales-roberto-a3f8c2e1/biocall-vega-morales-roberto-20250702.pdf"
+      "bio-calls/vega-morales-roberto-20250702/biocall-vega-morales-roberto-20250702.pdf"
     );
     expect(result.downloadFilename).toBe("BioCall-Vega-Morales-Roberto-2025-07-02.pdf");
   });
 
   it("maneja acentos en apellidos", () => {
     const result = buildBioCallPdfNames({
-      bioCallId,
+      bioCallId: "garcia-lopez-maria-20250702",
       personalData: {
         apellidoPaterno: "García",
         apellidoMaterno: "López",
@@ -46,13 +46,15 @@ describe("buildBioCallPdfNames", () => {
       generatedAt,
     });
 
-    expect(result.storagePath).toContain("garcia-lopez-maria");
+    expect(result.storagePath).toBe(
+      "bio-calls/garcia-lopez-maria-20250702/biocall-garcia-lopez-maria-20250702.pdf"
+    );
     expect(result.downloadFilename).toBe("BioCall-Garcia-Lopez-Maria-2025-07-02.pdf");
   });
 
   it("usa fallback cliente cuando faltan nombres", () => {
     const result = buildBioCallPdfNames({
-      bioCallId,
+      bioCallId: "cliente-20250702",
       personalData: {
         apellidoPaterno: "",
         apellidoMaterno: "",
@@ -61,16 +63,13 @@ describe("buildBioCallPdfNames", () => {
       generatedAt,
     });
 
-    expect(result.storagePath).toBe(
-      "bio-calls/cliente-a3f8c2e1/biocall-cliente-20250702.pdf"
-    );
+    expect(result.storagePath).toBe("bio-calls/cliente-20250702/biocall-cliente-20250702.pdf");
     expect(result.downloadFilename).toBe("BioCall-Cliente-2025-07-02.pdf");
   });
 
-  it("incluye sufijo unico del UUID en la carpeta", () => {
-    const otherId = "b1c2d3e4-1111-2222-3333-444455556666";
+  it("soporta sufijo de colision en el id", () => {
     const result = buildBioCallPdfNames({
-      bioCallId: otherId,
+      bioCallId: "vega-morales-roberto-20250702-02",
       personalData: {
         apellidoPaterno: "Vega",
         apellidoMaterno: "Morales",
@@ -79,7 +78,8 @@ describe("buildBioCallPdfNames", () => {
       generatedAt,
     });
 
-    expect(result.storagePath).toContain("b1c2d3e4");
-    expect(result.storagePath).not.toContain(otherId);
+    expect(result.storagePath).toBe(
+      "bio-calls/vega-morales-roberto-20250702-02/biocall-vega-morales-roberto-20250702-02.pdf"
+    );
   });
 });

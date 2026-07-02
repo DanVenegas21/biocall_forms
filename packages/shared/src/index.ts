@@ -6,4 +6,6 @@ export * from "./validation/fields";
 export * from "./validation/labels";
 export * from "./validation/formatErrors";
 export * from "./normalizeBioCallPayload";
+export * from "./nameSlug";
+export * from "./bioCallId";
 export * from "./pdfNaming";

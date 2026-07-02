@@ -17,6 +17,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "prisma generate",
+    "db:reset": "prisma db execute --file sql/000_bio_call_reset.sql --schema prisma/schema.prisma && prisma db execute --file sql/001_bio_call_schema.sql --schema prisma/schema.prisma",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:push": "prisma db push"

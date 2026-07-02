@@ -37,6 +37,19 @@ El backend valida con `bioCallSaveSchema` antes de llamar a `saveBioCall`:
 - **No** se insertan placeholders (`"Pendiente"`, correos ficticios).
 - Cada guardado actualiza `bio_calls.updated_at`.
 
+## ID legible (`bio_calls.id`)
+
+Nuevas Bio Calls reciben un ID tipo slug + fecha, generado en `allocateBioCallId()`:
+
+| Caso | Ejemplo |
+|------|---------|
+| Primera del dia | `vega-morales-roberto-20250702` |
+| Colision mismo cliente/dia | `vega-morales-roberto-20250702-02` |
+
+- Formato: `{apellido-paterno}-{apellido-materno}-{primer-nombre}-{YYYYMMDD}`
+- Re-guardado con `bioCallId` existente conserva el mismo ID.
+- Registros antiguos con UUID siguen siendo validos.
+
 ## Modelo de datos (15 tablas)
 
 | Tabla | Seccion UI | Relacion |
@@ -66,7 +79,7 @@ Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `se
 ## PDFs generados
 
 - Archivo binario: **Supabase Storage** bucket `bio-call-pdfs` (o carpeta local `apps/backend/.data/pdfs` en dev sin Supabase).
-- Ruta legible: `bio-calls/{apellido-paterno-apellido-materno-nombre}-{shortId}/biocall-{slug}-{YYYYMMDD}.pdf` (ver `buildBioCallPdfNames` en `@biocall/shared`).
+- Ruta legible: `bio-calls/{bioCallId}/biocall-{bioCallId}.pdf` (el `bioCallId` coincide con `bio_calls.id`).
 - Metadatos: tabla `bio_call_generated_pdfs` (`storage_path`, `download_filename`, `template_version`, `is_current`).
 
 ## Scripts SQL (Supabase)
@@ -75,14 +88,22 @@ Solo **dos archivos** en `sql/`:
 
 | Script | Cuando ejecutar |
 |--------|-----------------|
-| `000_bio_call_reset.sql` | Borra todas las tablas Bio Call (solo dev / pruebas) |
+| `000_bio_call_reset.sql` | Borra todas las tablas Bio Call (datos + politicas RLS ligadas a esas tablas) |
 | `001_bio_call_schema.sql` | Crea el esquema completo y actual |
 
-**BD nueva:** ejecuta `001` en Supabase → SQL Editor → pegar todo → Run.
+**BD nueva (sin tablas `bio_call*`):** ejecuta solo `001` en Supabase → SQL Editor → Run.
 
-**Recrear desde cero (dev):** `000` y luego `001`.
+**Actualizar esquema o error "column does not exist":** ejecuta `000` y luego `001`.
 
-El `001` siempre refleja el estado actual de `schema.prisma` (incluye `pais`, `segundo_nombre`, `download_filename`, nombres separados en familia, etc.). Si cambias el esquema en el codigo, actualiza `001` y recrea con `000` + `001` en entornos de prueba.
+Desde terminal (equivalente a 000 + 001):
+
+```bash
+npm run db:reset --workspace @biocall/database
+```
+
+**Importante:** `000` elimina datos y politicas RLS de las tablas Bio Call. Tras `000` + `001`, si usas RLS en Supabase debes volver a configurarlo en el panel (no forma parte de estos scripts).
+
+El `001` siempre refleja el estado actual de `schema.prisma`. Si cambias el esquema en codigo, actualiza `001` y recrea con `000` + `001`.
 
 Tras cambiar `schema.prisma`, ejecuta:
 
