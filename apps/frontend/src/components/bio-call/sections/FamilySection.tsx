@@ -36,8 +36,10 @@ interface FamilyData {
   segundoNombreConyuge: string;
   apellidoPaternoConyuge: string;
   apellidoMaternoConyuge: string;
-  fechaLugarMatrimonioConyuge: string;
-  fechaLugarNacimientoConyuge: string;
+  fechaMatrimonioConyuge: string;
+  lugarMatrimonioConyuge: string;
+  fechaNacimientoConyuge: string;
+  lugarNacimientoConyuge: string;
   nombresPadre: string;
   segundoNombrePadre: string;
   apellidoPaternoPadre: string;
@@ -295,8 +297,10 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
                     segundoNombreConyuge: "",
                     apellidoPaternoConyuge: "",
                     apellidoMaternoConyuge: "",
-                    fechaLugarMatrimonioConyuge: "",
-                    fechaLugarNacimientoConyuge: "",
+                    fechaMatrimonioConyuge: "",
+                    lugarMatrimonioConyuge: "",
+                    fechaNacimientoConyuge: "",
+                    lugarNacimientoConyuge: "",
                   });
                 } else {
                   onChange({ tieneConyuge: val });
@@ -433,36 +437,68 @@ export function FamilySection({ data, errors, onChange }: FamilySectionProps) {
               <FieldError message={err("apellidoMaternoConyuge")} />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label htmlFor="fechaLugarMatrimonioConyuge" className="label-caps">
-                Fecha y lugar de matrimonio
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor="fechaMatrimonioConyuge" className="label-caps">
+                Fecha de matrimonio
               </label>
               <input
-                id="fechaLugarMatrimonioConyuge"
+                id="fechaMatrimonioConyuge"
                 type="text"
-                className={fieldInputClass(!!err("fechaLugarMatrimonioConyuge"))}
-                aria-invalid={!!err("fechaLugarMatrimonioConyuge")}
-                placeholder="Ej. 15 marzo 2020, Ciudad de México"
-                value={data.fechaLugarMatrimonioConyuge || ""}
-                onChange={(e) => handleChange("fechaLugarMatrimonioConyuge", e.target.value)}
+                className={fieldInputClass(!!err("fechaMatrimonioConyuge"))}
+                aria-invalid={!!err("fechaMatrimonioConyuge")}
+                placeholder="Ej. 15 marzo 2020"
+                value={data.fechaMatrimonioConyuge || ""}
+                onChange={(e) => handleChange("fechaMatrimonioConyuge", e.target.value)}
               />
-              <FieldError message={err("fechaLugarMatrimonioConyuge")} />
+              <FieldError message={err("fechaMatrimonioConyuge")} />
             </div>
 
-            <div className="flex flex-col gap-2 md:col-span-3">
-              <label htmlFor="fechaLugarNacimientoConyuge" className="label-caps">
-                Fecha y lugar de nacimiento del cónyuge
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor="lugarMatrimonioConyuge" className="label-caps">
+                Lugar de matrimonio
               </label>
               <input
-                id="fechaLugarNacimientoConyuge"
+                id="lugarMatrimonioConyuge"
                 type="text"
-                className={fieldInputClass(!!err("fechaLugarNacimientoConyuge"))}
-                aria-invalid={!!err("fechaLugarNacimientoConyuge")}
-                placeholder="Ej. 10 junio 1990, Guadalajara"
-                value={data.fechaLugarNacimientoConyuge || ""}
-                onChange={(e) => handleChange("fechaLugarNacimientoConyuge", e.target.value)}
+                className={fieldInputClass(!!err("lugarMatrimonioConyuge"))}
+                aria-invalid={!!err("lugarMatrimonioConyuge")}
+                placeholder="Ej. Ciudad de México"
+                value={data.lugarMatrimonioConyuge || ""}
+                onChange={(e) => handleChange("lugarMatrimonioConyuge", e.target.value)}
               />
-              <FieldError message={err("fechaLugarNacimientoConyuge")} />
+              <FieldError message={err("lugarMatrimonioConyuge")} />
+            </div>
+
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor="fechaNacimientoConyuge" className="label-caps">
+                Fecha de nacimiento del cónyuge
+              </label>
+              <input
+                id="fechaNacimientoConyuge"
+                type="text"
+                className={fieldInputClass(!!err("fechaNacimientoConyuge"))}
+                aria-invalid={!!err("fechaNacimientoConyuge")}
+                placeholder="Ej. 10 junio 1990"
+                value={data.fechaNacimientoConyuge || ""}
+                onChange={(e) => handleChange("fechaNacimientoConyuge", e.target.value)}
+              />
+              <FieldError message={err("fechaNacimientoConyuge")} />
+            </div>
+
+            <div className="flex flex-col gap-2 md:col-span-2">
+              <label htmlFor="lugarNacimientoConyuge" className="label-caps">
+                Lugar de nacimiento del cónyuge
+              </label>
+              <input
+                id="lugarNacimientoConyuge"
+                type="text"
+                className={fieldInputClass(!!err("lugarNacimientoConyuge"))}
+                aria-invalid={!!err("lugarNacimientoConyuge")}
+                placeholder="Ej. Guadalajara"
+                value={data.lugarNacimientoConyuge || ""}
+                onChange={(e) => handleChange("lugarNacimientoConyuge", e.target.value)}
+              />
+              <FieldError message={err("lugarNacimientoConyuge")} />
             </div>
           </div>
         )}

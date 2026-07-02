@@ -19,5 +19,9 @@ describe.skipIf(!hasDatabase)("saveBioCall / getBioCall round-trip", () => {
     });
     expect(record!.data.family.nombresPadre).toBe("Pedro");
     expect(record!.data.family.apellidoPaternoPadre).toBe("Perez");
-  });
+    expect(record!.data.family.fechaMatrimonioConyuge).toBe("Junio 2008");
+    expect(record!.data.family.lugarMatrimonioConyuge).toBe("Ciudad de Mexico");
+    expect(record!.data.family.fechaNacimientoConyuge).toBe("Enero 1982");
+    expect(record!.data.family.lugarNacimientoConyuge).toBe("Guadalajara, Mexico");
+  }, 20000);
 });

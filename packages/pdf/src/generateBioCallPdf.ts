@@ -213,8 +213,10 @@ export function generateBioCallPdf(
     fieldLine(doc, "Segundo nombre conyuge", fam.segundoNombreConyuge);
     fieldLine(doc, "Apellido paterno conyuge", fam.apellidoPaternoConyuge);
     fieldLine(doc, "Apellido materno conyuge", fam.apellidoMaternoConyuge);
-    fieldLine(doc, "Fecha y lugar de matrimonio", fam.fechaLugarMatrimonioConyuge);
-    fieldLine(doc, "Fecha y lugar de nacimiento del conyuge", fam.fechaLugarNacimientoConyuge);
+    const fechaLugarMatrimonio = [fam.fechaMatrimonioConyuge, fam.lugarMatrimonioConyuge].filter(Boolean).join(", ");
+    fieldLine(doc, "Fecha y lugar de matrimonio", fechaLugarMatrimonio);
+    const fechaLugarNacimiento = [fam.fechaNacimientoConyuge, fam.lugarNacimientoConyuge].filter(Boolean).join(", ");
+    fieldLine(doc, "Fecha y lugar de nacimiento del conyuge", fechaLugarNacimiento);
     fieldLine(doc, "Casado", fam.casado);
     fieldLine(doc, "Previamente casado", fam.previamenteCasado);
     fieldLine(doc, "Tiene hijos", fam.tieneHijos);

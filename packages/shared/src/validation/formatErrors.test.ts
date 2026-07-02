@@ -114,8 +114,10 @@ const basePayload = {
     segundoNombreConyuge: "",
     apellidoPaternoConyuge: "",
     apellidoMaternoConyuge: "",
-    fechaLugarMatrimonioConyuge: "",
-    fechaLugarNacimientoConyuge: "",
+    fechaMatrimonioConyuge: "",
+    lugarMatrimonioConyuge: "",
+    fechaNacimientoConyuge: "",
+    lugarNacimientoConyuge: "",
     nombresPadre: "",
     segundoNombrePadre: "",
     apellidoPaternoPadre: "",
@@ -227,12 +229,12 @@ describe("validateBioCall", () => {
         tieneConyuge: "si",
         nombresConyuge: "Ana",
         apellidoPaternoConyuge: "Lopez",
-        fechaLugarMatrimonioConyuge: "x".repeat(101),
+        fechaMatrimonioConyuge: "x".repeat(101),
       },
     });
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.errorMap["family.fechaLugarMatrimonioConyuge"]).toBeTruthy();
+      expect(result.errorMap["family.fechaMatrimonioConyuge"]).toBeTruthy();
     }
   });
 });
