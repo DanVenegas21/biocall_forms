@@ -124,7 +124,7 @@ interface CaseSectionProps {
 }
 
 export function CaseSection({ data, errors, onChange }: CaseSectionProps) {
-  const [showInadmissibility, setShowInadmissibility] = useState(false);
+  const [showInadmissibility, setShowInadmissibility] = useState(true);
   const err = (field: keyof CaseBackgroundData) =>
     getFieldError(errors, `${PREFIX}.${field}`);
 
