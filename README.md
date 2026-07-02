@@ -23,13 +23,16 @@ El frontend guarda un borrador automatico en `localStorage` y puede enviar los d
 biocall-forms/
 ├── apps/
 │   ├── frontend/       # Next.js 14 + React 18 + Tailwind CSS
-│   ├── backend/        # API Express (validacion y persistencia futura)
-│   └── ai-service/     # FastAPI — esqueleto para autocompletado con IA (fase 2)
+│   ├── backend/        # API Express (validacion, persistencia y PDF)
+│   └── ai-service/     # FastAPI — esqueleto para autocompletado con IA (fase 2, otro equipo)
 └── packages/
     ├── shared/         # Tipos, constantes y schemas Zod compartidos
     ├── database/       # Prisma + PostgreSQL
+    ├── pdf/            # Generacion de PDF (PDFKit)
     └── config/         # Presets de TypeScript, ESLint y Prettier
 ```
+
+> **Integracion:** los metadatos de secciones (`BIO_CALL_SECTIONS`) viven en `@biocall/shared`. El endpoint `GET /api/bio-calls/sections` es opcional; el modulo consumidor debe importar desde shared.
 
 ## Requisitos
 
@@ -265,9 +268,10 @@ Cualquier cambio en la estructura del formulario debe reflejarse aqui para mante
 | Secciones de captura (6) | Implementadas |
 | Borrador en localStorage | Implementado |
 | Validacion en backend (Zod) | Implementada |
-| Persistencia en PostgreSQL | Esquema Prisma listo; integracion pendiente |
-| Autocompletado con IA | Boton deshabilitado; servicio FastAPI en esqueleto |
-| Tests automatizados | No configurados |
+| Persistencia en PostgreSQL + PDF | Implementada (requiere `DATABASE_URL` y backend) |
+| Generacion de PDF | Implementada (`@biocall/pdf`, plantilla v1.9) |
+| Autocompletado con IA | Fuera de alcance de este modulo (fase 2) |
+| Autenticacion de usuarios | Fuera de alcance — la integra la app en produccion |
 
 ## Licencia
 

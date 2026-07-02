@@ -211,6 +211,9 @@ export const familySchema = z
         }
       });
     }
+    if (data.previamenteCasado === "si" && data.matrimoniosPrevios.length === 0) {
+      addIssue(ctx, ["matrimoniosPrevios"], "Agrega al menos un matrimonio previo.");
+    }
   });
 
 export const viajeSchema = z.object({
@@ -339,6 +342,24 @@ export const caseBackgroundSchema = z
         );
       }
     }
+
+    if (data.inadMyUscis === "si" && isBlank(data.inadMyUscisDetalle)) {
+      addIssue(
+        ctx,
+        ["inadMyUscisDetalle"],
+        "Proporciona los detalles de la cuenta myUSCIS."
+      );
+    }
+
+    data.viajes.forEach((viaje, index) => {
+      if (viaje.fueDetenido === "si" && isBlank(viaje.detallesDetencion)) {
+        addIssue(
+          ctx,
+          ["viajes", index, "detallesDetencion"],
+          "Describe los detalles de la detencion en este viaje."
+        );
+      }
+    });
   });
 
 /** Esquema raiz de la Bio Call que agrupa todas las secciones. */

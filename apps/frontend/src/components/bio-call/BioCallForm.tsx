@@ -10,15 +10,13 @@ import {
   Scale,
   Save,
   Sparkles,
-  Hammer,
   FileDown,
   Eraser,
   type LucideIcon,
 } from "lucide-react";
-import { BIO_CALL_SECTIONS, type BioCallSectionId, validateBioCall, getFieldLabel } from "@biocall/shared";
+import { BIO_CALL_SECTIONS, type BioCallSectionId, validateBioCallSave, getFieldLabel, normalizeBioCallPayload } from "@biocall/shared";
 import { PageContainer } from "@/components/ui/PageContainer";
 import { SectionPanel } from "@/components/ui/SectionPanel";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { GlassButton } from "@/components/glass/GlassButton";
 import { Tooltip } from "@/components/ui/Tooltip";
 import toast from "react-hot-toast";
@@ -213,6 +211,7 @@ function createEmptyFormData() {
       inadDenegadoVisa: "no",
       inadVisaT: "no",
       inadMyUscis: "no",
+      inadMyUscisDetalle: "",
       inadGrupoMilitar: "no",
       inadFraudeMigratorio: "no",
       inadTrastornoFisicoMental: "no",
@@ -239,6 +238,68 @@ function createEmptyFormData() {
 }
 
 type FormData = ReturnType<typeof createEmptyFormData>;
+
+const YES_NO_SABE = new Set(["si", "no", "no_sabe", ""]);
+
+function splitLegacyNameFields(
+  nombres: string,
+  segundoNombre: string
+): { nombres: string; segundoNombre: string } {
+  const trimmed = nombres.trim();
+  const segundo = (segundoNombre ?? "").trim();
+  if (segundo || !trimmed.includes(" ")) {
+    return { nombres: trimmed, segundoNombre: segundo };
+  }
+  const spaceIdx = trimmed.indexOf(" ");
+  return {
+    nombres: trimmed.slice(0, spaceIdx).trim(),
+    segundoNombre: trimmed.slice(spaceIdx + 1).trim(),
+  };
+}
+
+function migrateLegacyDraft(merged: FormData): FormData {
+  const personalData = {
+    ...merged.personalData,
+    ...splitLegacyNameFields(merged.personalData.nombres, merged.personalData.segundoNombre),
+  };
+
+  const family = { ...merged.family };
+  const conyuge = splitLegacyNameFields(family.nombresConyuge, family.segundoNombreConyuge);
+  family.nombresConyuge = conyuge.nombres;
+  family.segundoNombreConyuge = conyuge.segundoNombre;
+
+  const padre = splitLegacyNameFields(family.nombresPadre, family.segundoNombrePadre);
+  family.nombresPadre = padre.nombres;
+  family.segundoNombrePadre = padre.segundoNombre;
+
+  const madre = splitLegacyNameFields(family.nombresMadre, family.segundoNombreMadre);
+  family.nombresMadre = madre.nombres;
+  family.segundoNombreMadre = madre.segundoNombre;
+
+  family.hijos = (family.hijos ?? []).map((hijo) => ({
+    ...hijo,
+    ...splitLegacyNameFields(hijo.nombres, hijo.segundoNombre),
+  }));
+
+  family.matrimoniosPrevios = (family.matrimoniosPrevios ?? []).map((mat) => {
+    const names = splitLegacyNameFields(mat.nombresExConyuge, mat.segundoNombreExConyuge);
+    return { ...mat, nombresExConyuge: names.nombres, segundoNombreExConyuge: names.segundoNombre };
+  });
+
+  const caseBackground = { ...merged.caseBackground };
+  if (
+    typeof caseBackground.inadMyUscis === "string" &&
+    !YES_NO_SABE.has(caseBackground.inadMyUscis.trim())
+  ) {
+    caseBackground.inadMyUscisDetalle = caseBackground.inadMyUscis.trim();
+    caseBackground.inadMyUscis = "si";
+  }
+  if (caseBackground.inadMyUscisDetalle === undefined) {
+    caseBackground.inadMyUscisDetalle = "";
+  }
+
+  return { ...merged, personalData, family, caseBackground };
+}
 
 function mergeDraftIntoForm(parsed: Record<string, unknown>): FormData {
   const base = createEmptyFormData();
@@ -274,7 +335,7 @@ function mergeDraftIntoForm(parsed: Record<string, unknown>): FormData {
     }
   }
 
-  return merged as FormData;
+  return migrateLegacyDraft(merged as FormData);
 }
 
 /** Serializa el formulario para comparar si hay cambios reales del usuario. */
@@ -385,7 +446,8 @@ export function BioCallForm() {
       return;
     }
 
-    const validation = validateBioCall(formData);
+    const normalized = normalizeBioCallPayload(formData) as FormData;
+    const validation = validateBioCallSave(normalized);
     if (!validation.ok) {
       showValidationErrors(validation.errorMap);
       return;
@@ -400,7 +462,7 @@ export function BioCallForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
+          ...normalized,
           ...(savedBioCallId ? { bioCallId: savedBioCallId } : {}),
         }),
       });
@@ -515,15 +577,6 @@ export function BioCallForm() {
             data={formData.caseBackground}
             errors={fieldErrors}
             onChange={(fields) => updateSection("caseBackground", fields)}
-          />
-        );
-      default:
-        return (
-          <EmptyState
-            compact
-            icon={<Hammer className="h-7 w-7" aria-hidden="true" />}
-            title="Sección pendiente de implementar"
-            description="Aquí se colocarán los campos de captura correspondientes para esta sección de la Bio Call."
           />
         );
     }

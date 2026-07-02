@@ -33,7 +33,7 @@ describe("generateBioCallPdf", () => {
     expect(text).toContain("— Hijo 1 —");
     expect(text).toContain("¿Cual es el nombre del hijo 1?");
     expect(text).toContain("¿Cual es el apellido paterno del hijo 1?");
-    expect(text).toContain("Plantilla v1.8");
+    expect(text).toContain("Plantilla v1.9");
     expect(text).toContain("Primer nombre del padre");
     expect(text).toContain("Pedro");
   });

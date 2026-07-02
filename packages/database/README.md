@@ -78,8 +78,9 @@ Padres, hijos y ex-conyuges se guardan en **columnas separadas** (`nombres`, `ap
 | `003_bio_call_backend_sync.sql` | BD existente: columna `inad_my_uscis_detalle` |
 | `004_bio_call_pais_sync.sql` | BD existente: columnas `pais` en domicilio y empleo |
 | `005_bio_call_names_split.sql` | BD existente: nombres separados en padres, hijos y ex-conyuges |
+| `006_bio_call_segundo_nombre.sql` | BD existente: columnas `segundo_nombre` en cliente, familia, hijos y ex-conyuges |
 
-Tras `003`, `004` o `005`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
+Tras `003`, `004`, `005` o `006`, ejecutar `npm run db:generate --workspace @biocall/database` si cambiaste `schema.prisma`.
 
 ## API relacionada
 

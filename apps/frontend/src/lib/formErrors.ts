@@ -123,12 +123,8 @@ export function hasMeaningfulFormInput(data: {
   }
 
   if (inadKeys.some((key) => cb[key] === "si")) return true;
-  const inadMyUscis = cb.inadMyUscis;
-  if (
-    typeof inadMyUscis === "string" &&
-    inadMyUscis !== "no" &&
-    inadMyUscis.trim() !== ""
-  ) {
+  if (cb.inadMyUscis === "si") return true;
+  if (typeof cb.inadMyUscisDetalle === "string" && cb.inadMyUscisDetalle.trim() !== "") {
     return true;
   }
 

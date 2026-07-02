@@ -1,6 +1,16 @@
 /** Etiquetas en espanol para paths de validacion Zod. */
+import { INADMISSIBILITY_QUESTIONS } from "../inadmissibilityQuestions";
+
+const INAD_FIELD_LABELS = Object.fromEntries(
+  INADMISSIBILITY_QUESTIONS.map((item) => [
+    `caseBackground.${item.field}`,
+    `Inadmisibilidad (${item.number})`,
+  ])
+);
+
 export const FIELD_LABELS: Record<string, string> = {
-  "personalData.nombres": "Nombre(s)",
+  "personalData.nombres": "Primer nombre",
+  "personalData.segundoNombre": "Segundo nombre",
   "personalData.apellidoPaterno": "Apellido paterno",
   "personalData.apellidoMaterno": "Apellido materno",
   "personalData.otrosNombres": "Otros nombres",
@@ -22,6 +32,7 @@ export const FIELD_LABELS: Record<string, string> = {
   "address.ciudad": "Ciudad",
   "address.estado": "Estado",
   "address.codigoPostal": "Codigo postal",
+  "address.pais": "Pais",
   "address.fechaIngreso": "Fecha de ingreso a esta direccion",
   "address.resididoOtrosLugares": "Ha residido en otros lugares",
   "documents.tienePasaporte": "Cuenta con pasaporte",
@@ -39,14 +50,17 @@ export const FIELD_LABELS: Record<string, string> = {
   "documents.eadValue": "Numero de EAD",
   "family.tieneConyuge": "Tiene conyuge",
   "family.nombresConyuge": "Nombre(s) del conyuge",
+  "family.segundoNombreConyuge": "Segundo nombre del conyuge",
   "family.apellidoPaternoConyuge": "Apellido paterno del conyuge",
   "family.apellidoMaternoConyuge": "Apellido materno del conyuge",
   "family.fechaLugarMatrimonioConyuge": "Fecha y lugar de matrimonio",
   "family.fechaLugarNacimientoConyuge": "Fecha y lugar de nacimiento del conyuge",
   "family.nombresPadre": "Nombre(s) del padre",
+  "family.segundoNombrePadre": "Segundo nombre del padre",
   "family.apellidoPaternoPadre": "Apellido paterno del padre",
   "family.apellidoMaternoPadre": "Apellido materno del padre",
   "family.nombresMadre": "Nombre(s) de la madre",
+  "family.segundoNombreMadre": "Segundo nombre de la madre",
   "family.apellidoPaternoMadre": "Apellido paterno de la madre",
   "family.apellidoMaternoMadre": "Apellido materno de la madre",
   "family.casado": "Esta casado actualmente",
@@ -62,10 +76,17 @@ export const FIELD_LABELS: Record<string, string> = {
   "caseBackground.empleoDireccionCiudad": "Ciudad del empleo",
   "caseBackground.empleoDireccionEstado": "Estado del empleo",
   "caseBackground.empleoDireccionZip": "ZIP del empleo",
+  "caseBackground.empleoDireccionPais": "Pais del empleo",
   "caseBackground.empleoFechaIngreso": "Fecha de ingreso al empleo",
   "caseBackground.empleoFechaSalida": "Fecha de salida del empleo",
   "caseBackground.empleoOtrosLugares": "Otros empleos",
+  "caseBackground.inadMyUscisDetalle": "Detalles de myUSCIS",
   "caseBackground.declaradoCiudadano": "Declarado ciudadano",
+  "caseBackground.falsaDeclaracionLugar": "Falsa declaracion (lugar)",
+  "caseBackground.falsaDeclaracionFecha": "Falsa declaracion (fecha)",
+  "caseBackground.falsaDeclaracionComo": "Falsa declaracion (como)",
+  "caseBackground.falsaDeclaracionIntencion": "Falsa declaracion (intencion)",
+  "caseBackground.falsaDeclaracionDetalle": "Falsa declaracion (detalle)",
   "caseBackground.documentosPendientes": "Documentos pendientes",
   "caseBackground.correosPendientes": "Correos pendientes",
   "caseBackground.foias.uscis.solicitar": "FOIA USCIS",
@@ -80,6 +101,7 @@ export const FIELD_LABELS: Record<string, string> = {
   "caseBackground.foias.fbi.motivo": "Motivo FOIA FBI",
   "caseBackground.foias.policia.solicitar": "FOIA Policia",
   "caseBackground.foias.policia.motivo": "Motivo FOIA Policia",
+  ...INAD_FIELD_LABELS,
 };
 
 const ARRAY_ITEM_LABELS: Record<string, string> = {
@@ -98,15 +120,18 @@ const ARRAY_FIELD_LABELS: Record<string, string> = {
   ciudad: "Ciudad",
   estado: "Estado",
   codigoPostal: "Codigo postal",
+  pais: "Pais",
   fechaDesde: "Desde",
   fechaHasta: "Hasta",
   nombres: "Nombre(s)",
+  segundoNombre: "Segundo nombre",
   apellidoPaterno: "Apellido paterno",
   apellidoMaterno: "Apellido materno",
   fechaNacimiento: "Fecha de nacimiento",
   lugarNacimiento: "Lugar de nacimiento",
   lugarResidencia: "Lugar de residencia",
   nombresExConyuge: "Nombre(s) del ex-conyuge",
+  segundoNombreExConyuge: "Segundo nombre del ex-conyuge",
   apellidoPaternoExConyuge: "Apellido paterno del ex-conyuge",
   apellidoMaternoExConyuge: "Apellido materno del ex-conyuge",
   fechaLugarMatrimonio: "Fecha y lugar de matrimonio",
@@ -136,6 +161,7 @@ const ARRAY_FIELD_LABELS: Record<string, string> = {
   direccionCiudad: "Ciudad",
   direccionEstado: "Estado",
   direccionZip: "ZIP",
+  direccionPais: "Pais",
 };
 
 export function getFieldLabel(path: string): string {

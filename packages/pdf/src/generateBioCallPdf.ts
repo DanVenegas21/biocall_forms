@@ -4,7 +4,7 @@ import { BIO_CALL_SECTIONS } from "@biocall/shared";
 import { existsSync } from "node:fs";
 import { renderInadmissibilitySection } from "./inadmissibilityTable";
 
-export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1.8";
+export const BIO_CALL_PDF_TEMPLATE_VERSION = "v1.9";
 
 export interface GenerateBioCallPdfOptions {
   logoPath?: string;
@@ -293,7 +293,7 @@ export function generateBioCallPdf(
     const cb = data.caseBackground;
     fieldLine(doc, "Comentarios de viajes", cb.viajesComentarios);
     cb.viajes.forEach((item, index) => {
-      numberedBlock(doc, index, "Viaje", [
+      const viajeFields: NumberedField[] = [
         {
           question: (n) => formatQuestion(`Cuando fue la entrada del viaje ${n}`),
           value: item.fechaEntrada,
@@ -307,10 +307,21 @@ export function generateBioCallPdf(
           value: item.lugarEntrada,
         },
         {
+          question: (n) => formatQuestion(`Cuando fue la salida del viaje ${n}`),
+          value: item.fechaSalida,
+        },
+        {
           question: (n) => formatQuestion(`Fue detenido en el viaje ${n}`),
           value: item.fueDetenido,
         },
-      ]);
+      ];
+      if (item.fueDetenido === "si" || item.detallesDetencion?.trim()) {
+        viajeFields.push({
+          question: (n) => formatQuestion(`Cuales fueron los detalles de la detencion en el viaje ${n}`),
+          value: item.detallesDetencion,
+        });
+      }
+      numberedBlock(doc, index, "Viaje", viajeFields);
     });
     fieldLine(doc, "Detenido por inmigracion", cb.detenidoInmigracion);
     cb.detencionesInmi.forEach((item, index) => {
@@ -327,6 +338,31 @@ export function generateBioCallPdf(
           question: (n) => formatQuestion(`Que autoridad realizo la detencion por inmigracion ${n}`),
           value: item.autoridad,
         },
+        {
+          question: (n) =>
+            formatQuestion(`Hubo orden de deportacion en la detencion por inmigracion ${n}`),
+          value: item.ordenDeportacion,
+        },
+        {
+          question: (n) =>
+            formatQuestion(`Hubo sancion o castigo en la detencion por inmigracion ${n}`),
+          value: item.sancionCastigo,
+        },
+        {
+          question: (n) =>
+            formatQuestion(`Hubo regreso voluntario en la detencion por inmigracion ${n}`),
+          value: item.regresoVoluntario,
+        },
+        {
+          question: (n) =>
+            formatQuestion(`Se tomaron fotos o huellas en la detencion por inmigracion ${n}`),
+          value: item.fotosHuellas,
+        },
+        {
+          question: (n) =>
+            formatQuestion(`Hubo cita en corte por la detencion por inmigracion ${n}`),
+          value: item.citaCorte,
+        },
       ]);
     });
     fieldLine(doc, "Arrestado por policia", cb.arrestadoPolicia);
@@ -338,8 +374,17 @@ export function generateBioCallPdf(
           value: item.paisCiudadEstado,
         },
         {
+          question: (n) => formatQuestion(`Cuando fue el arresto policial ${n}`),
+          value: item.fecha,
+        },
+        {
           question: (n) => formatQuestion(`Cual fue el motivo del arresto policial ${n}`),
           value: item.motivo,
+        },
+        {
+          question: (n) =>
+            formatQuestion(`Que autoridad realizo el arresto policial ${n}`),
+          value: item.autoridad,
         },
         {
           question: (n) => formatQuestion(`Cual fue la disposicion del arresto policial ${n}`),
@@ -351,8 +396,9 @@ export function generateBioCallPdf(
     sectionTitle(doc, "Empleo actual");
     fieldLine(doc, "Empresa", cb.empleoNombre);
     fieldLine(doc, "Ocupacion", cb.empleoOcupacion);
+    fieldLine(doc, "Calle", cb.empleoDireccionCalle);
+    fieldLine(doc, "Apto/Suite", cb.empleoDireccionApto);
     fieldLine(doc, "Direccion", [
-      cb.empleoDireccionCalle,
       cb.empleoDireccionCiudad,
       cb.empleoDireccionEstado,
       cb.empleoDireccionZip,
@@ -361,6 +407,7 @@ export function generateBioCallPdf(
       .filter((p) => p?.trim())
       .join(", "));
     fieldLine(doc, "Fecha ingreso", cb.empleoFechaIngreso);
+    fieldLine(doc, "Fecha salida", cb.empleoFechaSalida);
     fieldLine(doc, "Otros empleos", cb.empleoOtrosLugares);
     cb.empleosAnteriores.forEach((item, index) => {
       numberedBlock(doc, index, "Empleo anterior", [
@@ -376,6 +423,7 @@ export function generateBioCallPdf(
           question: (n) => formatQuestion(`Cual es la direccion del empleo anterior ${n}`),
           value: [
             item.direccionCalle,
+            item.direccionApto,
             item.direccionCiudad,
             item.direccionEstado,
             item.direccionZip,
@@ -399,6 +447,10 @@ export function generateBioCallPdf(
 
     sectionTitle(doc, "Declaraciones");
     fieldLine(doc, "Declarado ciudadano", cb.declaradoCiudadano);
+    fieldLine(doc, "Falsa declaracion (lugar)", cb.falsaDeclaracionLugar);
+    fieldLine(doc, "Falsa declaracion (fecha)", cb.falsaDeclaracionFecha);
+    fieldLine(doc, "Falsa declaracion (como)", cb.falsaDeclaracionComo);
+    fieldLine(doc, "Falsa declaracion (intencion)", cb.falsaDeclaracionIntencion);
     fieldLine(doc, "Falsa declaracion (detalle)", cb.falsaDeclaracionDetalle);
 
     sectionTitle(doc, "Solicitudes FOIA");
